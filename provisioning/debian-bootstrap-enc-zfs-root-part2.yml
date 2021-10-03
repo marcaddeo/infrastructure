@@ -1,0 +1,270 @@
+---
+- hosts: storage-servers
+  strategy: mitogen_linear
+  become: true
+  collections:
+    - community.general.zfs
+  vars:
+    ansible_python_interpreter: "/usr/local/sbin/chroot_{{ inventory_hostname_short }}"
+    ansible_ssh_private_key_file: ~
+    system_hostname: kilotwo
+    zpool_type: mirror
+    zpool_disk_identifiers:
+      - scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
+      - scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
+  tasks:
+    - shell: zfs list bpool/boot/debian@install
+      ignore_errors: true
+      register: bpool_snapshot_status
+
+    - shell: zfs list rpool/root/debian@install
+      ignore_errors: true
+      register: rpool_snapshot_status
+
+    - meta: end_play
+      when: >
+        bpool_snapshot_status.rc == 0 and
+        rpool_snapshot_status.rc == 0
+
+    - name: Symlink mtab
+      file:
+        src: /proc/self/mounts
+        dest: /etc/mtab
+        state: link
+
+    - name: Configure basic system environment
+      apt:
+        update_cache: true
+        package:
+          - debconf-utils
+          - console-setup
+          - locales
+
+    - name: Ensure our locale is generated
+      lineinfile:
+        dest: /etc/locale.gen
+        regexp: ^# en_US.UTF-8 UTF-8$
+        line: en_US.UTF-8 UTF-8
+
+    - name: Remove existing config files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/localtime
+        - /etc/timezone
+        - /etc/default/keyboard
+        - /etc/default/console-setup
+
+    - name: Set up a preseed file to reconfigure packages with the correct settings
+      copy:
+        dest: /root/preseed.txt
+        content: |
+          locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8
+          locales locales/default_environment_locale select en_US.UTF-8
+          tzdata tzdata/Zones/Australia select
+          tzdata tzdata/Zones/Asia select
+          tzdata tzdata/Areas select America
+          tzdata tzdata/Zones/Atlantic select
+          tzdata tzdata/Zones/Etc select UTC
+          tzdata tzdata/Zones/America select New_York
+          tzdata tzdata/Zones/Europe select
+          tzdata tzdata/Zones/Antarctica select
+          tzdata tzdata/Zones/Pacific select
+          tzdata tzdata/Zones/Indian select
+          tzdata tzdata/Zones/Arctic select
+          tzdata tzdata/Zones/Africa select
+          tzdata tzdata/Zones/SystemV select
+          tzdata tzdata/Zones/US select Eastern
+          keyboard-configuration keyboard-configuration/unsupported_config_options boolean true
+          keyboard-configuration keyboard-configuration/toggle select No toggling
+          keyboard-configuration keyboard-configuration/variant select English (US)
+          keyboard-configuration keyboard-configuration/optionscode string
+          keyboard-configuration keyboard-configuration/switch select No temporary switch
+          keyboard-configuration keyboard-configuration/model select Generic 105-key PC (intl.)
+          keyboard-configuration keyboard-configuration/xkb-keymap select us
+          keyboard-configuration keyboard-configuration/ctrl_alt_bksp boolean false
+          keyboard-configuration keyboard-configuration/unsupported_options boolean true
+          keyboard-configuration keyboard-configuration/unsupported_config_layout boolean true
+          keyboard-configuration keyboard-configuration/altgr select The default for the keyboard layout
+          keyboard-configuration keyboard-configuration/variantcode string
+          keyboard-configuration keyboard-configuration/store_defaults_in_debconf_db boolean true
+          keyboard-configuration keyboard-configuration/layout select
+          keyboard-configuration keyboard-configuration/unsupported_layout boolean true
+          keyboard-configuration keyboard-configuration/layoutcode string us
+          keyboard-configuration keyboard-configuration/compose select No compose key
+          keyboard-configuration keyboard-configuration/modelcode string pc105
+          console-setup console-setup/fontsize string 8x16
+          console-setup console-setup/codeset47 select # Latin1 and Latin5 - western Europe and Turkic languages
+          console-setup console-setup/fontsize-fb47 select 8x16
+          console-setup console-setup/charmap47 select UTF-8
+          console-setup console-setup/fontsize-text47 select 8x16
+          console-setup console-setup/fontface47 select VGA
+          console-setup console-setup/codesetcode string Lat15
+          console-setup console-setup/store_defaults_in_debconf_db boolean true
+
+    - name: Set selections with debconf
+      shell: debconf-set-selections /root/preseed.txt
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+        DEBCONF_NONINTERACTIVE_SEEN: true
+
+    - name: Reconfigure packages with correct settings
+      shell: dpkg-reconfigure locales tzdata keyboard-configuration console-setup
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+        DEBCONF_NONINTERACTIVE_SEEN: true
+
+    - name: Install ZFS in the chroot environment for the new system
+      apt:
+        package:
+          - dpkg-dev
+          - linux-headers-amd64
+          - linux-image-amd64
+
+    - apt:
+        name: zfs-initramfs
+        state: present
+
+    - lineinfile:
+        path: /etc/dkms/zfs.conf
+        line: REMAKE_INITRD=yes
+        create: true
+
+    - name: Install GRUB
+      apt:
+        name: grub-pc
+        state: present
+
+    - name: Remove os-prober
+      apt:
+        name: os-prober
+        state: absent
+
+    - shell: passwd --status root | cut -d' ' -f2
+      register: root_password_status #'
+
+    - name: Set the root user password to temporary password
+      user:
+        name: root
+        password: "{{ 'live' | password_hash('sha512', 'salt') }}"
+      when: root_password_status.stdout != 'P'
+
+    - name: Enable importing bpool
+      copy:
+        dest: /etc/systemd/system/zfs-import-bpool.service
+        content: |
+          [Unit]
+          DefaultDependencies=no
+          Before=zfs-import-scan.service
+          Before=zfs-import-cache.service
+
+          [Service]
+          Type=oneshot
+          RemainAfterExit=yes
+          ExecStart=/sbin/zpool import -N -o cachefile=none bpool
+          # Work-around to preserve zpool cache:
+          ExecStartPre=-/bin/mv /etc/zfs/zpool.cache /etc/zfs/preboot_zpool.cache
+          ExecStartPost=-/bin/mv /etc/zfs/preboot_zpool.cache /etc/zfs/zpool.cache
+
+          [Install]
+          WantedBy=zfs-import.target
+
+    - systemd:
+        name: zfs-import-bpool.service
+        enabled: true
+
+    - name: Refresh initrd files
+      shell: update-initramfs -c -k all
+
+    - name: Workaround GRUB's missing zpool-features support
+      lineinfile:
+        dest: /etc/default/grub
+        regexp: ^GRUB_CMDLINE_LINUX=""$
+        line: GRUB_CMDLINE_LINUX="root=ZFS=rpool/root/debian"
+
+    - name: Update grub
+      shell: update-grub
+
+    - name: Install the boot loader
+      shell: "grub-install /dev/disk/by-id/{{ item }}"
+      loop: "{{ zpool_disk_identifiers }}"
+
+    - name: Add fix-filesystem-mounts.sh script
+      copy:
+        dest: /root/fix-filesystem-mounts.sh
+        mode: 0755
+        content: |
+          #!/usr/bin/env bash
+
+          finish() {
+            sed -Ei "s|/mnt/?|/|" /etc/zfs/zfs-list.cache/*
+            kill "$ZED_PID"
+          }
+          trap finish EXIT
+
+          main() {
+            [[ -d /etc/zfs/zfs-list-cache ]] || mkdir /etc/zfs/zfs-list.cache
+            touch /etc/zfs/zfs-list.cache/bpool
+            touch /etc/zfs/zfs-list.cache/rpool
+
+            zed -F &
+            ZED_PID="$!"
+            local i=0;
+            local x=0;
+
+            while [[ "$i" -le 3 ]]; do
+              x=0;
+              while [[ "$x" -le 3 ]]; do
+                if [[ ! -s /etc/zfs/zfs-list.cache/bpool ]]; then
+                  zfs set canmount=on bpool/boot/debian
+                fi
+
+                if [[ ! -s /etc/zfs/zfs-list.cache/rpool ]]; then
+                  zfs set canmount=noauto rpool/root/debian
+                fi
+
+                if [[ -s /etc/zfs/zfs-list.cache/bpool ]] &&
+                   [[ -s /etc/zfs/zfs-list.cache/bpool ]]
+                then
+                  exit 0
+                fi
+
+                sleep 10
+                ((x++))
+              done
+
+              kill "$ZED_PID"
+              zed -F &
+              ZED_PID="$!"
+              sleep 10
+              ((i++))
+            done
+          }
+
+          main "$@"
+
+    - name: Fix filesystem mount ordering
+      shell: /root/fix-filesystem-mounts.sh
+      args:
+        creates: /etc/zfs/zfs-list.cache/rpool
+
+    - name: Install SSH
+      apt:
+        update_cache: true
+        name: openssh-server
+        state: present
+
+    - name: Allow root login temporarily
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: ^#PermitRootLogin prohibit-password$
+        line: PermitRootLogin yes
+
+    - name: Create install snapshots with ZFS
+      zfs:
+        name: "{{ item }}@install"
+        state: present
+      loop:
+        - bpool/boot/debian
+        - rpool/root/debian

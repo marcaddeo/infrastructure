@@ -1,0 +1,197 @@
+---
+- hosts: storage-servers
+  become: true
+  strategy: debug
+  collections:
+    - community.general.zfs
+  vars:
+    system_hostname: kilotwo
+    zpool_type: mirror
+    zpool_disk_identifiers:
+      - scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
+      - scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
+  tasks:
+    - shell: zfs list bpool/boot/debian@bootstrap
+      ignore_errors: true
+      register: bpool_snapshot_status
+
+    - shell: zfs list rpool/root/debian@bootstrap
+      ignore_errors: true
+      register: rpool_snapshot_status
+
+    - meta: end_play
+      when: >
+        bpool_snapshot_status.rc == 0 and
+        rpool_snapshot_status.rc == 0
+
+    - stat:
+        path: /home/user
+      register: user_home
+
+    - name: Unmount all filesystems on the Live CD environment
+      shell: mount | grep -v zfs | tac | awk '/\/mnt/ {print $3}' | xargs -i{} umount -lf {}
+      when: user_home.stat.exists
+
+    - name: Export all zpools
+      command: zpool export -a
+      when: user_home.stat.exists
+
+    - name: Reboot the server
+      reboot:
+      when: user_home.stat.exists
+
+    - name: Set up a grub preseed file to reconfigure grub
+      copy:
+        dest: /root/grub-preseed.txt
+        content: |
+          grub-pc grub2/force_efi_extra_removable boolean false
+          grub-pc grub-pc/install_devices_failed boolean false
+          grub-pc grub-pc/install_devices_empty boolean false
+          grub-pc grub-pc/postrm_purge_boot_grub boolean false
+          grub-pc grub-pc/install_devices_failed_upgrade boolean true
+          grub-pc grub-pc/install_devices multiselect {{ (['/dev/disk/by-id/'] | product(zpool_disk_identifiers) | map('join') | list) | join(', ') }}
+          grub-pc grub2/update_nvram boolean true
+          grub-pc grub-pc/timeout string 5
+          grub-pc grub2/linux_cmdline string root=ZFS=rpool/root/debian
+          grub-pc grub2/linux_cmdline_default string quiet
+          grub-pc grub2/kfreebsd_cmdline_default string quiet
+          grub-pc grub-pc/mixed_legacy_and_grub2 boolean true
+          grub-pc grub-pc/hidden_timeout boolean false
+          grub-pc grub-pc/install_devices_disks_changed multiselect
+          grub-pc grub-pc/kopt_extracted boolean false
+          grub-pc grub2/kfreebsd_cmdline string
+          grub-pc grub-pc/chainload_from_menu.lst boolean true
+
+    - name: Set selections with debconf #'
+      shell: debconf-set-selections /root/grub-preseed.txt
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+        DEBCONF_NONINTERACTIVE_SEEN: true
+
+    - name: Reconfigure packages with correct settings
+      shell: dpkg-reconfigure grub-pc
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+        DEBCONF_NONINTERACTIVE_SEEN: true
+
+    - shell: getconf PAGESIZE
+      register: pagesize
+
+    - name: Create a swap device
+      zfs:
+        name: rpool/swap
+        state: present
+        extra_zfs_properties:
+          volsize: 4G
+          volblocksize: "{{ pagesize.stdout }}"
+          compression: zle
+          logbias: throughput
+          sync: always
+          primarycache: metadata
+          secondarycache: none
+          "com.sun:auto-snapshot": false
+
+    - name: Configure the swap device
+      shell: mkswap -f /dev/zvol/rpool/swap
+
+    - lineinfile:
+        path: /etc/fstab
+        line: /dev/zvol/rpool/swap none swap discard 0 0
+
+    - lineinfile:
+        path: /etc/initramfs-tools/conf.d/resume
+        line: RESUME=none
+        create: true
+
+    - name: Enable the swap device
+      shell: swapon -a
+
+    - name: Upgrade the minimal system
+      apt:
+        upgrade: dist
+
+    - name: Disable log compression
+      shell: >
+        for file in /etc/logrotate.d/* ; do
+          if grep -Eq "(^|[^#y])compress" "$file" ; then
+            sed -i -r "s/(^|[^#y])(compress)/\1#\2/" "$file"
+          fi
+        done
+
+    - name: Final reboot
+      reboot:
+
+    - name: Create user home directory zfs datasets
+      zfs:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - rpool/home/ansible
+        - rpool/home/marc
+
+    - name: Create base users
+      user:
+        name: "{{ item.name }}"
+        groups: "{{ item.groups }}"
+        password: "{{ 'changeme' | password_hash('sha512', 'salt') }}"
+        shell: /bin/bash
+      loop:
+        - name: ansible
+          groups: sudo
+        - name: marc
+          groups: sudo
+
+    - name: Copy user skeletons into place
+      copy:
+        src: /etc/skel/.
+        dest: "/home/{{ item }}"
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        remote_src: true
+      loop:
+        - ansible
+        - marc
+
+    - name: Enable passwordless sudo for the sudo group
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: "^%sudo   ALL=(ALL:ALL) ALL$"
+        line: "%sudo   ALL=(ALL:ALL) NOPASSWD: ALL"
+
+    - name: Disable the root password
+      shell: passwd -d root
+
+    - name: Disable root SSH login
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: PermitRootLogin yes
+        line: "#PermitRootLogin prohibit-password"
+
+    - name: Clean up preseed files
+      file:
+        path: "/root/{{ item }}"
+        state: absent
+      loop:
+        - preseed.txt
+        - grub-preseed.txt
+
+    - name: Destroy @install snapshots
+      zfs:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - bpool/boot/debian@install
+        - rpool/root/debian@install
+
+    - name: Create @bootstrap snapshots
+      zfs:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - bpool/boot/debian@bootstrap
+        - rpool/root/debian@bootstrap
+
+    - name: Restart ssh server
+      systemd:
+        name: ssh
+        state: restarted

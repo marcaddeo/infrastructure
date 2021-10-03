@@ -1,0 +1,6 @@
+host_keys/id_rsa.ansible@kindpilates.com.pub
+.vault-id
+roles/
+!roles/.gitkeep
+collections/
+!collections/.gitkeep
