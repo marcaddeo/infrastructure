@@ -1,11 +1,18 @@
 ---
 system_boot_type: bios
-system_hostname: kilothree
+system_hostname: bootstrapped-debian-server
 system_users:
   - name: ansible
     groups: sudo
   - name: marc
     groups: sudo
+iscsi_boot: false
+iscsi_interface_name: eno1
+iscsi_initiator: iqn.iscsi-init-test.addeo.net:test
+iscsi_initiator_ip: 172.1.0.10 # @TODO can we figure this out automatically?
+iscsi_target_name: iqn.iscsi-test.addeo.net:lun1
+iscsi_target_ip: 172.1.0.15
+iscsi_target_port: 3260
 zpool_encrypt_root: false
 zpool_type: mirror
 zpool_disk_identifiers:
