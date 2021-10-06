@@ -1,0 +1,9 @@
+---
+# Bootstrap configuration.
+system_boot_type: bios
+system_hostname: cantilever
+zpool_encrypt_root: false
+zpool_type: mirror
+zpool_disk_identifiers:
+  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
+  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1

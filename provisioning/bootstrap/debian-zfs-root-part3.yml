@@ -1,15 +1,8 @@
 ---
-- hosts: storage-servers
+- hosts: bootstrap
   become: true
-  strategy: debug
   collections:
     - community.general.zfs
-  vars:
-    system_hostname: kilotwo
-    zpool_type: mirror
-    zpool_disk_identifiers:
-      - scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
-      - scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
   tasks:
     - shell: zfs list bpool/boot/debian@bootstrap
       ignore_errors: true
@@ -49,7 +42,7 @@
           grub-pc grub-pc/install_devices_empty boolean false
           grub-pc grub-pc/postrm_purge_boot_grub boolean false
           grub-pc grub-pc/install_devices_failed_upgrade boolean true
-          grub-pc grub-pc/install_devices multiselect {{ (['/dev/disk/by-id/'] | product(zpool_disk_identifiers) | map('join') | list) | join(', ') }}
+          grub-pc grub-pc/install_devices multiselect {{ zpool_disk_identifiers | join(', ') }}
           grub-pc grub2/update_nvram boolean true
           grub-pc grub-pc/timeout string 5
           grub-pc grub2/linux_cmdline string root=ZFS=rpool/root/debian
@@ -61,18 +54,37 @@
           grub-pc grub-pc/kopt_extracted boolean false
           grub-pc grub2/kfreebsd_cmdline string
           grub-pc grub-pc/chainload_from_menu.lst boolean true
+      when: system_boot_type == 'bios'
 
-    - name: Set selections with debconf #'
+    - name: Set selections with debconf
       shell: debconf-set-selections /root/grub-preseed.txt
       environment:
         DEBIAN_FRONTEND: noninteractive
         DEBCONF_NONINTERACTIVE_SEEN: true
+      when: system_boot_type == 'bios'
 
     - name: Reconfigure packages with correct settings
       shell: dpkg-reconfigure grub-pc
       environment:
         DEBIAN_FRONTEND: noninteractive
         DEBCONF_NONINTERACTIVE_SEEN: true
+      when: system_boot_type == 'bios'
+
+    - shell: umount /boot/efi
+      when: system_boot_type == 'uefi'
+
+    - name: Mirror GRUB (UEFI)
+      shell: >
+        dd if={{ zpool_disk_identifiers | first }}-part2 of={{ item }}-part2 &&
+        efibootmgr -c -g -d {{ item }} \
+          -p 2 -L "debian-{{ 2 + index }}" -l '\EFI\debian\grubx64.efi'
+      loop: "{{ zpool_disk_identifiers[1:] }}"
+      loop_control:
+        index_var: index
+      when: system_boot_type == 'uefi'
+
+    - shell: mount /boot/efi
+      when: system_boot_type == 'uefi'
 
     - shell: getconf PAGESIZE
       register: pagesize
@@ -121,13 +133,13 @@
     - name: Final reboot
       reboot:
 
+    # @TODO should we just create the ansible user here?
+    # at least pull this out into a default config
     - name: Create user home directory zfs datasets
       zfs:
-        name: "{{ item }}"
+        name: "rpool/home/{{ item.name }}"
         state: present
-      loop:
-        - rpool/home/ansible
-        - rpool/home/marc
+      loop: "{{ system_users }}"
 
     - name: Create base users
       user:
@@ -135,22 +147,16 @@
         groups: "{{ item.groups }}"
         password: "{{ 'changeme' | password_hash('sha512', 'salt') }}"
         shell: /bin/bash
-      loop:
-        - name: ansible
-          groups: sudo
-        - name: marc
-          groups: sudo
+      loop: "{{ system_users }}"
 
     - name: Copy user skeletons into place
       copy:
         src: /etc/skel/.
-        dest: "/home/{{ item }}"
-        owner: "{{ item }}"
-        group: "{{ item }}"
+        dest: "/home/{{ item.name }}"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
         remote_src: true
-      loop:
-        - ansible
-        - marc
+      loop: "{{ system_users }}"
 
     - name: Enable passwordless sudo for the sudo group
       lineinfile:
@@ -174,6 +180,7 @@
       loop:
         - preseed.txt
         - grub-preseed.txt
+        - fix-filesystem-mounts.sh
 
     - name: Destroy @install snapshots
       zfs:

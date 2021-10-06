@@ -1,0 +1,5 @@
+---
+- hosts: proxmox_servers
+  become: true
+  tasks:
+    - meta: end_play

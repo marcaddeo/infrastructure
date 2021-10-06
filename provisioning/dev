@@ -1,2 +1,16 @@
-[storage-servers]
-10.1.15.55
+[docker_servers]
+violet.addeo.net ansible_host=10.1.15.50
+
+[proxmox_servers]
+crimson.addeo.net ansible_host=10.1.15.5
+
+[storage_servers]
+cantilever.addeo.net ansible_host=10.1.15.65
+
+[servers]
+crimson.addeo.net ansible_host=10.1.15.5
+violet.addeo.net ansible_host=10.1.15.50
+cantilever.addeo.net ansible_host=10.1.15.65
+
+[bootstrap]
+cantilever.addeo.net ansible_host=10.1.15.65

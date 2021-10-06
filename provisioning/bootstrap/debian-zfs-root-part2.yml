@@ -1,5 +1,5 @@
 ---
-- hosts: storage-servers
+- hosts: bootstrap
   strategy: mitogen_linear
   become: true
   collections:
@@ -7,11 +7,6 @@
   vars:
     ansible_python_interpreter: "/usr/local/sbin/chroot_{{ inventory_hostname_short }}"
     ansible_ssh_private_key_file: ~
-    system_hostname: kilotwo
-    zpool_type: mirror
-    zpool_disk_identifiers:
-      - scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
-      - scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
   tasks:
     - shell: zfs list bpool/boot/debian@install
       ignore_errors: true
@@ -131,10 +126,43 @@
         line: REMAKE_INITRD=yes
         create: true
 
-    - name: Install GRUB
+    - name: Install GRUB (BIOS)
       apt:
         name: grub-pc
         state: present
+      when: system_boot_type == 'bios'
+
+    - apt:
+        name: dosfstools
+        state: present
+      when: system_boot_type == 'uefi'
+
+    - shell: "mkdosfs -F 32 -s 1 -n EFI {{ zpool_disk_identifiers | first }}-part2"
+      when: system_boot_type == 'uefi'
+
+    - file:
+        path: /boot/efi
+        state: directory
+      when: system_boot_type == 'uefi'
+
+    - shell: "blkid -s UUID -o value {{ zpool_disk_identifiers | first }}-part2"
+      register: blkid
+      when: system_boot_type == 'uefi'
+
+    - lineinfile:
+        path: /etc/fstab
+        line: "/dev/disk/by-uuid/{{ blkid.stdout }} /boot/efi vfat defaults 0 0"
+      when: system_boot_type == 'uefi'
+
+    - shell: mount /boot/efi
+      when: system_boot_type == 'uefi'
+
+    - name: Install GRUB (UEFI)
+      apt:
+        package:
+          - grub-efi-amd64
+          - shim-signed
+      when: system_boot_type == 'uefi'
 
     - name: Remove os-prober
       apt:
@@ -186,9 +214,14 @@
     - name: Update grub
       shell: update-grub
 
-    - name: Install the boot loader
-      shell: "grub-install /dev/disk/by-id/{{ item }}"
+    - name: Install the boot loader (BIOS)
+      shell: "grub-install {{ item }}"
       loop: "{{ zpool_disk_identifiers }}"
+      when: system_boot_type == 'bios'
+
+    - name: Install the boot loader (UEFI)
+      shell: grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=debian --recheck --no-floppy
+      when: system_boot_type == 'uefi'
 
     - name: Add fix-filesystem-mounts.sh script
       copy:
