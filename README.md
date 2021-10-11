@@ -57,7 +57,18 @@ $ systemctl restart open-scsi
 The servers BIOS will also need to be updated to configure booting from the
 iSCSI target.
 
-@TODO document this with screenshots.
+#### System BIOS Settings > Network Settings
+
+![](images/iscsi-bios1.png)
+
+#### System BIOS Settings > Network Settings > ISCSI Device1 Settings
+
+![](images/iscsi-bios2.png)
+
+#### System BIOS Settings > Network Settings > ISCSI Device1 Settings > Connection 1 Settings
+
+![](images/iscsi-bios3.png)
+![](images/iscsi-bios4.png)
 
 ### Configure the Ansible host
 Create a new entry in the desired environments playbook and place the new host
