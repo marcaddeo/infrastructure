@@ -230,9 +230,6 @@
         dest: /mnt/etc/zfs/
         remote_src: true
 
-    # @TODO properly set hostname with fqdqn
-    # https://unix.stackexchange.com/questions/322883/how-to-correctly-set-hostname-and-domain-name
-
     - name: Set the system hostname
       copy:
         content: "{{ system_hostname }}\n"
@@ -240,8 +237,13 @@
 
     - name: Add a /etc/host entry
       lineinfile:
-        path: /etc/hosts
-        line: "127.0.1.1       {{ system_hostname }}"
+        path: /mnt/etc/hosts
+        line: |
+          {% if system_fqdn != '' -%}
+            {{ ansible_default_ipv4.address }}       {{ system_fqdn }} {{ system_hostname }}
+          {% else -%}
+            127.0.1.1       {{ system_hostname }}
+          {% endif %}
 
     # @TODO make networking configurable when i add the iscsi stuff
     - name: Configure networking

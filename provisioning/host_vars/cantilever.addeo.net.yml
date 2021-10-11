@@ -2,6 +2,7 @@
 # Bootstrap configuration.
 system_boot_type: uefi
 system_hostname: cantilever
+system_fqdn: cantilever.addeo.net
 iscsi_boot: true
 iscsi_interface_name: eno1
 iscsi_initiator: iqn.iscsi-init-test.addeo.net:test

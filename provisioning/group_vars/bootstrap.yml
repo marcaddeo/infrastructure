@@ -1,6 +1,7 @@
 ---
 system_boot_type: bios
 system_hostname: bootstrapped-debian-server
+system_fqdn: ~
 system_users:
   - name: ansible
     groups: sudo
