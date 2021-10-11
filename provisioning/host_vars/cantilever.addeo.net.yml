@@ -1,6 +1,6 @@
 ---
 # Bootstrap configuration.
-system_boot_type: bios
+system_boot_type: uefi
 system_hostname: cantilever
 iscsi_boot: true
 iscsi_interface_name: eno1
@@ -9,7 +9,6 @@ iscsi_initiator_ip: 172.1.0.10
 iscsi_target_name: iqn.iscsi-test.addeo.net:lun1
 iscsi_target_ip: 172.1.0.15
 zpool_encrypt_root: false
-zpool_type: mirror
+zpool_type: single
 zpool_disk_identifiers:
-  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
-  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
+  - /dev/disk/by-path/ip-172.1.0.15:3260-iscsi-iqn.iscsi-test.addeo.net:lun1-lun-1

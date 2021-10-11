@@ -46,12 +46,12 @@ live cd environment to be able to access the target and allow us to determine
 the disk identifiers for the playbook.
 
 ```bash
-$ apt update
-$ apt install open-scsi
-$ systemctl start open-scsi
+$ ip link set eno1 mtu 9000 # Enable jumbo frames on the SAN NIC
+$ apt install --yes open-iscsi
+$ systemctl start open-iscsi
 $ iscsiadm -m discovery -t st -p <target host ip>
 $ sed -i 's/node.startup = manual/node.startup = automatic/g' /etc/iscsi/nodes/<iscsi target id>/<ip info>/default # (tab complete this) e.g iqn.iscsi-test.addeo.net\:lun1/172.1.0.15\,3260\,1/default
-$ systemctl restart open-scsi
+$ systemctl restart open-iscsi
 ```
 
 The servers BIOS will also need to be updated to configure booting from the

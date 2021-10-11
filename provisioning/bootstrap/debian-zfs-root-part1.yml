@@ -42,7 +42,7 @@
 
     - shell: "sgdisk -n2:1M:+512M -t2:EF00 {{ item }}"
       args:
-        creates: "{{ item }}-part1"
+        creates: "{{ item }}-part2"
       loop: "{{ zpool_disk_identifiers }}"
       when: system_boot_type == 'uefi'
 
@@ -80,6 +80,7 @@
         -O acltype=posixacl -O canmount=off -O compression=lz4
         -O devices=off -O normalization=formD -O relatime=on -O xattr=sa
         -O mountpoint=/boot -R /mnt
+        -f
         bpool{{ ' ' ~ zpool_type if zpool_type != 'single' }}
         {{ zpool_disk_identifiers | product(['-part3']) | map('join') | list | join(' ') }}
       when: bpool_status.rc == 1 #'
@@ -115,6 +116,7 @@
         -O acltype=posixacl -O canmount=off -O compression=lz4
         -O dnodesize=auto -O relatime=on
         -O xattr=sa -O mountpoint=/ -R /mnt
+        -f
         rpool{{ ' ' ~ zpool_type if zpool_type != 'single' }}
         {{ zpool_disk_identifiers | product(['-part4']) | map('join') | list | join(' ') }}
       when: rpool_status.rc == 1 #'
@@ -254,6 +256,15 @@
             gateway {{ ansible_default_ipv4.gateway }}
             dns-nameservers {{ ansible_default_ipv4.gateway }}
         dest: "/mnt/etc/network/interfaces.d/{{ ansible_default_ipv4.alias }}"
+
+    - name: Configure networking (iSCSI boot)
+      copy:
+        content: |
+          auto {{ iscsi_interface_name }}
+          iface {{ iscsi_interface_name }}
+            pre-up /usr/sbin/ip link set {{ iscsi_interface_name }} mtu 9000
+        dest: "/mnt/etc/network/interfaces.d/{{ iscsi_interface_name }}"
+      when: iscsi_boot == true
 
     - file:
         path: /mnt/etc/apt/sources.list
