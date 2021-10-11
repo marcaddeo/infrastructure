@@ -2,6 +2,12 @@
 # Bootstrap configuration.
 system_boot_type: bios
 system_hostname: cantilever
+iscsi_boot: true
+iscsi_interface_name: eno1
+iscsi_initiator: iqn.iscsi-init-test.addeo.net:test
+iscsi_initiator_ip: 172.1.0.10
+iscsi_target_name: iqn.iscsi-test.addeo.net:lun1
+iscsi_target_ip: 172.1.0.15
 zpool_encrypt_root: false
 zpool_type: mirror
 zpool_disk_identifiers:

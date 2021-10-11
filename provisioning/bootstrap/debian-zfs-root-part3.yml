@@ -81,7 +81,7 @@
       loop: "{{ zpool_disk_identifiers[1:] }}"
       loop_control:
         index_var: index
-      when: system_boot_type == 'uefi'
+      when: system_boot_type == 'uefi' and (zpool_disk_identifiers | length > 1)
 
     - shell: mount /boot/efi
       when: system_boot_type == 'uefi'

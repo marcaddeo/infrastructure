@@ -202,6 +202,11 @@
         name: zfs-import-bpool.service
         enabled: true
 
+    - apt:
+        package: open-scsi
+        state: present
+      when: iscsi_boot == true
+
     - name: Refresh initrd files
       shell: update-initramfs -c -k all
 
@@ -210,9 +215,38 @@
         dest: /etc/default/grub
         regexp: ^GRUB_CMDLINE_LINUX=""$
         line: GRUB_CMDLINE_LINUX="root=ZFS=rpool/root/debian"
+      when: iscsi_boot == false
+
+    - name: Workaround GRUB's missing zpool-features support and boot from iSCSI target
+      lineinfile:
+        dest: /etc/default/grub
+        regexp: ^GRUB_CMDLINE_LINUX=""$
+        line: >-
+          GRUB_CMDLINE_LINUX="
+          iscsi_initiator={{ iscsi_initiator }}
+          iscsi_target_name={{ iscsi_target_name }}
+          iscsi_target_ip={{ iscsi_target_ip }}
+          iscsi_target_port={{ iscsi_target_port }}
+          root=ZFS=rpool/root/debian
+          ip={{ iscsi_initiator_ip }}:{{ iscsi_target_ip }}:255.255.255.0:{{ systyem_hostname }}:{{ iscsi_interface_name }}:off"
+      when: iscsi_boot == true
+
+    - file: /etc/iscsi/iscsi.initramfs
+      state: touch
+      when: iscsi_boot == true
+
+    - lineinfile:
+        dest: /etc/iscsi/initiatorname.iscsi
+        line: "InitiatorName={{ iscsi_initiator }}"
+        create: true
+      when: iscsi_boot == true
 
     - name: Update grub
       shell: update-grub
+
+    - name: Refresh initrd files again
+      shell: update-initramfs -c -k all
+      when: iscsi_boot == true
 
     - name: Install the boot loader (BIOS)
       shell: "grub-install {{ item }}"
