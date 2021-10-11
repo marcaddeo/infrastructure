@@ -261,7 +261,7 @@
       copy:
         content: |
           auto {{ iscsi_interface_name }}
-          iface {{ iscsi_interface_name }}
+          iface {{ iscsi_interface_name }} inet manual
             pre-up /usr/sbin/ip link set {{ iscsi_interface_name }} mtu 9000
         dest: "/mnt/etc/network/interfaces.d/{{ iscsi_interface_name }}"
       when: iscsi_boot == true
