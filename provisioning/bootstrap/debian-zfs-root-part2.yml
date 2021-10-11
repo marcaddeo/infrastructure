@@ -231,8 +231,9 @@
           ip={{ iscsi_initiator_ip }}:{{ iscsi_target_ip }}:255.255.255.0:{{ systyem_hostname }}:{{ iscsi_interface_name }}:off"
       when: iscsi_boot == true
 
-    - file: /etc/iscsi/iscsi.initramfs
-      state: touch
+    - file:
+        path: /etc/iscsi/iscsi.initramfs
+        state: touch
       when: iscsi_boot == true
 
     - lineinfile:
