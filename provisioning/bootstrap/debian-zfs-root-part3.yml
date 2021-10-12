@@ -133,8 +133,6 @@
     - name: Final reboot
       reboot:
 
-    # @TODO should we just create the ansible user here?
-    # at least pull this out into a default config
     - name: Create user home directory zfs datasets
       zfs:
         name: "rpool/home/{{ item.name }}"

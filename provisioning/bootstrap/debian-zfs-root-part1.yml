@@ -245,7 +245,6 @@
             127.0.1.1       {{ system_hostname }}
           {% endif %}
 
-    # @TODO make networking configurable when i add the iscsi stuff
     - name: Configure networking
       copy:
         content: |
