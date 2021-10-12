@@ -167,6 +167,9 @@
     - name: Disable the root password
       shell: passwd -d root
 
+    - name: Disable the root account
+      shell: passwd -l root
+
     - name: Disable root SSH login
       lineinfile:
         dest: /etc/ssh/sshd_config
