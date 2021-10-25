@@ -203,3 +203,26 @@
       systemd:
         name: ssh
         state: restarted
+
+    - set_fact:
+        inventory_line: "{{ lookup('file', inventory_file) | regex_findall('^' ~ inventory_hostname ~ '.*$', multiline=True) | first }}"
+
+    - name: Ensure the host is removed from the bootstrap section of the inventory file
+      local_action:
+        module: ini_file
+        path: "{{ inventory_file }}"
+        allow_no_value: true
+        section: bootstrap
+        option: "{{ inventory_line }}"
+        state: absent
+      become: false
+
+    - name: Ensure the host is added to the servers section of the inventory file
+      local_action:
+        module: ini_file
+        path: "{{ inventory_file }}"
+        allow_no_value: true
+        section: servers
+        option: "{{ inventory_line }}"
+        state: present
+      become: false
