@@ -1,5 +1,7 @@
 ---
 - hosts: servers
   become: true
+  roles:
+    - geerlingguy.ntp
   tasks:
     - meta: end_play
