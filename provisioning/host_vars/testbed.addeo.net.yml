@@ -4,3 +4,8 @@ system_hostname: testbed
 
 # DELL OMSA configuration.
 install_dell_omsa: true
+
+# Plymouth configuration.
+install_plymouth: true
+plymouth_grub_gfxmode: 1024x768
+plymouth_theme: brogit-plymouth-theme

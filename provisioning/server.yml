@@ -4,3 +4,4 @@
   roles:
     - geerlingguy.ntp
     - dell-omsa
+    - plymouth

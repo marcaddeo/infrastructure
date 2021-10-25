@@ -1,0 +1,9 @@
+---
+# Wether or not to install Plymouth.
+install_plymouth: false
+
+# GRUB GFX resolution.
+plymouth_grub_gfxmode: 640x480
+
+# Default Plymouth theme.
+plymouth_theme: bgrt

@@ -1,0 +1,50 @@
+---
+- name: Set GRUB resolution
+  lineinfile:
+    path: /etc/default/grub
+    regexp: "^#?GRUB_GFXMODE=640x480$"
+    line: "GRUB_GFXMODE={{ plymouth_grub_gfxmode }}"
+  notify: update grub
+
+- name: Check if splash is configured in GRUB_CMDLINE_LINUX
+  lineinfile:
+    backup: true
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=".*splash'
+    state: absent
+  check_mode: true
+  register: grub_cmdline_check
+  changed_when: false
+
+- name: Insert splash in GRUB_CMDLINE_LINUX_DEFAULT
+  lineinfile:
+    backrefs: true
+    path: /etc/default/grub
+    regexp: "^(GRUB_CMDLINE_LINUX_DEFAULT=\".*)\"$"
+    line: '\1 splash"'
+  when: grub_cmdline_check.found == 0
+  notify: update grub
+
+- name: Install Plymouth packages
+  apt:
+    package:
+      - plymouth
+      - plymouth-themes
+    state: present
+
+- name: Download Brogit Plymouth theme
+  unarchive:
+    src: https://github.com/R0b1ns/brogit-plymouth-theme/archive/refs/heads/master.tar.gz
+    dest: /usr/share/plymouth/themes/
+    remote_src: true
+    extra_opts:
+      - --transform
+      - s/brogit-plymouth-theme-master/brogit-plymouth-theme/
+
+- name: Get current Plymouth theme
+  shell: plymouth-set-default-theme
+  register: current_theme
+
+- name: Set Plymouth theme
+  shell: "plymouth-set-default-theme -R {{ plymouth_theme }}"
+  when: current_theme.stdout != plymouth_theme
