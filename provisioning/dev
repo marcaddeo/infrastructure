@@ -11,6 +11,6 @@ cantilever.addeo.net ansible_host=10.1.15.70
 crimson.addeo.net ansible_host=10.1.15.5
 violet.addeo.net ansible_host=10.1.15.50
 cantilever.addeo.net ansible_host=10.1.15.70
+testbed.addeo.net ansible_host=10.1.15.65
 
 [bootstrap]
-cantilever.addeo.net ansible_host=10.1.15.70
