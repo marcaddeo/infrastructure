@@ -143,7 +143,7 @@
       user:
         name: "{{ item.name }}"
         groups: "{{ item.groups }}"
-        password: "{{ 'changeme' | password_hash('sha512', 'salt') }}"
+        password: "{{ (item.password | default(system_users_default_password)) | password_hash('sha512', 'salt') }}"
         shell: /bin/bash
       loop: "{{ system_users }}"
 

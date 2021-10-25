@@ -7,6 +7,7 @@ system_users:
     groups: sudo
   - name: marc
     groups: sudo
+system_users_default_password: changeme
 iscsi_boot: false
 iscsi_interface_name: eno1
 iscsi_initiator: iqn.iscsi-init-test.addeo.net:test
