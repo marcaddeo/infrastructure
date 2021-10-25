@@ -156,6 +156,14 @@
         remote_src: true
       loop: "{{ system_users }}"
 
+    - name: Add authorized ssh keys for base users
+      authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ lookup('file', item.ssh_public_key_file) }}"
+        state: present
+      loop: "{{ system_users }}"
+      when: item.ssh_public_key_file is defined
+
     - name: Enable passwordless sudo for the sudo group
       lineinfile:
         dest: /etc/sudoers
