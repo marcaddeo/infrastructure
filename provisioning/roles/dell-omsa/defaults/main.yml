@@ -1,0 +1,3 @@
+---
+# Wether or not to install DELL OMSA.
+install_dell_omsa: false

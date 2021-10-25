@@ -3,5 +3,4 @@
   become: true
   roles:
     - geerlingguy.ntp
-  tasks:
-    - meta: end_play
+    - dell-omsa

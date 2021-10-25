@@ -1,0 +1,51 @@
+---
+- meta: end_play
+  when: not install_dell_omsa
+
+- name: Import Dell key
+  apt_key:
+    keyserver: pgp.mit.edu
+    id: 1285491434D8786F
+
+- name: Add the Dell repo
+  apt_repository:
+    repo: deb http://linux.dell.com/repo/community/openmanage/930/bionic bionic main
+    state: present
+
+- name: Install required packages
+  apt:
+    deb: "{{ item }}"
+  loop:
+    - http://archive.ubuntu.com/ubuntu/pool/universe/o/openwsman/libwsman-curl-client-transport1_2.6.5-0ubuntu3_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/universe/o/openwsman/libwsman-client4_2.6.5-0ubuntu3_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/universe/o/openwsman/libwsman1_2.6.5-0ubuntu3_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/universe/o/openwsman/libwsman-server1_2.6.5-0ubuntu3_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/universe/s/sblim-sfcc/libcimcclient0_2.2.8-0ubuntu2_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/universe/o/openwsman/openwsman_2.6.5-0ubuntu3_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/multiverse/c/cim-schema/cim-schema_2.48.0-0ubuntu1_all.deb
+    - http://archive.ubuntu.com/ubuntu/pool/universe/s/sblim-sfc-common/libsfcutil0_1.0.1-0ubuntu4_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/multiverse/s/sblim-sfcb/sfcb_1.4.9-0ubuntu5_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/universe/s/sblim-cmpi-devel/libcmpicppimpl0_2.0.3-0ubuntu2_amd64.deb
+
+- name: Install srvadmin-all
+  apt:
+    update_cache: true
+    package: srvadmin-all
+    state: present
+
+- name: Ignore server generation
+  file:
+    path: /opt/dell/srvadmin/lib64/openmanage/IGNORE_GENERATION
+    state: touch
+
+- name: Enable and start services
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - instsvcdrv
+    - dsm_sa_datamgrd
+    - dsm_sa_eventmgrd
+    - dsm_sa_snmpd
+    - dsm_om_connsvc
