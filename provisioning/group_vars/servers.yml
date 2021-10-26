@@ -6,3 +6,9 @@ sftp_enabled: true
 firewall_allowed_tcp_ports:
   - 22
   - 25
+
+# NTP Configuration.
+ntp_timezone: America/New_York
+ntp_package: chrony
+ntp_daemon: chronyd
+ntp_config_file: /etc/chrony.conf
