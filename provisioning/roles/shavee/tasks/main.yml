@@ -1,0 +1,50 @@
+---
+- meta: end_play
+  when: not install_shavee
+
+- name: Download Shavee
+  unarchive:
+    src: "https://github.com/ashuio/shavee/archive/{{ shavee_git_ref }}.tar.gz"
+    dest: /usr/local/src/
+    remote_src: true
+    extra_opts:
+      - --transform
+      - "s/shavee-{{ shavee_git_ref }}/shavee/"
+
+- name: Install required packages
+  apt:
+    package:
+      - pkg-config
+      - libssl-dev
+      - libpam0g-dev
+    state: present
+
+- name: Build Shavee
+  shell: ~/.cargo/bin/cargo build --release
+  args:
+    chdir: /usr/local/src/shavee
+    creates: /usr/local/src/shavee/target/release/shavee
+
+- name: Install Shavee binary
+  copy:
+    src: /usr/local/src/shavee/target/release/shavee
+    dest: /usr/local/sbin/shavee
+    remote_src: true
+
+- name: Install Shavee PAM module
+  copy:
+    src: /usr/local/src/shavee/target/release/libshavee_pam.so
+    dest: /usr/local/lib/security
+    remote_src: true
+
+- name: Install Shavee systemd unit
+  template:
+    src: zfs-shavee-unlock@.service.j2
+    dest: /etc/systemd/system/zfs-shavee-unlock@.service
+
+- name: Enable Shavee ZFS dataset unlock units
+  systemd:
+    name: "zfs-shavee-unlock@{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ shavee_encrypted_datasets }}"

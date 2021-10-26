@@ -3,5 +3,6 @@
 !/roles/.gitkeep
 !/roles/dell-omsa
 !/roles/plymouth
+!/roles/shavee
 /collections/*
 !/collections/.gitkeep

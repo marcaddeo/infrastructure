@@ -14,3 +14,6 @@ install_dell_omsa: true
 install_plymouth: true
 plymouth_grub_gfxmode: 1024x768
 plymouth_theme: brogit-plymouth-theme
+
+# Shavee configuration.
+install_shavee: true

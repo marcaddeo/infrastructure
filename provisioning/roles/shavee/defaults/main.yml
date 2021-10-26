@@ -1,0 +1,12 @@
+---
+# Whether or not to install Shavee.
+install_shavee: false
+
+# The Shavee git reference to download and install.
+shavee_git_ref: 5fe5b635ce6ee7ad85123b2ea545254aed2509c7
+
+# ZFS dataset names to be decrypted at boot time via systemd/shavee.
+#
+# Dataset names should have /'s replaced with -'s for compatability with
+# systemd. e.g. spool/data -> spool-data
+shavee_encrypted_datasets: []

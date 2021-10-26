@@ -1,0 +1,4 @@
+---
+# Rustup Configuration.
+rustup_user: "{{ ansible_user }}"
+rustup_cargo_crates: []

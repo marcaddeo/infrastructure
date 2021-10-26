@@ -1,5 +1,5 @@
 ---
 - hosts: storage_servers
   become: true
-  tasks:
-    - meta: end_play
+  roles:
+    - shavee

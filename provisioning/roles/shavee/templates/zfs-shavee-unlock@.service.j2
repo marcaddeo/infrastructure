@@ -1,0 +1,16 @@
+[Unit]
+Description=Unlock ZFS Dataset %I with Shavee
+DefaultDependencies=no
+Before=systemd-user-sessions.service
+Before=zfs-mount.service
+After=zfs-import.target
+After=systemd-vconsole-setup.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'set -eu;keystatus="$$(/sbin/zfs get -H -o value keystatus "%I")";[ "$$keystatus" = "unavailable" ] || exit 0;count=0;while [ $$count -lt 3 ];do  systemd-ask-password --id="zfs:%I"    "Enter passphrase for %I"|    shavee -y -s 1 -z "%I" && exit 0;  count=$$((count + 1));done;exit 1'
+ExecStop=/bin/sh -c 'set -eu;keystatus="$$(/sbin/zfs get -H -o value keystatus "%I")";[ "$$keystatus" = "available" ] || exit 0;/sbin/zfs unload-key "%I"'
+
+[Install]
+WantedBy=zfs-mount.service
