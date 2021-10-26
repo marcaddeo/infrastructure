@@ -1,6 +1,11 @@
 ---
 # Bootstrap configuration.
 system_hostname: testbed
+system_users:
+  - name: ansible
+    password: changeme # @TODO encrypt
+    groups: sudo
+    ssh_public_key_file: "{{ ansible_ssh_private_key_file }}.pub"
 
 # DELL OMSA configuration.
 install_dell_omsa: true

@@ -6,8 +6,6 @@ system_users:
   - name: ansible
     groups: sudo
     ssh_public_key_file: "{{ ansible_ssh_private_key_file }}.pub"
-  - name: marc
-    groups: sudo
 system_users_default_password: changeme
 iscsi_boot: false
 iscsi_interface_name: eno1
