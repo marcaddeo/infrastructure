@@ -1,4 +1,5 @@
 ---
+# Server Configuration.
 server_users:
   - name: ansible
     password: changeme # @TODO encrypt
@@ -6,6 +7,8 @@ server_users:
     ssh_public_key_file: "{{ ansible_ssh_private_key_file }}.pub"
 
 # Bootstrap Configuration.
+bootstrap_hostname: "{{ server_hostname }}"
+bootstrap_fqdn: "{{ server_fqdn | default(omit) }}"
 bootstrap_users: "{{ server_users }}"
 
 # Plymouth Configuration.

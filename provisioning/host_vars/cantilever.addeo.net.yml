@@ -1,8 +1,10 @@
 ---
+# Server Configuration.
+server_hostname: cantilever
+server_fqdn: cantilever.addeo.net
+
 # Bootstrap Configuration.
 bootstrap_boot_type: uefi
-bootstrap_hostname: cantilever
-bootstrap_fqdn: cantilever.addeo.net
 bootstrap_iscsi_boot: true
 bootstrap_iscsi_interface_name: eno1
 bootstrap_iscsi_initiator: iqn.iscsi-init-test.addeo.net:test

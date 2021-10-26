@@ -1,6 +1,12 @@
 ---
+# Server Configuration.
+server_hostname: testbed
+
 # Bootstrap Configuration.
-bootstrap_hostname: testbed
+bootstrap_zpool_type: mirror
+bootstrap_zpool_disk_identifiers:
+  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
+  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
 
 # DELL OMSA Configuration.
 install_dell_omsa: true

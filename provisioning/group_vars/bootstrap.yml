@@ -5,17 +5,14 @@ bootstrap_fqdn: ~
 bootstrap_users:
   - name: ansible
     groups: sudo
-    ssh_public_key_file: "{{ ansible_ssh_private_key_file }}.pub"
 bootstrap_users_default_password: changeme
 bootstrap_iscsi_boot: false
-bootstrap_iscsi_interface_name: eno1
-bootstrap_iscsi_initiator: iqn.iscsi-init-test.addeo.net:test
-bootstrap_iscsi_initiator_ip: 172.1.0.10 # @TODO can we figure this out automatically?
-bootstrap_iscsi_target_name: iqn.iscsi-test.addeo.net:lun1
-bootstrap_iscsi_target_ip: 172.1.0.15
+bootstrap_iscsi_interface_name: ~
+bootstrap_iscsi_initiator: ~
+bootstrap_iscsi_initiator_ip: ~
+bootstrap_iscsi_target_name: ~
+bootstrap_iscsi_target_ip: ~
 bootstrap_iscsi_target_port: 3260
 bootstrap_zpool_encrypt_root: false
-bootstrap_zpool_type: mirror
-bootstrap_zpool_disk_identifiers:
-  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
-  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
+bootstrap_zpool_type: single
+bootstrap_zpool_disk_identifiers: []
