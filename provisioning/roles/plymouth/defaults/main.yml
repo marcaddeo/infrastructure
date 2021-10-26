@@ -1,5 +1,5 @@
 ---
-# Wether or not to install Plymouth.
+# Whether or not to install Plymouth.
 install_plymouth: false
 
 # GRUB GFX resolution.
