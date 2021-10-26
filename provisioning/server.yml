@@ -25,3 +25,41 @@
           # Clean up old snapshots, keeping the 3 most recent.
           zfs list -t snapshot -o name -S creation | grep ^rpool/root/debian@unattended | tail -n +4 | xargs -r -n 1 zfs destroy -vr
           zfs list -t snapshot -o name -S creation | grep ^bpool/boot/debian@unattended | tail -n +4 | xargs -r -n 1 zfs destroy -vr
+
+    - name: Ensure user home directory zfs datasets exist
+      zfs:
+        name: "rpool/home/{{ item.name }}"
+        state: present
+      loop: "{{ server_users }}"
+
+    - name: Ensure users exist
+      user:
+        name: "{{ item.name }}"
+        groups: "{{ item.groups }}"
+        password: "{{ item.password | password_hash('sha512', 'salt') }}"
+        shell: /bin/bash
+      loop: "{{ server_users }}"
+
+    - name: Ensure user home directories have been skeletonized
+      copy:
+        src: /etc/skel/.
+        dest: "/home/{{ item.name }}"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        remote_src: true
+        force: false
+      loop: "{{ server_users }}"
+
+    - name: Eensure users ssh keys have been added to authorized_keys
+      authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ lookup('file', item.ssh_public_key_file) }}"
+        state: present
+      loop: "{{ server_users }}"
+      when: item.ssh_public_key_file is defined
+
+    - name: Ensure the sudo group allows passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: "^%sudo   ALL=(ALL:ALL) ALL$"
+        line: "%sudo   ALL=(ALL:ALL) NOPASSWD: ALL"
