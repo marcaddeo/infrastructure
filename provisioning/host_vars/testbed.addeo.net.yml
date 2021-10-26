@@ -1,6 +1,7 @@
 ---
 # Server Configuration.
 server_hostname: testbed
+server_fqdn: testbed.addeo.net
 
 # Bootstrap Configuration.
 bootstrap_zpool_type: mirror

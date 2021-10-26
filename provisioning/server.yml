@@ -31,6 +31,7 @@
         name: "rpool/home/{{ item.name }}"
         state: present
       loop: "{{ server_users }}"
+      no_log: true
 
     - name: Ensure users exist
       user:
@@ -39,6 +40,7 @@
         password: "{{ item.password | password_hash('sha512', 'salt') }}"
         shell: /bin/bash
       loop: "{{ server_users }}"
+      no_log: true
 
     - name: Ensure user home directories have been skeletonized
       copy:
@@ -49,17 +51,41 @@
         remote_src: true
         force: false
       loop: "{{ server_users }}"
+      no_log: true
 
-    - name: Eensure users ssh keys have been added to authorized_keys
+    - name: Ensure users ssh keys have been added to authorized_keys
       authorized_key:
         user: "{{ item.name }}"
         key: "{{ lookup('file', item.ssh_public_key_file) }}"
         state: present
       loop: "{{ server_users }}"
       when: item.ssh_public_key_file is defined
+      no_log: true
 
     - name: Ensure the sudo group allows passwordless sudo
       lineinfile:
         dest: /etc/sudoers
         regexp: "^%sudo   ALL=(ALL:ALL) ALL$"
         line: "%sudo   ALL=(ALL:ALL) NOPASSWD: ALL"
+
+    - name: Ensure the server hostname is set
+      lineinfile:
+        path: /etc/hostname
+        regexp: "{{ server_hostname }}\n"
+        line: "{{ server_hostname }}\n"
+
+    - name: Ensure the servers hostname/fqdn are in /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        regexp: |
+          {% if server_fqdn != '' -%}
+            {{ ansible_default_ipv4.address }}       {{ server_fqdn }} {{ server_hostname }}
+          {% else -%}
+            127.0.1.1       {{ server_hostname }}
+          {% endif %}
+        line: |
+          {% if server_fqdn != '' -%}
+            {{ ansible_default_ipv4.address }}       {{ server_fqdn }} {{ server_hostname }}
+          {% else -%}
+            127.0.1.1       {{ server_hostname }}
+          {% endif %}
