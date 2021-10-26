@@ -1,5 +1,5 @@
 ---
-# Bootstrap configuration.
+# Bootstrap Configuration.
 system_boot_type: uefi
 system_hostname: cantilever
 system_fqdn: cantilever.addeo.net
