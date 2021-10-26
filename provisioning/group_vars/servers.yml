@@ -1,0 +1,8 @@
+---
+# SSH Hardening Configuration.
+sftp_enabled: true
+
+# Firewall Configuration.
+firewall_allowed_tcp_ports:
+  - 22
+  - 25

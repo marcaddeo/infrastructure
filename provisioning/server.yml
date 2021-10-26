@@ -1,7 +1,13 @@
 ---
 - hosts: servers
   become: true
+  collections:
+    - devsec.hardening
   roles:
-    - geerlingguy.ntp
+    - os_hardening
+    - ssh_hardening
+    - oefenweb.fail2ban
     - dell-omsa
     - plymouth
+    - geerlingguy.firewall
+    - geerlingguy.ntp

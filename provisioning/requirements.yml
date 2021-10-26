@@ -4,8 +4,18 @@ collections:
     version: 3.7.0
     source: https://galaxy.ansible.com
 
+  - name: devsec.hardening
+    version: 7.12.0
+    source: https://galaxy.ansible.com
+
 roles:
   - name: geerlingguy.ntp
     version: 2.3.0
 
   - name: hurricanehrndz.rustup
+
+  - name: geerlingguy.firewall
+    version: 2.5.0
+
+  - name: oefenweb.fail2ban
+    version: v3.4.1
