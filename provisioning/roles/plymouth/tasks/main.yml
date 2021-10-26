@@ -1,4 +1,7 @@
 ---
+- meta: end_play
+  when: not install_plymouth
+
 - name: Set GRUB resolution
   lineinfile:
     path: /etc/default/grub
