@@ -1,19 +1,9 @@
 ---
 # Bootstrap Configuration.
 system_hostname: testbed
-system_users:
-  - name: ansible
-    password: changeme # @TODO encrypt
-    groups: sudo
-    ssh_public_key_file: "{{ ansible_ssh_private_key_file }}.pub"
 
 # DELL OMSA Configuration.
 install_dell_omsa: true
-
-# Plymouth Configuration.
-install_plymouth: true
-plymouth_grub_gfxmode: 1024x768
-plymouth_theme: brogit-plymouth-theme
 
 # Shavee Configuration.
 install_shavee: true
