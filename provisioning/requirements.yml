@@ -19,3 +19,6 @@ roles:
 
   - name: oefenweb.fail2ban
     version: v3.4.1
+
+  - name: oefenweb.postfix
+    version: v3.5.1
