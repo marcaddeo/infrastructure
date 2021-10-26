@@ -12,3 +12,16 @@
     - geerlingguy.firewall
     - geerlingguy.ntp
     - oefenweb.postfix
+    - jnv.unattended-upgrades
+  tasks:
+    - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
+      blockinfile:
+        path: /usr/lib/apt/apt.systemd.daily
+        insertbefore: '# auto upgrade all upgradeable packages'
+        block: |
+          # Take snapshots before running unattended upgrades.
+          zfs snapshot rpool/root/debian@unattended-$(date +%s)
+          zfs snapshot bpool/boot/debian@unattended-$(date +%s)
+          # Clean up old snapshots, keeping the 3 most recent.
+          zfs list -t snapshot -o name -S creation | grep ^rpool/root/debian@unattended | tail -n +4 | xargs -r -n 1 zfs destroy -vr
+          zfs list -t snapshot -o name -S creation | grep ^bpool/boot/debian@unattended | tail -n +4 | xargs -r -n 1 zfs destroy -vr
