@@ -37,24 +37,24 @@
     - shell: "sgdisk -a1 -n1:24K:+1000K -t1:EF02 {{ item }}"
       args:
         creates: "{{ item }}-part1"
-      loop: "{{ zpool_disk_identifiers }}"
-      when: system_boot_type == 'bios'
+      loop: "{{ bootstrap_zpool_disk_identifiers }}"
+      when: bootstrap_boot_type == 'bios'
 
     - shell: "sgdisk -n2:1M:+512M -t2:EF00 {{ item }}"
       args:
         creates: "{{ item }}-part2"
-      loop: "{{ zpool_disk_identifiers }}"
-      when: system_boot_type == 'uefi'
+      loop: "{{ bootstrap_zpool_disk_identifiers }}"
+      when: bootstrap_boot_type == 'uefi'
 
     - shell: "sgdisk -n3:0:+1G -t3:BF01 {{ item }}"
       args:
         creates: "{{ item }}-part3"
-      loop: "{{ zpool_disk_identifiers }}"
+      loop: "{{ bootstrap_zpool_disk_identifiers }}"
 
     - shell: "sgdisk -n4:0:0 -t4:BF00 {{ item }}"
       args:
         creates: "{{ item }}-part4"
-      loop: "{{ zpool_disk_identifiers }}"
+      loop: "{{ bootstrap_zpool_disk_identifiers }}"
 
     - shell: zpool status bpool
       ignore_errors: true
@@ -81,8 +81,8 @@
         -O devices=off -O normalization=formD -O relatime=on -O xattr=sa
         -O mountpoint=/boot -R /mnt
         -f
-        bpool{{ ' ' ~ zpool_type if zpool_type != 'single' }}
-        {{ zpool_disk_identifiers | product(['-part3']) | map('join') | list | join(' ') }}
+        bpool{{ ' ' ~ bootstrap_zpool_type if bootstrap_zpool_type != 'single' }}
+        {{ bootstrap_zpool_disk_identifiers | product(['-part3']) | map('join') | list | join(' ') }}
       when: bpool_status.rc == 1 #'
 
     - shell: zpool status rpool
@@ -93,23 +93,23 @@
         prompt: Enter passphrase to encrypt rpool with
         echo: no
       register: rpool_passphrase
-      when: zpool_encrypt_root and rpool_status.rc == 1
+      when: bootstrap_zpool_encrypt_root and rpool_status.rc == 1
 
     - pause:
         prompt: Confirm passphrase
         echo: no
       register: rpool_passphrase_confirm
-      when: zpool_encrypt_root and rpool_status.rc == 1
+      when: bootstrap_zpool_encrypt_root and rpool_status.rc == 1
 
     - fail:
         msg: Passphrases do not match!
-      when: zpool_encrypt_root and rpool_status.rc == 1 and (rpool_passphrase.user_input != rpool_passphrase_confirm.user_input)
+      when: bootstrap_zpool_encrypt_root and rpool_status.rc == 1 and (rpool_passphrase.user_input != rpool_passphrase_confirm.user_input)
 
     - name: Create the root pool
       shell: >-
-        {% if zpool_encrypt_root %}echo "{{ rpool_passphrase.user_input }}" | {% endif %}zpool create
+        {% if bootstrap_zpool_encrypt_root %}echo "{{ rpool_passphrase.user_input }}" | {% endif %}zpool create
         -o ashift=12
-        {% if zpool_encrypt_root %}
+        {% if bootstrap_zpool_encrypt_root %}
         -O encryption=aes-256-gcm
         -O keylocation=prompt -O keyformat=passphrase
         {% endif %}
@@ -117,8 +117,8 @@
         -O dnodesize=auto -O relatime=on
         -O xattr=sa -O mountpoint=/ -R /mnt
         -f
-        rpool{{ ' ' ~ zpool_type if zpool_type != 'single' }}
-        {{ zpool_disk_identifiers | product(['-part4']) | map('join') | list | join(' ') }}
+        rpool{{ ' ' ~ bootstrap_zpool_type if bootstrap_zpool_type != 'single' }}
+        {{ bootstrap_zpool_disk_identifiers | product(['-part4']) | map('join') | list | join(' ') }}
       when: rpool_status.rc == 1 #'
 
     - name: Create ZFS container datasets
@@ -232,17 +232,17 @@
 
     - name: Set the system hostname
       copy:
-        content: "{{ system_hostname }}\n"
+        content: "{{ bootstrap_hostname }}\n"
         dest: /mnt/etc/hostname
 
     - name: Add a /etc/host entry
       lineinfile:
         path: /mnt/etc/hosts
         line: |
-          {% if system_fqdn != '' -%}
-            {{ ansible_default_ipv4.address }}       {{ system_fqdn }} {{ system_hostname }}
+          {% if bootstrap_fqdn != '' -%}
+            {{ ansible_default_ipv4.address }}       {{ bootstrap_fqdn }} {{ bootstrap_hostname }}
           {% else -%}
-            127.0.1.1       {{ system_hostname }}
+            127.0.1.1       {{ bootstrap_hostname }}
           {% endif %}
 
     - name: Configure networking
@@ -261,12 +261,12 @@
     - name: Configure networking (iSCSI boot)
       copy:
         content: |
-          auto {{ iscsi_interface_name }}
-          no-auto-down {{ iscsi_interface_name }}
-          iface {{ iscsi_interface_name }} inet manual
-            pre-up /usr/sbin/ip link set {{ iscsi_interface_name }} mtu 9000
-        dest: "/mnt/etc/network/interfaces.d/{{ iscsi_interface_name }}"
-      when: iscsi_boot == true
+          auto {{ bootstrap_iscsi_interface_name }}
+          no-auto-down {{ bootstrap_iscsi_interface_name }}
+          iface {{ bootstrap_iscsi_interface_name }} inet manual
+            pre-up /usr/sbin/ip link set {{ bootstrap_iscsi_interface_name }} mtu 9000
+        dest: "/mnt/etc/network/interfaces.d/{{ bootstrap_iscsi_interface_name }}"
+      when: bootstrap_iscsi_boot == true
 
     - file:
         path: /mnt/etc/apt/sources.list

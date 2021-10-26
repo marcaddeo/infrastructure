@@ -1,10 +1,12 @@
 ---
-# Bootstrap Configuration.
-system_users:
+server_users:
   - name: ansible
     password: changeme # @TODO encrypt
     groups: sudo
     ssh_public_key_file: "{{ ansible_ssh_private_key_file }}.pub"
+
+# Bootstrap Configuration.
+bootstrap_users: "{{ server_users }}"
 
 # Plymouth Configuration.
 install_plymouth: true

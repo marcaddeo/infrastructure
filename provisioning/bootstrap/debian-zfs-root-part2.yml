@@ -130,41 +130,41 @@
       apt:
         name: grub-pc
         state: present
-      when: system_boot_type == 'bios'
+      when: bootstrap_boot_type == 'bios'
 
     - apt:
         name: dosfstools
         state: present
-      when: system_boot_type == 'uefi'
+      when: bootstrap_boot_type == 'uefi'
 
     # @TODO this isn't idempotent and causes a failure
-    - shell: "mkdosfs -F 32 -s 1 -n EFI {{ zpool_disk_identifiers | first }}-part2"
-      when: system_boot_type == 'uefi'
+    - shell: "mkdosfs -F 32 -s 1 -n EFI {{ bootstrap_zpool_disk_identifiers | first }}-part2"
+      when: bootstrap_boot_type == 'uefi'
 
     - file:
         path: /boot/efi
         state: directory
-      when: system_boot_type == 'uefi'
+      when: bootstrap_boot_type == 'uefi'
 
-    - shell: "blkid -s UUID -o value {{ zpool_disk_identifiers | first }}-part2"
+    - shell: "blkid -s UUID -o value {{ bootstrap_zpool_disk_identifiers | first }}-part2"
       register: blkid
-      when: system_boot_type == 'uefi'
+      when: bootstrap_boot_type == 'uefi'
 
     - lineinfile:
         path: /etc/fstab
         line: "/dev/disk/by-uuid/{{ blkid.stdout }} /boot/efi vfat defaults 0 0"
-      when: system_boot_type == 'uefi'
+      when: bootstrap_boot_type == 'uefi'
 
     # @TODO this isn't idempotent and causes a failure
     - shell: mount /boot/efi
-      when: system_boot_type == 'uefi'
+      when: bootstrap_boot_type == 'uefi'
 
     - name: Install GRUB (UEFI)
       apt:
         package:
           - grub-efi-amd64
           - shim-signed
-      when: system_boot_type == 'uefi'
+      when: bootstrap_boot_type == 'uefi'
 
     - name: Remove os-prober
       apt:
@@ -207,7 +207,7 @@
     - apt:
         package: open-iscsi
         state: present
-      when: iscsi_boot == true
+      when: bootstrap_iscsi_boot == true
 
     - name: Refresh initrd files
       shell: update-initramfs -c -k all
@@ -217,7 +217,7 @@
         dest: /etc/default/grub
         regexp: ^GRUB_CMDLINE_LINUX=""$
         line: GRUB_CMDLINE_LINUX="root=ZFS=rpool/root/debian"
-      when: iscsi_boot == false
+      when: bootstrap_iscsi_boot == false
 
     - name: Workaround GRUB's missing zpool-features support and boot from iSCSI target
       lineinfile:
@@ -225,40 +225,40 @@
         regexp: ^GRUB_CMDLINE_LINUX=""$
         line: >-
           GRUB_CMDLINE_LINUX="
-          iscsi_initiator={{ iscsi_initiator }}
-          iscsi_target_name={{ iscsi_target_name }}
-          iscsi_target_ip={{ iscsi_target_ip }}
-          iscsi_target_port={{ iscsi_target_port }}
+          bootstrap_iscsi_initiator={{ bootstrap_iscsi_initiator }}
+          bootstrap_iscsi_target_name={{ bootstrap_iscsi_target_name }}
+          bootstrap_iscsi_target_ip={{ bootstrap_iscsi_target_ip }}
+          bootstrap_iscsi_target_port={{ bootstrap_iscsi_target_port }}
           root=ZFS=rpool/root/debian
-          ip={{ iscsi_initiator_ip }}:{{ iscsi_target_ip }}::255.255.255.0:{{ system_hostname }}:{{ iscsi_interface_name }}:off"
-      when: iscsi_boot == true
+          ip={{ bootstrap_iscsi_initiator_ip }}:{{ bootstrap_iscsi_target_ip }}::255.255.255.0:{{ bootstrap_hostname }}:{{ bootstrap_iscsi_interface_name }}:off"
+      when: bootstrap_iscsi_boot == true
 
     - file:
         path: /etc/iscsi/iscsi.initramfs
         state: touch
-      when: iscsi_boot == true
+      when: bootstrap_iscsi_boot == true
 
     - lineinfile:
         dest: /etc/iscsi/initiatorname.iscsi
-        line: "InitiatorName={{ iscsi_initiator }}"
+        line: "InitiatorName={{ bootstrap_iscsi_initiator }}"
         create: true
-      when: iscsi_boot == true
+      when: bootstrap_iscsi_boot == true
 
     - name: Update grub
       shell: update-grub
 
     - name: Refresh initrd files again
       shell: update-initramfs -c -k all
-      when: iscsi_boot == true
+      when: bootstrap_iscsi_boot == true
 
     - name: Install the boot loader (BIOS)
       shell: "grub-install {{ item }}"
-      loop: "{{ zpool_disk_identifiers }}"
-      when: system_boot_type == 'bios'
+      loop: "{{ bootstrap_zpool_disk_identifiers }}"
+      when: bootstrap_boot_type == 'bios'
 
     - name: Install the boot loader (UEFI)
       shell: grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=debian --recheck --no-floppy
-      when: system_boot_type == 'uefi'
+      when: bootstrap_boot_type == 'uefi'
 
     - name: Add fix-filesystem-mounts.sh script
       copy:

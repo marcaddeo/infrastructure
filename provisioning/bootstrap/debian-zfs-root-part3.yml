@@ -42,7 +42,7 @@
           grub-pc grub-pc/install_devices_empty boolean false
           grub-pc grub-pc/postrm_purge_boot_grub boolean false
           grub-pc grub-pc/install_devices_failed_upgrade boolean true
-          grub-pc grub-pc/install_devices multiselect {{ zpool_disk_identifiers | join(', ') }}
+          grub-pc grub-pc/install_devices multiselect {{ bootstrap_zpool_disk_identifiers | join(', ') }}
           grub-pc grub2/update_nvram boolean true
           grub-pc grub-pc/timeout string 5
           grub-pc grub2/linux_cmdline string root=ZFS=rpool/root/debian
@@ -54,37 +54,37 @@
           grub-pc grub-pc/kopt_extracted boolean false
           grub-pc grub2/kfreebsd_cmdline string
           grub-pc grub-pc/chainload_from_menu.lst boolean true
-      when: system_boot_type == 'bios'
+      when: bootstrap_boot_type == 'bios'
 
     - name: Set selections with debconf
       shell: debconf-set-selections /root/grub-preseed.txt
       environment:
         DEBIAN_FRONTEND: noninteractive
         DEBCONF_NONINTERACTIVE_SEEN: true
-      when: system_boot_type == 'bios'
+      when: bootstrap_boot_type == 'bios'
 
     - name: Reconfigure packages with correct settings
       shell: dpkg-reconfigure grub-pc
       environment:
         DEBIAN_FRONTEND: noninteractive
         DEBCONF_NONINTERACTIVE_SEEN: true
-      when: system_boot_type == 'bios'
+      when: bootstrap_boot_type == 'bios'
 
     - shell: umount /boot/efi
-      when: system_boot_type == 'uefi'
+      when: bootstrap_boot_type == 'uefi'
 
     - name: Mirror GRUB (UEFI)
       shell: >
-        dd if={{ zpool_disk_identifiers | first }}-part2 of={{ item }}-part2 &&
+        dd if={{ bootstrap_zpool_disk_identifiers | first }}-part2 of={{ item }}-part2 &&
         efibootmgr -c -g -d {{ item }} \
           -p 2 -L "debian-{{ 2 + index }}" -l '\EFI\debian\grubx64.efi'
-      loop: "{{ zpool_disk_identifiers[1:] }}"
+      loop: "{{ bootstrap_zpool_disk_identifiers[1:] }}"
       loop_control:
         index_var: index
-      when: system_boot_type == 'uefi' and (zpool_disk_identifiers | length > 1)
+      when: bootstrap_boot_type == 'uefi' and (bootstrap_zpool_disk_identifiers | length > 1)
 
     - shell: mount /boot/efi
-      when: system_boot_type == 'uefi'
+      when: bootstrap_boot_type == 'uefi'
 
     - shell: getconf PAGESIZE
       register: pagesize
@@ -137,15 +137,15 @@
       zfs:
         name: "rpool/home/{{ item.name }}"
         state: present
-      loop: "{{ system_users }}"
+      loop: "{{ bootstrap_users }}"
 
     - name: Create base users
       user:
         name: "{{ item.name }}"
         groups: "{{ item.groups }}"
-        password: "{{ (item.password | default(system_users_default_password)) | password_hash('sha512', 'salt') }}"
+        password: "{{ (item.password | default(bootstrap_users_default_password)) | password_hash('sha512', 'salt') }}"
         shell: /bin/bash
-      loop: "{{ system_users }}"
+      loop: "{{ bootstrap_users }}"
 
     - name: Copy user skeletons into place
       copy:
@@ -154,14 +154,14 @@
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
         remote_src: true
-      loop: "{{ system_users }}"
+      loop: "{{ bootstrap_users }}"
 
     - name: Add authorized ssh keys for base users
       authorized_key:
         user: "{{ item.name }}"
         key: "{{ lookup('file', item.ssh_public_key_file) }}"
         state: present
-      loop: "{{ system_users }}"
+      loop: "{{ bootstrap_users }}"
       when: item.ssh_public_key_file is defined
 
     - name: Enable passwordless sudo for the sudo group

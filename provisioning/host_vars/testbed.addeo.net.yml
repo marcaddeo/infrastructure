@@ -1,6 +1,6 @@
 ---
 # Bootstrap Configuration.
-system_hostname: testbed
+bootstrap_hostname: testbed
 
 # DELL OMSA Configuration.
 install_dell_omsa: true
