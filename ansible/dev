@@ -17,6 +17,8 @@ violet.addeo.net ansible_host=10.1.15.50
 [physical_servers:children]
 dell_servers
 
+[servers]
+
 [servers:children]
 physical_servers
 storage_servers
