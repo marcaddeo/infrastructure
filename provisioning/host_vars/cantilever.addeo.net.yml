@@ -15,6 +15,3 @@ bootstrap_zpool_encrypt_root: false
 bootstrap_zpool_type: single
 bootstrap_zpool_disk_identifiers:
   - /dev/disk/by-path/ip-172.1.0.15:3260-iscsi-iqn.iscsi-test.addeo.net:lun1-lun-1
-
-# DELL OMSA Configuration.
-install_dell_omsa: true
