@@ -13,6 +13,8 @@
     - geerlingguy.ntp
     - oefenweb.postfix
     - jnv.unattended-upgrades
+    - role: ntd.nut
+      when: 'physical_servers' in group_names
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
       blockinfile:
