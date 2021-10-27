@@ -28,3 +28,5 @@ roles:
 
   - name: ntd.nut
     version: 1.3.0
+
+  - name: mrlesmithjr.zfs

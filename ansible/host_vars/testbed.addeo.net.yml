@@ -8,3 +8,29 @@ bootstrap_zpool_type: mirror
 bootstrap_zpool_disk_identifiers:
   - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
   - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
+
+# ZFS Configuration.
+zfs_iscsitarget_iqn: iqn.2021-10.net.addeo.testbed
+# @TODO it would be nice if we could specify by target, currently this just
+# makes it so ALL can be accessed via the IP. But we may want to have targets
+# accessible on or other net.
+zfs_iscsitarget_target_portals:
+  - 172.16.1.10/32
+zfs_create_volumes: true
+zfs_volumes:
+  - name: iscsi-test
+    pool: rpool
+    shareiscsi: true
+    volsize: 1G
+    lun: 0
+    allow:
+      - ALL
+      # - iqn.iscsi-init-test.addeo.net:test @TODO i believe this doesn't work because boot doesn't set the initiator
+    state: present
+
+# Firewall Configuration.
+# @TODO how can i extend this from the default one used by all servers?
+firewall_allowed_tcp_ports:
+  - 22
+  - 25
+  - 3260

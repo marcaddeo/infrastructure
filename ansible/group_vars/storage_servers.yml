@@ -1,3 +1,8 @@
 ---
 # Shavee Configuration.
 install_shavee: true
+
+# ZFS Configuration.
+zfs_enable_iscsi: true
+zfs_enable_nfs: true
+zfs_enable_samba: true
