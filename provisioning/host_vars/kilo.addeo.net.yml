@@ -1,0 +1,18 @@
+---
+# Server Configuration.
+server_hostname: kilo
+server_fqdn: kilo.addeo.net
+
+# Bootstrap Configuration.
+bootstrap_boot_type: uefi
+bootstrap_zpool_encrypt_root: true
+bootstrap_zpool_type: mirror
+bootstrap_zpool_disk_identifiers:
+  - /dev/disk/by-id/scsi-3500a0751e5a956ff
+  - /dev/disk/by-id/scsi-3500a0751e5a9496e
+
+# DELL OMSA Configuration.
+install_dell_omsa: true
+
+# Shavee Configuration.
+install_shavee: true
