@@ -1,7 +1,4 @@
 ---
-- meta: end_play
-  when: not install_shavee
-
 - name: Download Shavee
   unarchive:
     src: "https://github.com/ashuio/shavee/archive/{{ shavee_git_ref }}.tar.gz"

@@ -2,4 +2,5 @@
 - hosts: storage_servers
   become: true
   roles:
-    - shavee
+    - role: shavee
+      when: install_shavee is defined and install_shavee

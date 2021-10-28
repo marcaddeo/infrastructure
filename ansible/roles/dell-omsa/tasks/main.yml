@@ -1,7 +1,4 @@
 ---
-- meta: end_play
-  when: not install_dell_omsa
-
 - name: Import Dell key
   apt_key:
     keyserver: pgp.mit.edu

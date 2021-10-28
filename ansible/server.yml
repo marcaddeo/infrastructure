@@ -7,14 +7,16 @@
     - os_hardening
     - ssh_hardening
     - oefenweb.fail2ban
-    - dell-omsa
-    - plymouth
+    - role: dell-omsa
+      when: install_dell_omsa is defined and install_dell_omsa
+    - role: plymouth
+      when: install_plymouth is defined and install_plymouth
     - geerlingguy.firewall
     - geerlingguy.ntp
     - oefenweb.postfix
     - jnv.unattended-upgrades
     - role: ntd.nut
-      when: 'physical_servers' in group_names
+      when: "'physical_servers' in group_names"
     - mrlesmithjr.zfs
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
