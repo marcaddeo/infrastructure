@@ -1,18 +1,35 @@
 ---
+# ZFS properties that can only be set on creation.
 zfs_readonly_properties:
   - casesensitivity
   - normalization
   - utf8only
 
+# Custom ZFS properties used to add functionality via this role.
 zfs_custom_properties:
   - shareiscsi
 
+# Valid frequencies to scrub a pool.
+zfs_scrub_frequencies:
+  - minutely
+  - hourly
+  - daily
+  - monthly
+  - weekly
+  - yearly
+  - quarterly
+  - semiannually
+
+# ZFS Kernel parameters to set.
+#
 # Example:
 #
 # zfs_kernel_module_parameters:
 #   zfs_arc_max: 30064771072 # Allow ARC to grow to 30GB
 zfs_kernel_parameters: {}
 
+# ZFS zpools to create.
+#
 # Example:
 #
 # zfs_pools:
@@ -41,6 +58,8 @@ zfs_kernel_parameters: {}
 #     state: present
 zfs_pools: {}
 
+# ZFS Filesystems to create.
+#
 # Example:
 #
 # zfs_filesystems:
@@ -55,4 +74,5 @@ zfs_pools: {}
 #     properties:
 #       volsize: 500G
 #       shareiscsi: true
+#     state: present
 zfs_filesystems: {}

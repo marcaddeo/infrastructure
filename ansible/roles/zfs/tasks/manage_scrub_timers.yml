@@ -24,15 +24,7 @@
     src: /etc/systemd/system/zpool-scrub@.timer
     dest: "/etc/systemd/system/zpool-scrub-{{ item }}@.timer"
     state: hard
-  loop:
-    - minutely
-    - hourly
-    - daily
-    - monthly
-    - weekly
-    - yearly
-    - quarterly
-    - semiannually
+  loop: "{{ zfs_scrub_frequencies }}"
 
 - name: manage_scrub_timers | Enable and start systemd scrub timers
   systemd:
@@ -56,6 +48,3 @@
     state: stopped
   loop: "{{ zfs_scrub_disable.results | json_query('[*].stdout') }}"
   when: zfs_scrub_disable.changed
-
-
-
