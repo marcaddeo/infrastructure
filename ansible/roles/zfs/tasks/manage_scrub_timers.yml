@@ -1,0 +1,61 @@
+---
+- name: manage_scrub_timers | Remove original scrub cron job
+  file:
+    path: /etc/cron.d/zfsutils-linux
+    state: absent
+
+- name: manage_scrub_timers | Install systemd scrub service unit
+  template:
+    src: etc/systemd/system/zpool-scrub@.service.j2
+    dest: /etc/systemd/system/zpool-scrub@.service
+    group: root
+    owner: root
+    mode: 0644
+  register: zfs_scrub_service
+
+- name: manage_scrub_timers | Install systemd scrub timer unit
+  template:
+    src: etc/systemd/system/zpool-scrub@.timer.j2
+    dest: /etc/systemd/system/zpool-scrub@.timer
+  register: zfs_scrub_timer
+
+- name: manage_scrub_timers | Create hard links for valid scrub frequencies
+  file:
+    src: /etc/systemd/system/zpool-scrub@.timer
+    dest: "/etc/systemd/system/zpool-scrub-{{ item }}@.timer"
+    state: hard
+  loop:
+    - minutely
+    - hourly
+    - daily
+    - monthly
+    - weekly
+    - yearly
+    - quarterly
+    - semiannually
+
+- name: manage_scrub_timers | Enable and start systemd scrub timers
+  systemd:
+    name: "zpool-scrub-{{ item.value.scrub }}@{{ item.key }}.timer"
+    enabled: true
+    state: started
+    daemon_reload: "{{ zfs_scrub_service.changed or zfs_scrub_timer.changed }}"
+  loop: "{{ zfs_pools | dict2items }}"
+  when: item.value.scrub != false
+
+- name: manage_scrub_timers | Get list of systemd scrub timer units to disable
+  shell: "systemctl show \"zpool-scrub*@{{ item.key }}.timer\" | grep Id= | cut -d'=' -f2"
+  register: zfs_scrub_disable
+  loop: "{{ zfs_pools | dict2items }}"
+  when: item.value.scrub == false
+
+- name: manage_scrub_timers | Disable and stop systemd scrub timers
+  systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  loop: "{{ zfs_scrub_disable.results | json_query('[*].stdout') }}"
+  when: zfs_scrub_disable.changed
+
+
+

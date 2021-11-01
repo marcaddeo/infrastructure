@@ -1,0 +1,94 @@
+---
+- name: manage_zpools | Get existing zpool names
+  shell: zpool list -H -o name
+  changed_when: false
+  check_mode: false
+  register: zpool_names
+- set_fact:
+    zpool_names: "{{ zpool_names.stdout_lines }}"
+
+- name: manage_zpools | Get existing zpool devices
+  shell: "zpool list -H -P -v | grep '/' | cut -d'	' -f2"
+  changed_when: false
+  check_mode: false
+  register: zpool_devices
+- set_fact:
+    zpool_devices: "{{ zpool_devices.stdout_lines }}"
+
+- name: manage_zpools | Create zpools
+  command: >-
+    zpool create
+    {% if item.value.force is defined and item.value.force %}-f{% endif -%}
+    {% if item.value.properties is defined %}
+      {% for key, value in item.value.properties.items() -%}
+      -o {{ key }}={{ value }}
+      {%- endfor %}
+    {% endif -%}
+    {% if item.value.filesystem_properties is defined %}
+      {%- for key, value in item.value.filesystem_properties.items() %}
+      -O {{ key }}={{ value }}
+      {%- endfor %}
+    {% endif %}
+    {{ item.key }}
+    {%- for vdev in item.value.vdevs %}
+      {{ vdev.type -}}
+      {% for device in vdev.devices -%}
+        {% if device is mapping %}
+          {{ device.type }} {{ device.devices | join(" ") -}}
+        {% else %}
+          {{ device -}}
+        {% endif %}
+      {%- endfor %}
+    {%- endfor %}
+  loop: "{{ zfs_pools | dict2items }}"
+  when: >
+    item.value.state == "present" and
+    item.key not in zpool_names and
+    (((item.value.vdevs | map(attribute='devices') | flatten | select('string')) + (item.value.vdevs | map(attribute='devices') | flatten | reject('string') | map(attribute='devices') | flatten)) | intersect(zpool_devices)) | length == 0
+
+- name: manage_zpools | Destroy zpools
+  command: "zpool destroy -f {{ item.key }}"
+  loop: "{{ zfs_pools | dict2items }}"
+  when: >
+    item.value.state == "absent" and
+    item.key in zpool_names
+
+- name: manage_zpools | Get zpool properties
+  zpool_facts:
+- set_fact:
+    ansible_zfs_pools: >
+      {
+        {% for pool in ansible_zfs_pools %}
+          '{{ pool.name }}': {{ pool }},
+        {% endfor %}
+      }
+
+- name: manage_zpools | Manage zpool properties
+  shell: >-
+    {% set readonly_properties = [
+      'alloc',
+      'capacity',
+      'dedupratio',
+      'free',
+      'guid',
+      'health',
+      'size',
+      'altroot'
+    ] %}
+    true;
+    {%- for property, value in item.value.items() -%}
+      {%- if ansible_zfs_pools[item.key][property] != (value | string) and property not in readonly_properties -%}
+        zpool set {{ property }}={{ value }} {{ item.key }};
+      {%- endif -%}
+    {%- endfor -%}
+  loop: "{{ dict(zfs_pools | dict2items | json_query('[?value.properties].[key, value.properties]')) | dict2items }}"
+  register: result
+  changed_when:
+    - "result.cmd != ' true;'"
+
+- name: manage_zpools | Manage zpool root fileystem properties
+  zfs:
+    name: "{{ item.key }}"
+    extra_zfs_properties: "{{ item.value | dict2items | rejectattr('key', 'in', zfs_readonly_properties) | list | items2dict }}"
+    state: present
+  loop: "{{ dict(zfs_pools | dict2items | selectattr('value.state', 'equalto', 'present') | json_query('[?value.filesystem_properties].[key, value.filesystem_properties]')) | dict2items }}"

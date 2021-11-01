@@ -1,0 +1,5 @@
+---
+- name: install_nfs | Ensure NFS server is installed
+  apt:
+    package: nfs-kernel-server
+    state: present

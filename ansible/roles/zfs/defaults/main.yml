@@ -1,0 +1,58 @@
+---
+zfs_readonly_properties:
+  - casesensitivity
+  - normalization
+  - utf8only
+
+zfs_custom_properties:
+  - shareiscsi
+
+# Example:
+#
+# zfs_kernel_module_parameters:
+#   zfs_arc_max: 30064771072 # Allow ARC to grow to 30GB
+zfs_kernel_parameters: {}
+
+# Example:
+#
+# zfs_pools:
+#   bpool:
+#     scrub: monthly
+#     state: scrub
+#   rpool:
+#     scrub: weekly
+#     state: scrub
+#   spool:
+#     type: raidz2
+#     devices:
+#       - /dev/disk/by-id/scsi-12351jkfsdfl
+#       - /dev/disk/by-id/scsi-12tn23kt3laa
+#       - /dev/disk/by-id/scsi-tyh082iynug3
+#       - /dev/disk/by-id/scsi-8h2136n1313o
+#     scrub: weekly
+#     force: true
+#     properties:
+#       ashift: 12
+#     filesystem_properties:
+#       mountpoint: none
+#       compression: lz4
+#       relatime: on
+#       xattr: sa
+#     state: present
+zfs_pools: {}
+
+# Example:
+#
+# zfs_filesystems:
+#   spool/data:
+#     properties:
+#       quota: 50G
+#       compression: lz4
+#       sharenfs: on
+#     state: present
+#   spool/data/iscsi-test:
+#     sparse: true # @TODO this isn't supported by the zfs ansible module, requires properties.volsize
+#     properties:
+#       volsize: 500G
+#       shareiscsi: true
+zfs_filesystems: {}

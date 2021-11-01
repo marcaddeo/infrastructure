@@ -4,5 +4,6 @@
 !/roles/dell-omsa
 !/roles/plymouth
 !/roles/shavee
+!/roles/zfs
 /collections/*
 !/collections/.gitkeep

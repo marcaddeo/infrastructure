@@ -1,0 +1,13 @@
+---
+- name: configure_zfs | Set ZFS defaults
+  template:
+    src: etc/default/zfs.j2
+    dest: /etc/default/zfs
+
+- name: configure_zfs | Configure ZFS kernel parameters
+  template:
+    src: etc/modprobe.d/zfs.conf.j2
+    dest: /etc/modprobe.d/zfs.conf
+  when: >
+    zfs_kernel_parameters is defined and
+    zfs_kernel_parameters.keys() | length > 0

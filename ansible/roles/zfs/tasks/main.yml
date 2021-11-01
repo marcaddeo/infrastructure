@@ -1,0 +1,19 @@
+---
+- import_tasks: configure_zfs.yml
+
+- import_tasks: install_nfs.yml
+  when: zfs_filesystems | dict2items | json_query('[*].value.properties.sharenfs') | difference([false, 'off']) | length > 0
+
+- import_tasks: install_samba.yml
+  when: zfs_filesystems | dict2items | json_query('[*].value.properties.sharesmb') | difference([false, 'off']) | length > 0
+
+- import_tasks: manage_pools.yml
+
+- import_tasks: manage_filesystems.yml
+
+# - import_tasks: manage_iscsi.yml
+
+- import_tasks: manage_scrub_timers.yml
+  when: zfs_pools | dict2items | json_query('[*].value.scrub') | length > 0
+
+# - import_tasks: manage_monitoring.yml
