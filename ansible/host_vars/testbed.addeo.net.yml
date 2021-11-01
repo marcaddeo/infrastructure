@@ -10,23 +10,6 @@ bootstrap_zpool_disk_identifiers:
   - /dev/disk/by-id/ata-VBOX_HARDDISK_VB8b62a23a-33273c01
 
 # ZFS Configuration.
-zfs_iscsitarget_iqn: iqn.2021-10.net.addeo.testbed
-# @TODO it would be nice if we could specify by target, currently this just
-# makes it so ALL can be accessed via the IP. But we may want to have targets
-# accessible on or other net.
-zfs_iscsitarget_target_portals:
-  - 172.16.1.10/32
-zfs_create_volumes: true
-zfs_volumes:
-  - name: iscsi-test
-    pool: rpool
-    shareiscsi: true
-    volsize: 1G
-    lun: 0
-    allow:
-      - ALL
-      # - iqn.iscsi-init-test.addeo.net:test @TODO i believe this doesn't work because boot doesn't set the initiator
-    state: present
 
 # Firewall Configuration.
 # @TODO how can i extend this from the default one used by all servers?
@@ -34,3 +17,53 @@ firewall_allowed_tcp_ports:
   - 22
   - 25
   - 3260
+    #
+zfs_pools:
+  bpool:
+    scrub: false
+    state: scrub
+  rpool:
+    scrub: weekly
+    state: scrub
+  spool:
+    vdevs:
+      - type: raidz
+        devices:
+          - /root/a
+          - /root/b
+          - /root/c
+    scrub: weekly
+    force: true
+    properties:
+      ashift: 12
+    filesystem_properties:
+      compression: lz4
+      relatime: "on"
+      xattr: sa
+      utf8only: "on"
+    state: present
+
+zfs_filesystems:
+  spool/data:
+    properties:
+      quota: 50G
+      compression: lz4
+      sharenfs: false
+    state: present
+  spool/data/iscsi-test:
+    sparse: true # @TODO this isn't supported by the zfs ansible module, requires properties.volsize
+    properties:
+      volsize: 5M
+      shareiscsi: true
+    state: present
+  spool/data/something:
+    state: present
+  spool/data/something2:
+    properties:
+      sharenfs: true
+      normalization: formD
+    state: present
+  spool/data/samba:
+    properties:
+      sharesmb: true
+    state: present
