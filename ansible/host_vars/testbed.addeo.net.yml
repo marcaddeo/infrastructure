@@ -9,15 +9,14 @@ bootstrap_zpool_disk_identifiers:
   - /dev/disk/by-id/ata-VBOX_HARDDISK_VBc3167122-1ef5db5f
   - /dev/disk/by-id/ata-VBOX_HARDDISK_VB8b62a23a-33273c01
 
-# ZFS Configuration.
-
 # Firewall Configuration.
 # @TODO how can i extend this from the default one used by all servers?
 firewall_allowed_tcp_ports:
   - 22
   - 25
   - 3260
-    #
+
+# ZFS Configuration.
 zfs_pools:
   bpool:
     scrub: false
@@ -51,7 +50,6 @@ zfs_filesystems:
       sharenfs: false
     state: present
   spool/data/iscsi-test:
-    sparse: true # @TODO this isn't supported by the zfs ansible module, requires properties.volsize
     properties:
       volsize: 5M
       shareiscsi: true
