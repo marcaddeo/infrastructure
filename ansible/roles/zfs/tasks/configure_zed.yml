@@ -1,0 +1,8 @@
+---
+- name: configure_zed | Install ZED configuration file
+  template:
+    src: etc/zfs/zed.d/zed.rc.j2
+    dest: /etc/zfs/zed.d/zed.rc
+    owner: root
+    group: root
+    mode: 0600

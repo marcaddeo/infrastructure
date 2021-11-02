@@ -1,0 +1,196 @@
+# {{ ansible_managed }}
+
+##
+# zed.rc
+#
+# This file should be owned by root and permissioned 0600.
+##
+
+##
+# Absolute path to the debug output file.
+#
+{% if zfs_zed_debug_log -%}
+  ZED_DEBUG_LOG="{{ zfs_zed_debug_log }}"
+{% else -%}
+  #ZED_DEBUG_LOG="/tmp/zed.debug.log"
+{% endif %}
+
+##
+# Email address of the zpool administrator for receipt of notifications;
+#   multiple addresses can be specified if they are delimited by whitespace.
+# Email will only be sent if ZED_EMAIL_ADDR is defined.
+# Disabled by default; uncomment to enable.
+#
+{% if zfs_zed_email_addr -%}
+  ZED_EMAIL_ADDR="{{ zfs_zed_email_addr }}"
+{% else -%}
+  #ZED_EMAIL_ADDR="root"
+{% endif %}
+
+##
+# Name or path of executable responsible for sending notifications via email;
+#   the mail program must be capable of reading a message body from stdin.
+# Email will only be sent if ZED_EMAIL_ADDR is defined.
+#
+{% if zfs_zed_mail_prog -%}
+  ZED_EMAIL_PROG="{{ zfs_zed_mail_prog }}"
+{% else -%}
+  #ZED_EMAIL_PROG="mail"
+{% endif %}
+
+##
+# Command-line options for ZED_EMAIL_PROG.
+# The string @ADDRESS@ will be replaced with the recipient email address(es).
+# The string @SUBJECT@ will be replaced with the notification subject;
+#   this should be protected with quotes to prevent word-splitting.
+# Email will only be sent if ZED_EMAIL_ADDR is defined.
+#
+{% if zfs_zed_email_opts -%}
+  ZED_EMAIL_OPTS="{{ zfs_zed_email_opts }}"
+{% else -%}
+  #ZED_EMAIL_OPTS="-s '@SUBJECT@' @ADDRESS@"
+{% endif %}
+
+##
+# Default directory for zed lock files.
+#
+{% if zfs_zed_lockdir -%}
+  ZED_LOCKDIR="{{ zfs_zed_lockdir }}"
+{% else -%}
+  #ZED_LOCKDIR="/var/lock"
+{% endif %}
+
+##
+# Minimum number of seconds between notifications for a similar event.
+#
+ZED_NOTIFY_INTERVAL_SECS={{ zfs_zed_notify_interval_secs }}
+
+##
+# Notification verbosity.
+#   If set to 0, suppress notification if the pool is healthy.
+#   If set to 1, send notification regardless of pool health.
+#
+{% if zfs_zed_notify_verbose is not none -%}
+  ZED_NOTIFY_VERBOSE={{ zfs_zed_notify_verbose | bool | int }}
+{% else -%}
+  #ZED_NOTIFY_VERBOSE=0
+{% endif %}
+
+##
+# Send notifications for 'ereport.fs.zfs.data' events.
+# Disabled by default, any non-empty value will enable the feature.
+#
+{% if zfs_zed_notify_data -%}
+  ZED_NOTIFY_DATA=1
+{% else -%}
+  #ZED_NOTIFY_DATA=
+{% endif %}
+
+##
+# Pushbullet access token.
+# This grants full access to your account -- protect it accordingly!
+#   <https://www.pushbullet.com/get-started>
+#   <https://www.pushbullet.com/account>
+# Disabled by default; uncomment to enable.
+#
+{% if zfs_zed_pushbullet_access_token -%}
+  ZED_PUSHBULLET_ACCESS_TOKEN="{{ zfs_zed_pushbullet_access_token }}"
+{% else -%}
+  #ZED_PUSHBULLET_ACCESS_TOKEN=""
+{% endif %}
+
+##
+# Pushbullet channel tag for push notification feeds that can be subscribed to.
+#   <https://www.pushbullet.com/my-channel>
+# If not defined, push notifications will instead be sent to all devices
+#   associated with the account specified by the access token.
+# Disabled by default; uncomment to enable.
+#
+{% if zfs_zed_pushbullet_channel_tag -%}
+  ZED_PUSHBULLET_CHANNEL_TAG="{{ zfs_zed_pushbullet_channel_tag }}"
+{% else -%}
+  #ZED_PUSHBULLET_CHANNEL_TAG=""
+{% endif %}
+
+##
+# Slack Webhook URL.
+# This allows posting to the given channel and includes an access token.
+#   <https://api.slack.com/incoming-webhooks>
+# Disabled by default; uncomment to enable.
+#
+{% if zfs_zed_slack_webhook_url -%}
+  ZED_SLACK_WEBHOOK_URL="{{ zfs_zed_slack_webhook_url }}"
+{% else -%}
+  #ZED_SLACK_WEBHOOK_URL=""
+{% endif %}
+
+##
+# Default directory for zed state files.
+#
+{% if zfs_zed_rundir -%}
+  ZED_RUNDIR="{{ zfs_zed_rundir }}"
+{% else -%}
+  #ZED_RUNDIR="/var/run"
+{% endif %}
+
+##
+# Turn on/off enclosure LEDs when drives get DEGRADED/FAULTED.  This works for
+# device mapper and multipath devices as well.  Your enclosure must be
+# supported by the Linux SES driver for this to work.
+#
+ZED_USE_ENCLOSURE_LEDS={{ zfs_zed_use_enclosure_leds | bool | int }}
+
+##
+# Run a scrub after every resilver
+# Disabled by default, 1 to enable and 0 to disable.
+{% if zfs_zed_scrub_after_resilver is not none -%}
+  ZED_SCRUB_AFTER_RESILVER={{ zfs_zed_scrub_after_resilver | bool | int }}
+{% else -%}
+  #ZED_SCRUB_AFTER_RESILVER=0
+{% endif %}
+
+##
+# The syslog priority (e.g., specified as a "facility.level" pair).
+#
+{% if zfs_zed_syslog_priority -%}
+  ZED_SYSLOG_PRIORITY="{{ zfs_zed_syslog_priority }}"
+{% else -%}
+  #ZED_SYSLOG_PRIORITY="daemon.notice"
+{% endif %}
+
+##
+# The syslog tag for marking zed events.
+#
+{% if zfs_zed_syslog_tag -%}
+  ZED_SYSLOG_TAG="{{ zfs_zed_syslog_tag }}"
+{% else -%}
+  #ZED_SYSLOG_TAG="zed"
+{% endif %}
+
+##
+# Which set of event subclasses to log
+# By default, events from all subclasses are logged.
+# If ZED_SYSLOG_SUBCLASS_INCLUDE is set, only subclasses
+# matching the pattern are logged. Use the pipe symbol (|)
+# or shell wildcards (*, ?) to match multiple subclasses.
+# Otherwise, if ZED_SYSLOG_SUBCLASS_EXCLUDE is set, the
+# matching subclasses are excluded from logging.
+{% if zfs_zed_syslog_subclass_include -%}
+  ZED_SYSLOG_SUBCLASS_INCLUDE="{{ zfs_zed_syslog_subclass_include | join ('|') }}"
+{% else -%}
+  #ZED_SYSLOG_SUBCLASS_INCLUDE="checksum|scrub_*|vdev.*"
+{% endif %}
+{% if zfs_zed_syslog_subclass_exclude -%}
+  ZED_SYSLOG_SUBCLASS_EXCLUDE="{{ zfs_zed_syslog_subclass_exclude | join ('|') }}"
+{% else -%}
+  #ZED_SYSLOG_SUBCLASS_EXCLUDE="history_event"
+{% endif %}
+
+##
+# Use GUIDs instead of names when logging pool and vdevs
+# Disabled by default, 1 to enable and 0 to disable.
+{% if zfs_zed_syslog_display_guids is not none -%}
+  ZED_SYSLOG_DISPLAY_GUIDS={{ zfs_zed_syslog_display_guids | bool | int }}
+{% else -%}
+  #ZED_SYSLOG_DISPLAY_GUIDS=1
+{% endif %}
