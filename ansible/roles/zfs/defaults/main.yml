@@ -20,6 +20,85 @@ zfs_scrub_frequencies:
   - quarterly
   - semiannually
 
+# ZFS Kernel parameters to set.
+#
+# Example:
+#
+# zfs_kernel_module_parameters:
+#   zfs_arc_max: 30064771072 # Allow ARC to grow to 30GB
+zfs_kernel_parameters: {}
+
+# ZFS Configuration.
+# Run `zfs mount -a` during system start?
+zfs_mount: true
+# Run `zfs unmount -a` during system stop?
+zfs_unmount: true
+# By default, a verbatim import of all pools is performed at boot based on the
+# contents of the default zpool cache file.  The contents of the cache are
+# managed automatically by the 'zpool import' and 'zpool export' commands.
+#
+# By setting this to 'true', the system will instead search all devices for
+# pools and attempt to import them all at boot, even those that have been
+# exported.  Under this mode, the search path can be controlled by the
+# ZPOOL_IMPORT_PATH variable and a list of pools that should not be imported
+# can be listed in the ZFS_POOL_EXCEPTIONS variable.
+#
+# Note that importing all visible pools may include pools that you don't
+# expect, such as those on removable devices and SANs, and those pools may
+# proceed to mount themselves in places you do not want them to.  The results
+# can be unpredictable and possibly dangerous.  Only enable this option if you
+# understand this risk and have complete physical control over your system and
+# SAN to prevent the insertion of malicious pools.
+zpool_import_all_visible: false
+# Specify specific path(s) to look for device nodes and/or links for the
+# pool import(s). See zpool(8) for more information about this variable.
+# It supersedes the old USE_DISK_BY_ID which indicated that it would only
+# try '/dev/disk/by-id'.
+# The old variable will still work in the code, but is deprecated.
+zpool_import_path: ~
+# List of pools that should NOT be imported at boot
+# when ZPOOL_IMPORT_ALL_VISIBLE is 'true'.
+zfs_pool_exceptions: ~
+# Should the datasets be mounted verbosely?
+# A mount counter will be used when mounting if set to 'true'.
+zfs_verbose_mount: false
+# Should we allow overlay mounts?
+# This is standard in Linux, but not ZFS which comes from Solaris where this
+# is not allowed).
+zfs_do_overlay_mounts: false
+# List any additional option to the 'zfs import' commandline.
+# Include '-o' for each option wanted.
+# You don't need to put '-f' in here, unless you want it ALL the time.
+# Using the option 'zfsforce=1' on the grub/kernel command line will
+# do the same, but on a case-to-case basis.
+zpool_import_opts: ~
+# Full path to the ZFS cache file?
+# See "cachefile" in zpool(8).
+# The default is "/etc/zfs/zpool.cache".
+#
+# Setting ZPOOL_CACHE to an empty string ('') AND setting ZPOOL_IMPORT_OPTS to
+# "-c /etc/zfs/zpool.cache" will _enforce_ the use of a cache file.
+# This is needed in some cases (extreme amounts of VDEVs, multipath etc).
+# Generally, the use of a cache file is usually not recommended on Linux
+# because it sometimes is more trouble than it's worth (laptops with external
+# devices or when/if device nodes changes names).
+zpool_cache: ~
+# List additional option to the 'zfs mount' command line.
+# Include '-o' for each option wanted.
+zfs_mount_extra_options: ~
+# Build kernel modules with the --enable-debug switch?
+# Only applicable for Debian GNU/Linux {dkms,initramfs}.
+zfs_dkms_enable_debug: false
+# Build kernel modules with the --enable-debuginfo switch?
+# Only applicable for Debian GNU/Linux {dkms,initramfs}.
+zfs_dkms_enable_debuginfo: false
+# Keep debugging symbols in kernel modules?
+# Only applicable for Debian GNU/Linux {dkms,initramfs}.
+zfs_dkms_disable_strip: false
+# List of optional arguments for the ZFS Event Daemon (ZED).
+# See zed(8) for more information on available options.
+zed_args: ~
+
 # ZED Configuration.
 # Absolute path to the debug output file.
 zfs_zed_debug_log: ~
@@ -86,14 +165,6 @@ zfs_zed_syslog_subclass_exclude:
 # Use GUIDs instead of names when logging pool and vdevs
 zfs_zed_syslog_display_guids: ~
 
-# ZFS Kernel parameters to set.
-#
-# Example:
-#
-# zfs_kernel_module_parameters:
-#   zfs_arc_max: 30064771072 # Allow ARC to grow to 30GB
-zfs_kernel_parameters: {}
-
 # ZFS zpools to create.
 #
 # Example:
@@ -136,7 +207,6 @@ zfs_pools: {}
 #       sharenfs: on
 #     state: present
 #   spool/data/iscsi-test:
-#     sparse: true # @TODO this isn't supported by the zfs ansible module, requires properties.volsize
 #     properties:
 #       volsize: 500G
 #       shareiscsi: true

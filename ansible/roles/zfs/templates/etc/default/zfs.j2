@@ -11,18 +11,28 @@
 # Anything else will be interpreted as unset.
 
 # Run `zfs mount -a` during system start?
-ZFS_MOUNT='yes'
+ZFS_MOUNT='{{ 'yes' if (zfs_mount | bool) else 'no' }}'
 
 # Run `zfs unmount -a` during system stop?
-ZFS_UNMOUNT='yes'
+ZFS_UNMOUNT='{{ 'yes' if (zfs_unmount | bool) else 'no' }}'
 
-{# @TODO determine whether or not do set these to yes/no based on any zfs_filesystems with sharenfs/sharesmb/shareiscsi enabled #}
+{% set has_sharenfs = zfs_filesystems | dict2items | json_query('[*].value.properties.sharenfs') | difference([false, 'off']) | length > 0 -%}
+{% set has_sharesmb = zfs_filesystems | dict2items | json_query('[*].value.properties.sharesmb') | difference([false, 'off']) | length > 0 -%}
+
 # Run `zfs share -a` during system start?
 # nb: The shareiscsi, sharenfs, and sharesmb dataset properties.
-ZFS_SHARE='yes'
+{% if zfs_share is not defined and (has_sharenfs or has_sharesmb) -%}
+  ZFS_SHARE='yes'
+{% elif zfs_share is defined -%}
+  ZFS_SHARE='{{ 'yes' if (zfs_share | bool) else 'no' }}'
+{% endif %}
 
 # Run `zfs unshare -a` during system stop?
-ZFS_UNSHARE='yes'
+{% if zfs_unshare is not defined and (has_sharenfs or has_sharesmb) -%}
+  ZFS_UNSHARE='yes'
+{% elif zfs_unshare is defined -%}
+  ZFS_UNSHARE='{{ 'yes' if (zfs_unshare | bool) else 'no' }}'
+{% endif %}
 
 # By default, a verbatim import of all pools is performed at boot based on the
 # contents of the default zpool cache file.  The contents of the cache are
@@ -40,40 +50,52 @@ ZFS_UNSHARE='yes'
 # can be unpredictable and possibly dangerous.  Only enable this option if you
 # understand this risk and have complete physical control over your system and
 # SAN to prevent the insertion of malicious pools.
-ZPOOL_IMPORT_ALL_VISIBLE='no'
+ZPOOL_IMPORT_ALL_VISIBLE='{{ 'yes' if (zpool_import_all_visible | bool) else 'no' }}'
 
 # Specify specific path(s) to look for device nodes and/or links for the
 # pool import(s). See zpool(8) for more information about this variable.
 # It supersedes the old USE_DISK_BY_ID which indicated that it would only
 # try '/dev/disk/by-id'.
 # The old variable will still work in the code, but is deprecated.
-#ZPOOL_IMPORT_PATH="/dev/disk/by-vdev:/dev/disk/by-id"
+{% if zpool_import_path -%}
+  ZPOOL_IMPORT_PATH="{{ zpool_import_path }}"
+{% else -%}
+  #ZPOOL_IMPORT_PATH="/dev/disk/by-vdev:/dev/disk/by-id"
+{% endif %}
 
 # List of pools that should NOT be imported at boot
 # when ZPOOL_IMPORT_ALL_VISIBLE is 'yes'.
 # This is a space separated list.
-#ZFS_POOL_EXCEPTIONS="test2"
+{% if zfs_pool_exceptions -%}
+  ZFS_POOL_EXCEPTIONS="{{ zfs_pool_exceptions | join(' ') }}"
+{% else -%}
+  #ZFS_POOL_EXCEPTIONS="test2"
+{% endif %}
 
 # Should the datasets be mounted verbosely?
 # A mount counter will be used when mounting if set to 'yes'.
-VERBOSE_MOUNT='no'
+VERBOSE_MOUNT='{{ 'yes' if (zfs_verbose_mount | bool) else 'no' }}'
 
 # Should we allow overlay mounts?
 # This is standard in Linux, but not ZFS which comes from Solaris where this
 # is not allowed).
-DO_OVERLAY_MOUNTS='no'
+DO_OVERLAY_MOUNTS='{{ 'yes' if (zfs_do_overlay_mounts | bool) else 'no' }}'
 
 # Any additional option to the 'zfs import' commandline?
 # Include '-o' for each option wanted.
 # You don't need to put '-f' in here, unless you want it ALL the time.
 # Using the option 'zfsforce=1' on the grub/kernel command line will
 # do the same, but on a case-to-case basis.
-ZPOOL_IMPORT_OPTS=""
+ZPOOL_IMPORT_OPTS="{{ zpool_import_opts | join(' ') if zpool_import_opts }}"
 
 # Full path to the ZFS cache file?
 # See "cachefile" in zpool(8).
 # The default is "/etc/zfs/zpool.cache".
-#ZPOOL_CACHE="/etc/zfs/zpool.cache"
+{% if zpool_cache -%}
+  ZPOOL_CACHE="{{ zpool_cache }}"
+{% else -%}
+  #ZPOOL_CACHE="/etc/zfs/zpool.cache"
+{% endif %}
 #
 # Setting ZPOOL_CACHE to an empty string ('') AND setting ZPOOL_IMPORT_OPTS to
 # "-c /etc/zfs/zpool.cache" will _enforce_ the use of a cache file.
@@ -86,20 +108,24 @@ ZPOOL_IMPORT_OPTS=""
 
 # Any additional option to the 'zfs mount' command line?
 # Include '-o' for each option wanted.
-MOUNT_EXTRA_OPTIONS=""
+MOUNT_EXTRA_OPTIONS="{{ (zfs_mount_extra_options | join (' ')) if zfs_mount_extra_options }}"
 
 # Build kernel modules with the --enable-debug switch?
 # Only applicable for Debian GNU/Linux {dkms,initramfs}.
-ZFS_DKMS_ENABLE_DEBUG='no'
+ZFS_DKMS_ENABLE_DEBUG='{{ 'yes' if (zfs_dkms_enable_debug | bool) else 'no' }}'
 
 # Build kernel modules with the --enable-debuginfo switch?
 # Only applicable for Debian GNU/Linux {dkms,initramfs}.
-ZFS_DKMS_ENABLE_DEBUGINFO='no'
+ZFS_DKMS_ENABLE_DEBUGINFO='{{ 'yes' if (zfs_dkms_enable_debuginfo | bool) else 'no' }}'
 
 # Keep debugging symbols in kernel modules?
 # Only applicable for Debian GNU/Linux {dkms,initramfs}.
-ZFS_DKMS_DISABLE_STRIP='no'
+ZFS_DKMS_DISABLE_STRIP='{{ 'yes' if (zfs_dkms_disable_strip | bool) else 'no' }}'
 
 # Optional arguments for the ZFS Event Daemon (ZED).
 # See zed(8) for more information on available options.
-#ZED_ARGS="-M"
+{% if zed_args -%}
+  ZED_ARGS="{{ zed_args | join(' ') }}"
+{% else -%}
+  #ZED_ARGS="-M"
+{% endif %}
