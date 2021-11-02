@@ -20,6 +20,72 @@ zfs_scrub_frequencies:
   - quarterly
   - semiannually
 
+# ZED Configuration.
+# Absolute path to the debug output file.
+zfs_zed_debug_log: ~
+# Email address of the zpool administrator for receipt of notifications;
+#   multiple addresses can be specified if they are delimited by whitespace.
+# Set to false or ~ to disable sending emails.
+zfs_zed_email_addr: root
+# Name or path of executable responsible for sending notifications via email;
+#   the mail program must be capable of reading a message body from stdin.
+zfs_zed_mail_prog: ~
+# Command-line options for ZED_EMAIL_PROG.
+# The string @ADDRESS@ will be replaced with the recipient email address(es).
+# The string @SUBJECT@ will be replaced with the notification subject;
+#   this should be protected with quotes to prevent word-splitting.
+zfs_zed_email_opts: ~
+# Default directory for zed lock files.
+zfs_zed_lockdir: ~
+# Minimum number of seconds between notifications for a similar event.
+zfs_zed_notify_interval_secs: 3600
+# Notification verbosity.
+#   If set to 0, suppress notification if the pool is healthy.
+#   If set to 1, send notification regardless of pool health.
+zfs_zed_notify_verbose: ~
+# Send notifications for 'ereport.fs.zfs.data' events.
+# Set any truthy value to enable.
+zfs_zed_notify_data: ~
+# Pushbullet access token.
+#   <https://www.pushbullet.com/my-channel>
+# If not defined, push notifications will instead be sent to all devices
+#   associated with the account specified by the access token.
+zfs_zed_pushbullet_access_token: ~
+# Pushbullet channel tag for push notification feeds that can be subscribed to.
+#   <https://www.pushbullet.com/my-channel>
+# If not defined, push notifications will instead be sent to all devices
+#   associated with the account specified by the access token.
+zfs_zed_pushbullet_channel_tag: ~
+# Slack Webhook URL.
+# This allows posting to the given channel and includes an access token.
+#   <https://api.slack.com/incoming-webhooks>
+zfs_zed_slack_webhook_url: ~
+# Default directory for zed state files.
+zfs_zed_rundir: ~
+# Turn on/off enclosure LEDs when drives get DEGRADED/FAULTED.  This works for
+# device mapper and multipath devices as well.  Your enclosure must be
+# supported by the Linux SES driver for this to work.
+zfs_zed_use_enclosure_leds: true
+# Run a scrub after every resilver
+# Disabled by default, 1 to enable and 0 to disable.
+zfs_zed_scrub_after_resilver: ~
+# The syslog priority (e.g., specified as a "facility.level" pair).
+zfs_zed_syslog_priority: ~
+# The syslog tag for marking zed events.
+zfs_zed_syslog_tag: ~
+# Which set of event subclasses to log
+# By default, events from all subclasses are logged.
+# If ZED_SYSLOG_SUBCLASS_INCLUDE is set, only subclasses
+# matching the pattern are logged. Use shell wildcards (*, ?)
+# to match multiple subclasses.
+# Otherwise, if ZED_SYSLOG_SUBCLASS_EXCLUDE is set, the
+# matching subclasses are excluded from logging.
+zfs_zed_syslog_subclass_include: ~
+zfs_zed_syslog_subclass_exclude:
+  - history_event
+# Use GUIDs instead of names when logging pool and vdevs
+zfs_zed_syslog_display_guids: ~
+
 # ZFS Kernel parameters to set.
 #
 # Example:

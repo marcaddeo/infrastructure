@@ -1,6 +1,8 @@
 ---
 - import_tasks: configure_zfs.yml
 
+- import_tasks: configure_zed.yml
+
 - import_tasks: install_nfs.yml
   when: zfs_filesystems | dict2items | json_query('[*].value.properties.sharenfs') | difference([false, 'off']) | length > 0
 
