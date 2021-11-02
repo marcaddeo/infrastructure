@@ -6,8 +6,13 @@ servers = [
     box: "bullseye64-zfsroot",
     cpu: 2,
     memory: 2048,
-    ip: "192.168.33.100",
-    ssh_port: 54321
+    ip: "192.168.33.65",
+    ssh_port: 54321,
+    additional_disks: [
+      {name: "test1", size: "1GB"},
+      {name: "test2", size: "1GB"},
+      {name: "test3", size: "1GB"}
+    ]
   }
 ]
 
@@ -26,6 +31,12 @@ Vagrant.configure("2") do |config|
       server.vm.hostname = settings[:hostname]
       server.vm.network :private_network, ip: settings[:ip]
       server.vm.network :forwarded_port, id: "ssh", host: settings[:ssh_port], guest: 22
+
+      if not settings[:additional_disks].nil?
+        settings[:additional_disks].each do |disk|
+          server.vm.disk :disk, name: disk[:name], size: disk[:size]
+        end
+      end
 
       server.vm.provider :virtualbox do |vb|
         vb.name = settings[:hostname]

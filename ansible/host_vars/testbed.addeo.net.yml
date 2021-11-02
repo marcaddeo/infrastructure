@@ -29,9 +29,9 @@ zfs_pools:
     vdevs:
       - type: raidz
         devices:
-          - /root/a
-          - /root/b
-          - /root/c
+          - /dev/sdc
+          - /dev/sdd
+          - /dev/sde
     scrub: weekly
     force: true
     properties:
