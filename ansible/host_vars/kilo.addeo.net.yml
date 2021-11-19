@@ -11,5 +11,9 @@ bootstrap_zpool_disk_identifiers:
   - /dev/disk/by-id/scsi-3500a0751e5a956ff
   - /dev/disk/by-id/scsi-3500a0751e5a9496e
 
+# Firewall Configuration.
+kilo_firewall_allowed_tcp_ports__to_merge:
+  - 3260
+
 # Shavee Configuration.
 install_shavee: true
