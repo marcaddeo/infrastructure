@@ -53,14 +53,29 @@
       loop: "{{ server_users }}"
       no_log: true
 
+    - name: Check if user home directories have been skeletonized
+      stat:
+        path: "/home/{{ item.name }}/.profile"
+      register: server_users_stat
+      loop: "{{ server_users }}"
+
     - name: Ensure user home directories have been skeletonized
       copy:
         src: /etc/skel/.
-        dest: "/home/{{ item.name }}"
+        dest: "/home/{{ item.0.name }}/."
+        owner: "{{ item.0.name }}"
+        group: "{{ item.0.name }}"
+        remote_src: true
+        force: "{{ not item.1.stat.exists }}"
+      loop: "{{ server_users | zip(server_users_stat.results) | list }}"
+      no_log: true
+
+    - name: Ensure user home directories have the correct ownership
+      file:
+        path: "/home/{{ item.name }}"
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
-        remote_src: true
-        force: false
+        state: directory
       loop: "{{ server_users }}"
       no_log: true
 
