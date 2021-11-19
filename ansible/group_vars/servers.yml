@@ -42,7 +42,7 @@ plymouth_theme: brogit-plymouth-theme
 sftp_enabled: true
 
 # Firewall Configuration.
-firewall_allowed_tcp_ports:
+servers_firewall_allowed_tcp_ports__to_merge:
   - 22
   - 25
 

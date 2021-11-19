@@ -1,5 +1,56 @@
 # Homelab Infrastructure
 
+## Ansible controller requirements
+These requirements are for the host that is running the Ansible playbooks.
+
+```bash
+$ pip3 install ansible_merge_vars
+```
+
+## Merging variables
+In order to easily be able to merge host specific variables with default
+variables, we're using [ansible-merge-vars][]. We can use this the following
+way:
+
+_group_vars/servers.yml_
+```yaml
+# Firewall Configuration.
+servers_firewall_allowed_tcp_ports__to_merge:
+  - 22
+  - 25
+```
+
+_host_vars/testbed.addeo.net.yml_
+```yaml
+# Firewall Configuration.
+testbed_firewall_allowed_tcp_ports__to_merge:
+  - 3260
+```
+
+_server.yml_
+```yaml
+  # ...
+  pre_tasks:
+    - name: Merge firewall_allowed_tcp_ports
+      merge_vars:
+        suffix_to_merge: firewall_allowed_tcp_ports__to_merge
+        merged_var_name: firewall_allowed_tcp_ports
+        expected_type: list
+  # ...
+```
+
+In this example we've got the default firewall configuration that applies to
+all servers, and a host specific firewall configuration that extends the
+default. To accomplish this we name our variables we intend to merge with the
+following convention:
+
+```
+<host or group name>_<final var name>__to_merge
+```
+
+Finally, we merge the variables into the final usable variable in the playbooks
+`pre_tasks`.
+
 ## Bootstrap a Debian 11 Bullseye server with ZFS root
 This setup is based on [this guide][] and will provision a Debian 11 Bullseye
 server with ZFS root which is optionally encrypted, and optionally booted via
@@ -137,3 +188,4 @@ $ ansible-playbook -i dev bootstrap/debian-zfs-root-part3.yml -e 'ansible_user=r
 ```
 
 [this guide]: https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Buster%20Root%20on%20ZFS.html#step-8-full-software-installation
+[ansible-merge-vars]: https://github.com/leapfrogonline/ansible-merge-vars

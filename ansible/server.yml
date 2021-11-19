@@ -3,6 +3,12 @@
   become: true
   collections:
     - devsec.hardening
+  pre_tasks:
+    - name: Merge firewall_allowed_tcp_ports
+      merge_vars:
+        suffix_to_merge: firewall_allowed_tcp_ports__to_merge
+        merged_var_name: firewall_allowed_tcp_ports
+        expected_type: list
   roles:
     - os_hardening
     - ssh_hardening
