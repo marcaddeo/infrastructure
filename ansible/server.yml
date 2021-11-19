@@ -21,9 +21,9 @@
     - geerlingguy.ntp
     - oefenweb.postfix
     - jnv.unattended-upgrades
-    - role: ntd.nut
-      when: "'physical_servers' in group_names"
-    - role: zfs
+    - role: maxhoesel.nut_netclient
+      when: install_nut is defined and install_nut
+    - zfs
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
       blockinfile:

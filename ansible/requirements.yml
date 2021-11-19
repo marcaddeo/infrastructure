@@ -26,5 +26,4 @@ roles:
   - name: jnv.unattended-upgrades
     version: v1.11.0
 
-  - name: ntd.nut
-    version: 1.3.0
+  - name: maxhoesel.nut_netclient
