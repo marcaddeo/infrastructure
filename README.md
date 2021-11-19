@@ -4,6 +4,7 @@
 These requirements are for the host that is running the Ansible playbooks.
 
 ```bash
+$ pip3 install jmespath
 $ pip3 install ansible_merge_vars
 ```
 
