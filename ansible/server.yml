@@ -17,7 +17,7 @@
     - jnv.unattended-upgrades
     - role: ntd.nut
       when: "'physical_servers' in group_names"
-    - zfs
+    - role: zfs
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
       blockinfile:

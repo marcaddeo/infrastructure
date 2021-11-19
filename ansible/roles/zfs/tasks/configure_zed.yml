@@ -6,3 +6,9 @@
     owner: root
     group: root
     mode: 0600
+
+- name: configure_zed | Enable and start ZED
+  systemd:
+    name: zed
+    enabled: true
+    state: started
