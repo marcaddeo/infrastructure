@@ -31,6 +31,7 @@ Vagrant.configure("2") do |config|
       server.vm.hostname = settings[:hostname]
       server.vm.network :private_network, ip: settings[:ip]
       server.vm.network :forwarded_port, id: "ssh", host: settings[:ssh_port], guest: 22
+      server.vm.network :forwarded_port, id: "proxmox", host: 8006, guest: 8006
 
       if not settings[:additional_disks].nil?
         settings[:additional_disks].each do |disk|

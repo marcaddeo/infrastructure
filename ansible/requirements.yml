@@ -27,3 +27,7 @@ roles:
     version: v1.11.0
 
   - name: maxhoesel.nut_netclient
+
+  - name: lae.proxmox
+    src: https://github.com/lae/ansible-role-proxmox
+    version: develop

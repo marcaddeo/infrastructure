@@ -6,11 +6,12 @@ cantilever.addeo.net ansible_host=10.1.15.70
 [storage_servers]
 kilo.addeo.net ansible_host=10.1.15.101
 ; testbed.addeo.net ansible_host=10.1.15.65
-testbed.addeo.net ansible_host=127.0.0.1 ansible_port=54321
+; testbed.addeo.net ansible_host=127.0.0.1 ansible_port=54321
 
 [proxmox_servers]
 cantilever.addeo.net ansible_host=10.1.15.70
 crimson.addeo.net ansible_host=10.1.15.5
+testbed.addeo.net ansible_host=127.0.0.1 ansible_port=54321
 
 [docker_servers]
 violet.addeo.net ansible_host=10.1.15.50

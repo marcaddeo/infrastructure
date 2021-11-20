@@ -44,6 +44,7 @@
 - name: Get current Plymouth theme
   shell: plymouth-set-default-theme
   register: current_theme
+  changed_when: false
 
 - name: Set Plymouth theme
   shell: "plymouth-set-default-theme -R {{ plymouth_theme }}"

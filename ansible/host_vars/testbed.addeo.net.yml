@@ -62,3 +62,5 @@ zfs_filesystems:
     properties:
       sharesmb: true
     state: present
+  spool/data/proxmox:
+    state: present
