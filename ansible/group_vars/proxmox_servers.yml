@@ -44,17 +44,3 @@ pve_storages:
       - rootdir
     pool: spool/data/proxmox/local-zfs
     sparse: true
-
-# Firewall Configuration.
-proxmox_servers_firewall_allowed_tcp_ports__to_merge:
-  - 8006
-  - 5900:5999
-  - 3128
-  - 22
-  - 25
-  - 60000:60050
-
-proxmox_servers_firewall_allowed_udp_ports__to_merge:
-  - 111
-  - 5404
-  - 5405

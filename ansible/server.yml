@@ -22,7 +22,8 @@
       when: install_dell_omsa is defined and install_dell_omsa
     - role: plymouth
       when: install_plymouth is defined and install_plymouth
-    - geerlingguy.firewall
+    - role: geerlingguy.firewall
+      when: "'proxmox_servers' not in group_names"
     - geerlingguy.ntp
     - oefenweb.postfix
     - jnv.unattended-upgrades
