@@ -64,6 +64,7 @@
         path: "/home/{{ item.name }}/.profile"
       register: server_users_stat
       loop: "{{ server_users }}"
+      no_log: true
 
     - name: Ensure user home directories have been skeletonized
       copy:
