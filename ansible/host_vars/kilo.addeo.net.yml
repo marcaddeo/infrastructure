@@ -4,7 +4,6 @@ server_hostname: kilo
 server_fqdn: kilo.addeo.net
 
 # Bootstrap Configuration.
-bootstrap_boot_type: uefi
 bootstrap_zpool_encrypt_root: true
 bootstrap_zpool_type: mirror
 bootstrap_zpool_disk_identifiers:

@@ -1,5 +1,0 @@
-sudo_group:
-  MacOSX: admin
-  Debian: sudo
-  Ubuntu: sudo
-  CentOS: wheel

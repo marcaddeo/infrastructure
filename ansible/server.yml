@@ -29,7 +29,11 @@
     - jnv.unattended-upgrades
     - role: maxhoesel.nut_netclient
       when: install_nut is defined and install_nut
-    - zfs
+    - role: shavee
+      when: install_shavee is defined and install_shavee
+      tags: shavee
+    - role: zfs
+      tags: zfs
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
       blockinfile:

@@ -5,6 +5,12 @@ install_shavee: false
 # The Shavee git reference to download and install.
 shavee_git_ref: 5fe5b635ce6ee7ad85123b2ea545254aed2509c7
 
+# Whether or not to use YubiKey when decrypting.
+shavee_use_yubikey: true
+
+# Which slot on the YubiKey to use.
+shavee_yubikey_slot: 1
+
 # ZFS dataset names to be decrypted at boot time via systemd/shavee.
 #
 # Dataset names should have /'s replaced with -'s for compatability with

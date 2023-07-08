@@ -1,4 +1,10 @@
 ---
+- name: Ensure Rustup is installed for root
+  include_role:
+    name: hurricanehrndz.rustup
+  vars:
+    rustup_user: root
+
 - name: Download Shavee
   unarchive:
     src: "https://github.com/ashuio/shavee/archive/{{ shavee_git_ref }}.tar.gz"
@@ -27,6 +33,7 @@
     src: /usr/local/src/shavee/target/release/shavee
     dest: /usr/local/sbin/shavee
     remote_src: true
+    mode: u+rwx,g+rx,o+rx
 
 - name: Install Shavee PAM module
   copy:

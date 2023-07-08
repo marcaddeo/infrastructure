@@ -4,9 +4,16 @@
 These requirements are for the host that is running the Ansible playbooks.
 
 ```bash
+$ brew install hudochenkov/sshpass/sshpass # or other package manager
 $ pip3 install jmespath
 $ pip3 install ansible_merge_vars
 ```
+
+**NOTE:** I had to specifically `brew install ansible@6` and use the `master`
+version of mitogen in order for this to work in 2023.
+
+**NOTE:** I dont think I actually completed the UEFI functionality of the
+bootstrap playbooks.
 
 ## Merging variables
 In order to easily be able to merge host specific variables with default
@@ -187,6 +194,19 @@ $ ansible-playbook -i dev bootstrap/debian-zfs-root-part1.yml -e 'ansible_user=r
 $ ansible-playbook -i dev bootstrap/debian-zfs-root-part2.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
 $ ansible-playbook -i dev bootstrap/debian-zfs-root-part3.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
 ```
+
+## Rollback ZFS root
+
+1. Load up a Live CD and run through the steps to prepare the live CD above
+2. Install ZFS packages as in debian-zfs-root-part1
+3. sudo zfs import -f rpool
+4. sudo zfs rollback -rR rpool/root/debian@bootstrap
+5. reboot
+6. initramfs will come up, manually import with `zpool import -f rpool` because
+   it was previously mounted on another system
+7. `reboot -f -d 0`
+
+no password necessary??
 
 [this guide]: https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Buster%20Root%20on%20ZFS.html#step-8-full-software-installation
 [ansible-merge-vars]: https://github.com/leapfrogonline/ansible-merge-vars

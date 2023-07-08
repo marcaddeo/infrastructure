@@ -6,12 +6,17 @@ server_fqdn: testbed.addeo.net
 # Bootstrap Configuration.
 bootstrap_zpool_type: mirror
 bootstrap_zpool_disk_identifiers:
-  - /dev/disk/by-id/ata-VBOX_HARDDISK_VBc3167122-1ef5db5f
-  - /dev/disk/by-id/ata-VBOX_HARDDISK_VB8b62a23a-33273c01
+  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
+  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
 
 # Firewall Configuration.
-testbed_firewall_allowed_tcp_ports__to_merge:
-  - 3260
+kilotwo_firewall_allowed_udp_ports__to_merge:
+  - 137 # SMB
+  - 138 # SMB
+kilotwo_firewall_allowed_tcp_ports__to_merge:
+  - 139 # SMB
+  - 445 # SMB
+  - 3260 # iSCSI
 
 # ZFS Configuration.
 zfs_pools:
@@ -25,9 +30,9 @@ zfs_pools:
     vdevs:
       - type: raidz
         devices:
-          - /dev/sdc
-          - /dev/sdd
-          - /dev/sde
+          - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi2
+          - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi3
+          - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi4
     scrub: weekly
     force: true
     properties:
@@ -40,16 +45,24 @@ zfs_pools:
     state: present
 
 zfs_filesystems:
-  spool/data:
+  # iSCSI datasets need to be outside of spool/data because it's encrypted.
+  # Servers booting via iSCSI should encrypt their root on their end.
+  spool/iscsi:
     properties:
       quota: 50G
       compression: lz4
       sharenfs: false
     state: present
-  spool/data/iscsi-test:
+  spool/iscsi/iscsi-test:
     properties:
       volsize: 5M
       shareiscsi: true
+    state: present
+  spool/data:
+    properties:
+      quota: 50G
+      compression: lz4
+      sharenfs: false
     state: present
   spool/data/something:
     state: present
@@ -64,3 +77,9 @@ zfs_filesystems:
     state: present
   spool/data/proxmox:
     state: present
+
+# Shavee Configuration.
+install_shavee: true
+shavee_use_yubikey: false
+shavee_encrypted_datasets:
+  - spool-data

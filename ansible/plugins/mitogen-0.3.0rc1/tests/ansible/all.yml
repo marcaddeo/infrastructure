@@ -1,4 +1,0 @@
-- include: setup/all.yml
-- include: regression/all.yml
-- include: integration/all.yml
-
