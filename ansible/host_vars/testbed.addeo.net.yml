@@ -63,6 +63,8 @@ zfs_filesystems:
       quota: 50G
       compression: lz4
       sharenfs: false
+      # This is an encrypted dataset, but it has to be managed manually.
+      # encryption: true
     state: present
   spool/data/something:
     state: present
