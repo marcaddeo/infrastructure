@@ -208,5 +208,43 @@ $ ansible-playbook -i dev bootstrap/debian-zfs-root-part3.yml -e 'ansible_user=r
 
 no password necessary??
 
+## Encrypted ZFS Datasets with Shavee
+In this setup we're using Shavee to allow us to use a passphrase + YubiKey HMAC
+for encrypted zfs datasets with MFA.
+
+To add a new encrypted dataset, or decrypt an existing one, you will need to
+physically be at the server.
+
+```bash
+$ zfs create -o encryption=on -o keylocation=prompt -o keyformat=passphrase spool/data
+# Enter a temporary encryption passphrase.
+$ shavee -c -y 1 -z spool/data
+# Enter real passphrase.
+```
+
+Next, add the new dataset to the `zfs_filesystems` list on the appropriate
+servers host_vars. All other properties of the dataset should be managed via
+Ansible going forward.
+
+```yaml
+zfs_filesystems:
+  spool/data:
+    properties:
+      quota: 50G
+      compression: lz4
+      sharenfs: false
+      # Encryption is enabled, but is manually managed.
+      # encryption: true
+    state: present
+```
+
+Finally, add the dataset to the list of shavee targets (replacing `/` with
+`-`):
+
+```yaml
+shavee_encrypted_datasets:
+  - spool-data
+```
+
 [this guide]: https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Buster%20Root%20on%20ZFS.html#step-8-full-software-installation
 [ansible-merge-vars]: https://github.com/leapfrogonline/ansible-merge-vars

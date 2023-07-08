@@ -11,8 +11,64 @@ bootstrap_zpool_disk_identifiers:
   - /dev/disk/by-id/scsi-3500a0751e5a9496e
 
 # Firewall Configuration.
-kilo_firewall_allowed_tcp_ports__to_merge:
-  - 3260
+kilo_firewall_allowed_udp_ports__to_merge:
+  - 137 # SMB
+  - 138 # SMB
+kiloo_firewall_allowed_tcp_ports__to_merge:
+  - 139 # SMB
+  - 445 # SMB
+  - 3260 # iSCSI
+
+# ZFS Configuration.
+zfs_pools:
+  bpool:
+    scrub: false
+    state: scrub
+  rpool:
+    scrub: weekly
+    state: scrub
+  spool:
+    vdevs:
+      - type: raidz2
+        devices:
+          # @todo update to actual dev ids, also do i need to do anything different here for raidz2?
+          - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi2
+          - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi3
+          - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi4
+    scrub: weekly
+    force: true
+    properties:
+      ashift: 12
+    filesystem_properties:
+      compression: lz4
+      relatime: "on"
+      xattr: sa
+      utf8only: "on"
+    state: present
+
+zfs_filesystems:
+  # iSCSI datasets need to be outside of spool/data because it's encrypted.
+  # Servers booting via iSCSI should encrypt root on their end.
+  spool/iscsi:
+    properties:
+      quota: 50G
+      compression: lz4
+      sharenfs: false
+    state: present
+  # The main encrypted dataset for most types of data.
+  # @todo manually create this dataset with encryption, and then change keys
+  # with shavee, and then uncomment this.
+  # spool/data:
+  #   properties:
+  #     quota: 50G
+  #     compression: lz4
+  #     sharenfs: false
+  #     # Encryption is enabled, but is manually managed.
+  #     # encryption: true
+  #   state: present
 
 # Shavee Configuration.
 install_shavee: true
+# @todo uncomment after manually creating the encrypted the dataset.
+# shavee_encrypted_datasets:
+#   - spool-data

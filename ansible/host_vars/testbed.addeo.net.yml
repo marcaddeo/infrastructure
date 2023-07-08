@@ -10,10 +10,10 @@ bootstrap_zpool_disk_identifiers:
   - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
 
 # Firewall Configuration.
-kilotwo_firewall_allowed_udp_ports__to_merge:
+testbed_firewall_allowed_udp_ports__to_merge:
   - 137 # SMB
   - 138 # SMB
-kilotwo_firewall_allowed_tcp_ports__to_merge:
+testbed_firewall_allowed_tcp_ports__to_merge:
   - 139 # SMB
   - 445 # SMB
   - 3260 # iSCSI
@@ -46,7 +46,7 @@ zfs_pools:
 
 zfs_filesystems:
   # iSCSI datasets need to be outside of spool/data because it's encrypted.
-  # Servers booting via iSCSI should encrypt their root on their end.
+  # Servers booting via iSCSI should encrypt root on their end.
   spool/iscsi:
     properties:
       quota: 50G
@@ -63,7 +63,7 @@ zfs_filesystems:
       quota: 50G
       compression: lz4
       sharenfs: false
-      # This is an encrypted dataset, but it has to be managed manually.
+      # Encryption is enabled, but is manually managed.
       # encryption: true
     state: present
   spool/data/something:
