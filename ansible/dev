@@ -1,10 +1,10 @@
 [dell_servers]
-; kilo.addeo.net ansible_host=10.1.15.65
+kilo.addeo.net ansible_host=10.1.15.65
 crimson.addeo.net ansible_host=10.1.15.5
 cantilever.addeo.net ansible_host=10.1.15.70
 
 [storage_servers]
-; kilo.addeo.net ansible_host=10.1.15.65
+kilo.addeo.net ansible_host=10.1.15.65
 testbed.addeo.net ansible_host=10.1.15.66
 
 [proxmox_servers]

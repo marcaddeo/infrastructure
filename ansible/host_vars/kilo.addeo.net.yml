@@ -56,19 +56,16 @@ zfs_filesystems:
       sharenfs: false
     state: present
   # The main encrypted dataset for most types of data.
-  # @todo manually create this dataset with encryption, and then change keys
-  # with shavee, and then uncomment this.
-  # spool/data:
-  #   properties:
-  #     quota: 50G
-  #     compression: lz4
-  #     sharenfs: false
-  #     # Encryption is enabled, but is manually managed.
-  #     # encryption: true
-  #   state: present
+  spool/data:
+    properties:
+      quota: 50G
+      compression: lz4
+      sharenfs: false
+      # Encryption is enabled, but is manually managed.
+      # encryption: true
+    state: present
 
 # Shavee Configuration.
 install_shavee: true
-# @todo uncomment after manually creating the encrypted the dataset.
-# shavee_encrypted_datasets:
-#   - spool-data
+shavee_encrypted_datasets:
+  - spool-data
