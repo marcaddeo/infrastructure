@@ -51,16 +51,19 @@ zfs_datasets:
   # Servers booting via iSCSI should encrypt root on their end.
   spool/iscsi:
     properties:
-      quota: 50G
-      compression: lz4
-      sharenfs: false
+      dedup: off
+      compression: off
+    state: present
+  spool/iscsi/cantilever:
+    properties:
+      volsize: 100G
+      volblocksize: 32K
+      shareiscsi: true
     state: present
   # The main encrypted dataset for most types of data.
   spool/data:
     properties:
-      quota: 50G
       compression: lz4
-      sharenfs: false
       # Encryption is enabled, but is manually managed.
       # encryption: true
     state: present
