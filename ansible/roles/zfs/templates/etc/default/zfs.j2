@@ -16,8 +16,8 @@ ZFS_MOUNT='{{ 'yes' if (zfs_mount | bool) else 'no' }}'
 # Run `zfs unmount -a` during system stop?
 ZFS_UNMOUNT='{{ 'yes' if (zfs_unmount | bool) else 'no' }}'
 
-{% set has_sharenfs = zfs_filesystems | dict2items | json_query('[*].value.properties.sharenfs') | difference([false, 'off']) | length > 0 -%}
-{% set has_sharesmb = zfs_filesystems | dict2items | json_query('[*].value.properties.sharesmb') | difference([false, 'off']) | length > 0 -%}
+{% set has_sharenfs = zfs_datasets | dict2items | json_query('[*].value.properties.sharenfs') | difference([false, 'off']) | length > 0 -%}
+{% set has_sharesmb = zfs_datasets | dict2items | json_query('[*].value.properties.sharesmb') | difference([false, 'off']) | length > 0 -%}
 
 # Run `zfs share -a` during system start?
 # nb: The shareiscsi, sharenfs, and sharesmb dataset properties.

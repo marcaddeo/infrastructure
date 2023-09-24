@@ -222,12 +222,12 @@ $ shavee -c -y 1 -z spool/data
 # Enter real passphrase.
 ```
 
-Next, add the new dataset to the `zfs_filesystems` list on the appropriate
+Next, add the new dataset to the `zfs_datasets` list on the appropriate
 servers host_vars. All other properties of the dataset should be managed via
 Ansible going forward.
 
 ```yaml
-zfs_filesystems:
+zfs_datasets:
   spool/data:
     properties:
       quota: 50G

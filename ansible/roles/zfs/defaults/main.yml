@@ -199,7 +199,7 @@ zfs_pools: {}
 #
 # Example:
 #
-# zfs_filesystems:
+# zfs_datasets:
 #   spool/data:
 #     properties:
 #       quota: 50G
@@ -211,4 +211,4 @@ zfs_pools: {}
 #       volsize: 500G
 #       shareiscsi: true
 #     state: present
-zfs_filesystems: {}
+zfs_datasets: {}

@@ -44,7 +44,7 @@ zfs_pools:
       utf8only: "on"
     state: present
 
-zfs_filesystems:
+zfs_datasets:
   # iSCSI datasets need to be outside of spool/data because it's encrypted.
   # Servers booting via iSCSI should encrypt root on their end.
   # @note im not actually sure why this had to move now? the shareiscsi

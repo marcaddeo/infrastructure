@@ -4,17 +4,17 @@
 - import_tasks: configure_zed.yml
 
 - import_tasks: install_nfs.yml
-  when: zfs_filesystems | dict2items | json_query('[*].value.properties.sharenfs') | difference([false, 'off']) | length > 0
+  when: zfs_datasets | dict2items | json_query('[*].value.properties.sharenfs') | difference([false, 'off']) | length > 0
 
 - import_tasks: install_samba.yml
-  when: zfs_filesystems | dict2items | json_query('[*].value.properties.sharesmb') | difference([false, 'off']) | length > 0
+  when: zfs_datasets | dict2items | json_query('[*].value.properties.sharesmb') | difference([false, 'off']) | length > 0
 
 - import_tasks: manage_pools.yml
 
 - import_tasks: manage_filesystems.yml
 
 # - import_tasks: manage_iscsi.yml
-#   when: zfs_filesystems | dict2items | json_query('[*].value.properties.shareiscsi') | difference([false, 'off']) | length > 0
+#   when: zfs_datasets | dict2items | json_query('[*].value.properties.shareiscsi') | difference([false, 'off']) | length > 0
 
 - import_tasks: manage_scrub_timers.yml
   when: zfs_pools | dict2items | json_query('[*].value.scrub') | length > 0
