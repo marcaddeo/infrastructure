@@ -10,6 +10,21 @@ bootstrap_zpool_disk_identifiers:
   - /dev/disk/by-id/scsi-3500a0751e5a956ff
   - /dev/disk/by-id/scsi-3500a0751e5a9496e
 
+# Network Configuration
+ifupdown__host_interfaces:
+  eno1:
+    allow: auto
+    inet: static
+    address: 172.1.15.65/31
+    state: present
+  eno3:
+    allow: auto
+    inet: static
+    address: 10.1.15.65/24
+    gateway: 10.1.15.1
+    dns_nameservers: 10.1.15.1
+    state: present
+
 # Firewall Configuration.
 kilo_firewall_allowed_udp_ports__to_merge:
   - 137 # SMB

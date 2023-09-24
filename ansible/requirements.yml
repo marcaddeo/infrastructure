@@ -8,6 +8,10 @@ collections:
     version: 7.12.0
     source: https://galaxy.ansible.com
 
+  - name: https://github.com/marcaddeo/debops.git
+    type: git
+    version: master
+
 roles:
   - name: geerlingguy.ntp
     version: 2.3.0

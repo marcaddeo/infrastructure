@@ -3,6 +3,7 @@
   become: true
   collections:
     - devsec.hardening
+    - debops.debops
   pre_tasks:
     - name: Merge firewall_allowed_tcp_ports
       merge_vars:
@@ -35,6 +36,8 @@
       tags: shavee
     - role: zfs
       tags: zfs
+    - role: ifupdown
+      tags: ifupdown
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
       blockinfile:
