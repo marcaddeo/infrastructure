@@ -1,7 +1,7 @@
 ---
-- name: manage_filesystems | Manage ZFS filesystems
+- name: manage_datasets | Manage ZFS datasets
   zfs:
     name: "{{ item.key }}"
     extra_zfs_properties: "{{ item.value.properties | default({}) | dict2items | rejectattr('key', 'in', zfs_custom_properties) | list | items2dict }}"
     state: "{{ item.value.state }}"
-  loop: "{{ zfs_datasets | dict2items }}"
+  loop: "{{ zfs_filesystems | dict2items }}"

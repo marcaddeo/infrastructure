@@ -11,7 +11,7 @@
 
 - import_tasks: manage_pools.yml
 
-- import_tasks: manage_filesystems.yml
+- import_tasks: manage_datasets.yml
 
 # - import_tasks: manage_iscsi.yml
 #   when: zfs_datasets | dict2items | json_query('[*].value.properties.shareiscsi') | difference([false, 'off']) | length > 0
