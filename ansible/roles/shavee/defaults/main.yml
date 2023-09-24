@@ -2,8 +2,8 @@
 # Whether or not to install Shavee.
 install_shavee: false
 
-# The Shavee git reference to download and install.
-shavee_git_ref: 5fe5b635ce6ee7ad85123b2ea545254aed2509c7
+# The Shavee tag to download and install.
+shavee_tag: v0.5.2
 
 # Whether or not to use YubiKey when decrypting.
 shavee_use_yubikey: true

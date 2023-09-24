@@ -47,6 +47,10 @@ zfs_pools:
 zfs_filesystems:
   # iSCSI datasets need to be outside of spool/data because it's encrypted.
   # Servers booting via iSCSI should encrypt root on their end.
+  # @note im not actually sure why this had to move now? the shareiscsi
+  # property is a "virtual" custom propery i've added, that gets removed, and
+  # is not yet handled... and thus this shouldn't do anything. might want to re-look into this since it decides wether or not iscsi is encrypted here
+  # also i think iscsi shares may need to be _volumes_ and not _fs/datasets_
   spool/iscsi:
     properties:
       quota: 50G

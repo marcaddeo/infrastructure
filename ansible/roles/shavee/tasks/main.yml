@@ -7,12 +7,12 @@
 
 - name: Download Shavee
   unarchive:
-    src: "https://github.com/ashuio/shavee/archive/{{ shavee_git_ref }}.tar.gz"
+    src: "https://github.com/ashuio/shavee/archive/refs/tags/{{ shavee_tag }}.tar.gz"
     dest: /usr/local/src/
     remote_src: true
     extra_opts:
       - --transform
-      - "s/shavee-{{ shavee_git_ref }}/shavee/"
+      - "s/shavee-{{ shavee_tag }}/shavee/"
 
 - name: Install required packages
   apt:
@@ -38,7 +38,7 @@
 - name: Install Shavee PAM module
   copy:
     src: /usr/local/src/shavee/target/release/libshavee_pam.so
-    dest: /usr/local/lib/security
+    dest: /usr/local/lib/security/libshavee_pam.so
     remote_src: true
 
 - name: Install Shavee systemd unit
