@@ -31,7 +31,7 @@ network_interfaces:
 kilo_firewall_allowed_udp_ports__to_merge:
   - 137 # SMB
   - 138 # SMB
-kiloo_firewall_allowed_tcp_ports__to_merge:
+kilo_firewall_allowed_tcp_ports__to_merge:
   - 139 # SMB
   - 445 # SMB
   - 3260 # iSCSI
