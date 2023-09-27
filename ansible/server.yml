@@ -107,10 +107,9 @@
         line: "%sudo   ALL=(ALL:ALL) NOPASSWD: ALL"
 
     - name: Ensure the server hostname is set
-      lineinfile:
-        path: /etc/hostname
-        regexp: "{{ server_hostname }}\n"
-        line: "{{ server_hostname }}\n"
+      copy:
+        dest: /etc/hostname
+        content: "{{ server_hostname }}\n"
 
     - name: Ensure the servers hostname/fqdn are in /etc/hosts
       lineinfile:

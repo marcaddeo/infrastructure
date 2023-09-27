@@ -3,7 +3,7 @@
 install_shavee: false
 
 # The Shavee tag to download and install.
-shavee_tag: v0.5.2
+shavee_tag: 0.5.2
 
 # Whether or not to use YubiKey when decrypting.
 shavee_use_yubikey: true

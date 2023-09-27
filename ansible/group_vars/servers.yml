@@ -46,6 +46,11 @@ servers_firewall_allowed_tcp_ports__to_merge:
   - 22
   - 25
 
+# Hardening Configuration.
+# Don't disable the ansible users password.
+os_ignore_users:
+  - ansible
+
 # NTP Configuration.
 ntp_timezone: America/New_York
 ntp_package: chrony

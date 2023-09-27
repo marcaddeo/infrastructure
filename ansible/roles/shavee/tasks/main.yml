@@ -7,7 +7,7 @@
 
 - name: Download Shavee
   unarchive:
-    src: "https://github.com/ashuio/shavee/archive/refs/tags/{{ shavee_tag }}.tar.gz"
+    src: "https://github.com/ashuio/shavee/archive/refs/tags/v{{ shavee_tag }}.tar.gz"
     dest: /usr/local/src/
     remote_src: true
     extra_opts:
@@ -34,6 +34,11 @@
     dest: /usr/local/sbin/shavee
     remote_src: true
     mode: u+rwx,g+rx,o+rx
+
+- name: Ensure /usr/local/lib/security dir exists
+  file:
+    path: /usr/local/lib/security
+    state: directory
 
 - name: Install Shavee PAM module
   copy:

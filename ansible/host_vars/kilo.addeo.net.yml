@@ -74,7 +74,8 @@ zfs_datasets:
   spool/iscsi/cantilever:
     properties:
       volsize: 100G
-      volblocksize: 32K
+      # volblocksize can only be set during creation of the dataset.
+      # volblocksize: 32K
       shareiscsi: true
     state: present
   # The main encrypted dataset for most types of data.
