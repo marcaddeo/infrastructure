@@ -48,10 +48,12 @@ zfs_pools:
     vdevs:
       - type: raidz2
         devices:
-          # @todo update to actual dev ids, also do i need to do anything different here for raidz2?
-          - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi2
-          - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi3
-          - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi4
+          - /dev/disk/by-id/wwn-0x5000cca267c7fe1f
+          - /dev/disk/by-id/wwn-0x5000cca267c8344e
+          - /dev/disk/by-id/wwn-0x5000cca26add40b4
+          - /dev/disk/by-id/wwn-0x5000cca26aea20f7
+          - /dev/disk/by-id/wwn-0x5000cca26aea3bf2
+          - /dev/disk/by-id/wwn-0x5000cca26cc982cc
     scrub: weekly
     force: true
     properties:
