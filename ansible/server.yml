@@ -35,6 +35,8 @@
       tags: shavee
     - role: zfs
       tags: zfs
+    - role: network-interfaces
+      tags: network-interfaces
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
       blockinfile:

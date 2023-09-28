@@ -1,0 +1,15 @@
+---
+- name: Generate network interface configuration
+  template:
+    src: interface.j2
+    dest: "/etc/network/interfaces.d/{{ item.value.name | default(item.key) }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  with_dict: "{{ network_interfaces }}"
+  when: item.value.state | default("present") not in ["absent", "ignore"]
+  vars:
+    interface: "{{ item.value | combine({'name': item.value.name | default(item.key) }) }}"
+  register: network_interfaces_updates
+  notify:
+    - restart networking

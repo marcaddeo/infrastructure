@@ -10,8 +10,7 @@ bootstrap_zpool_disk_identifiers:
   - /dev/disk/by-id/scsi-3500a0751e5a956ff
   - /dev/disk/by-id/scsi-3500a0751e5a9496e
 
-# Network Configuration
-# @TODO implement templating for this shit
+# Network Interfaces Configuration.
 network_interfaces:
   eno1:
     auto: true

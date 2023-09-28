@@ -5,6 +5,7 @@
 !/roles/plymouth
 !/roles/shavee
 !/roles/zfs
+!/roles/network-interfaces
 /collections/*
 !/collections/.gitkeep
 __pycache__

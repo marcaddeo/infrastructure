@@ -1,0 +1,27 @@
+# {{ ansible_managed }}
+
+{% if interface.auto | default() %}
+auto {{ interface.name }}
+{% elif interface.allow | default() %}
+allow-{{ interface.allow }} {{ interface.name }}
+{% endif %}
+{% if interface.no_auto_down | default() %}
+no-auto-down {{ interface.name }}
+{% endif %}
+iface {{ interface.name }} inet {{ interface.inet }}
+  address {{ interface.address | ansible.utils.ipaddr('address') }}
+  netmask {{ interface.address | ansible.utils.ipaddr('netmask') }}
+{% set broadcast = interface.address | ansible.utils.ipaddr('broadcast') %}
+{% if broadcast is not none %}
+  broadcast {{ broadcast }}
+{% endif %}
+{% if interface.gateway | default() %}
+  gateway {{ interface.gateway }}
+{% endif %}
+{% if interface.dns_nameservers | default() %}
+  {%- set nameservers = interface.dns_nameservers -%}
+  {%- if nameservers is string -%}
+    {% set nameservers = [nameservers] %}
+  {%- endif %}
+  dns-nameservers {{ nameservers | join(' ') }}
+{% endif %}
