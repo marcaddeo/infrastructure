@@ -23,6 +23,9 @@ bootstrap_hostname: "{{ server_hostname }}"
 bootstrap_fqdn: "{{ server_fqdn | default(omit) }}"
 bootstrap_users: "{{ server_users }}"
 
+# Network Interfaces Configuration.
+manage_network_interfaces: true
+
 # ZFS Configuration.
 zfs_enable_monitoring: true
 zfs_monitoring_email_dest: !vault |
@@ -42,6 +45,7 @@ plymouth_theme: brogit-plymouth-theme
 sftp_enabled: true
 
 # Firewall Configuration.
+manage_firewall: true
 servers_firewall_allowed_tcp_ports__to_merge:
   - 22
   - 25

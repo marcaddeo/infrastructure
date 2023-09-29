@@ -24,7 +24,7 @@
       when: install_plymouth is defined and install_plymouth
       tags: plymouth
     - role: geerlingguy.firewall
-      when: "'proxmox_servers' not in group_names"
+      when: manage_firewall is defined and manage_firewall
     - geerlingguy.ntp
     - oefenweb.postfix
     - jnv.unattended-upgrades
@@ -36,6 +36,7 @@
     - role: zfs
       tags: zfs
     - role: network-interfaces
+      when: manage_network_interfaces is defined and manage_network_interfaces
       tags: network-interfaces
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed

@@ -1,4 +1,10 @@
 ---
+# Network Interfaces Configuration.
+manage_network_interfaces: false
+#
+# Firewall Configuration.
+manage_firewall: false
+
 # Proxmox Configuration.
 pve_group: proxmox_servers
 pve_reboot_on_kernel_update: false
