@@ -45,7 +45,7 @@
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
       blockinfile:
         path: /usr/lib/apt/apt.systemd.daily
-        insertbefore: '# auto upgrade all upgradeable packages'
+        insertbefore: "# auto upgrade all upgradeable packages"
         block: |
           # Take snapshots before running unattended upgrades.
           zfs snapshot rpool/root/debian@unattended-$(date +%s)
