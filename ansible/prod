@@ -1,0 +1,20 @@
+[dell_servers]
+kilo.addeo.net ansible_host=10.1.15.65
+
+[storage_servers]
+kilo.addeo.net ansible_host=10.1.15.65
+
+[proxmox_servers]
+
+[docker_servers]
+
+[physical_servers:children]
+dell_servers
+
+[servers:children]
+physical_servers
+storage_servers
+proxmox_servers
+docker_servers
+
+[bootstrap]
