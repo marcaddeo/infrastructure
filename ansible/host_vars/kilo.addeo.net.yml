@@ -25,6 +25,12 @@ network_interfaces:
     gateway: 10.1.15.1
     dns_nameservers: 10.1.15.1
     state: present
+  enp65s0:
+    auto: true
+    no_auto_down: true
+    inet: static
+    address: 172.16.115.66/31
+    state: present
 
 # Firewall Configuration.
 kilo_firewall_allowed_udp_ports__to_merge:
