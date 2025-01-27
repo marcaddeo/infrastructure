@@ -1,16 +1,17 @@
 # Homelab Infrastructure
 
 ## Ansible controller requirements
-These requirements are for the host that is running the Ansible playbooks.
 
-```bash
-$ brew install hudochenkov/sshpass/sshpass # or other package manager
-$ pip3 install jmespath
-$ pip3 install ansible_merge_vars
+The current Ansible playbooks are incompatible with the current version of
+Ansible, and need to be run using the `2.13` ansible-core.
+
+This can easily be accomplished via Docker:
+
+```console
+cd ansible
+docker build -t marcaddeo/ansible-runner -f Dockerfile.ansible-runner .
+docker run --rm -it -v $(pwd):/ansible marcaddeo/ansible-runner ansible-playbook ...
 ```
-
-**NOTE:** I had to specifically `brew install ansible@6` and use the `master`
-version of mitogen in order for this to work in 2023.
 
 **NOTE:** I dont think I actually completed the UEFI functionality of the
 bootstrap playbooks.
