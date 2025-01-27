@@ -38,6 +38,9 @@
     - role: network-interfaces
       when: manage_network_interfaces is defined and manage_network_interfaces
       tags: network-interfaces
+    - role: andrewrothstein.tmux
+      when: install_tmux is defined and install_tmux
+      tags: tmux
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
       blockinfile:

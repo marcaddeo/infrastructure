@@ -97,3 +97,8 @@ zfs_datasets:
 install_shavee: true
 shavee_encrypted_datasets:
   - spool-data
+
+# Tmux configuration.
+install_tmux: true
+# @TODO add some sort of packages__to_merge or something and add `pv` to it
+# (and tmux probably, don't really need the role for it)
