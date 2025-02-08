@@ -11,6 +11,9 @@ shavee_use_yubikey: true
 # Which slot on the YubiKey to use.
 shavee_yubikey_slot: 1
 
+# Whether or not datasets should be mounted recursively.
+shavee_recursive_mount: true
+
 # ZFS dataset names to be decrypted at boot time via systemd/shavee.
 #
 # Dataset names should have /'s replaced with -'s for compatability with
