@@ -9,11 +9,13 @@
         suffix_to_merge: firewall_allowed_tcp_ports__to_merge
         merged_var_name: firewall_allowed_tcp_ports
         expected_type: list
+      tags: firewall
     - name: Merge firewall_allowed_udp_ports
       merge_vars:
         suffix_to_merge: firewall_allowed_udp_ports__to_merge
         merged_var_name: firewall_allowed_udp_ports
         expected_type: list
+      tags: firewall
     - name: Merge server_users
       merge_vars:
         suffix_to_merge: server_users__to_merge
@@ -31,6 +33,7 @@
       tags: plymouth
     - role: geerlingguy.firewall
       when: manage_firewall is defined and manage_firewall
+      tags: firewall
     - geerlingguy.ntp
     - oefenweb.postfix
     - jnv.unattended-upgrades
