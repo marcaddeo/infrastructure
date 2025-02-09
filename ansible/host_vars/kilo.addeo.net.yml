@@ -2,6 +2,14 @@
 # Server Configuration.
 server_hostname: kilo
 server_fqdn: kilo.addeo.net
+kilo_server_users__to_merge:
+  - name: spool
+    password_lock: true
+    create_home: false
+    shell: /usr/bin/false
+  - name: ansible
+    groups:
+      - spool
 
 # Bootstrap Configuration.
 bootstrap_zpool_encrypt_root: true
