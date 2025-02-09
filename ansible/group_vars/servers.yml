@@ -2,7 +2,7 @@
 # Server Configuration.
 server_hostname: ~
 server_fqdn: ~
-server_users:
+servers_server_users__to_merge:
   - name: ansible
     password: !vault |
       $ANSIBLE_VAULT;1.1;AES256

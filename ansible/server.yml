@@ -14,6 +14,12 @@
         suffix_to_merge: firewall_allowed_udp_ports__to_merge
         merged_var_name: firewall_allowed_udp_ports
         expected_type: list
+    - name: Merge server_users
+      merge_vars:
+        suffix_to_merge: server_users__to_merge
+        merged_var_name: server_users
+        expected_type: list
+      tags: users
   roles:
     - os_hardening
     - ssh_hardening
@@ -59,16 +65,22 @@
         name: "rpool/home/{{ item.name }}"
         state: present
       loop: "{{ server_users }}"
+      when: item.create_home is not defined or item.create_home
       no_log: true
+      tags: users
 
     - name: Ensure users exist
       user:
         name: "{{ item.name }}"
-        groups: "{{ item.groups }}"
-        password: "{{ item.password | password_hash('sha512', 'salt') }}"
-        shell: /bin/bash
+        groups: "{{ item.groups | default(omit) }}"
+        password: "{{ (item.password is defined) | ternary(item.password | default(omit) | password_hash('sha512', 'salt'), '!') }}"
+        shell: "{{ item.shell | default('/bin/bash') }}"
+        password_lock: "{{ item.password_lock | default(false) }}"
+        create_home: "{{ item.create_home | default(true) }}"
+        append: true
       loop: "{{ server_users }}"
       no_log: true
+      tags: users
 
     - name: Check if user home directories have been skeletonized
       stat:
@@ -76,6 +88,7 @@
       register: server_users_stat
       loop: "{{ server_users }}"
       no_log: true
+      tags: users
 
     - name: Ensure user home directories have been skeletonized
       copy:
@@ -86,7 +99,9 @@
         remote_src: true
         force: "{{ not item.1.stat.exists }}"
       loop: "{{ server_users | zip(server_users_stat.results) | list }}"
+      when: item.0.create_home is not defined or item.0.create_home
       no_log: true
+      tags: users
 
     - name: Ensure user home directories have the correct ownership
       file:
@@ -95,7 +110,9 @@
         group: "{{ item.name }}"
         state: directory
       loop: "{{ server_users }}"
+      when: item.create_home is not defined or item.create_home
       no_log: true
+      tags: users
 
     - name: Ensure users ssh keys have been added to authorized_keys
       authorized_key:
@@ -103,8 +120,9 @@
         key: "{{ lookup('file', item.ssh_public_key_file) }}"
         state: present
       loop: "{{ server_users }}"
-      when: item.ssh_public_key_file is defined
+      when: item.ssh_public_key_file is defined and (item.create_home is not defined or item.create_home)
       no_log: true
+      tags: users
 
     - name: Ensure the sudo group allows passwordless sudo
       lineinfile:
