@@ -22,7 +22,7 @@ In order to easily be able to merge host specific variables with default
 variables, we're using [ansible-merge-vars][]. We can use this the following
 way:
 
-_group_vars/servers.yml_
+### _group_vars/servers.yml_
 
 ```yaml
 # Firewall Configuration.
@@ -31,7 +31,7 @@ servers_firewall_allowed_tcp_ports__to_merge:
   - 25
 ```
 
-_host_vars/testbed.addeo.net.yml_
+### _host_vars/testbed.addeo.net.yml_
 
 ```yaml
 # Firewall Configuration.
@@ -39,7 +39,7 @@ testbed_firewall_allowed_tcp_ports__to_merge:
   - 3260
 ```
 
-_server.yml_
+### _server.yml_
 
 ```yaml
   # ...
@@ -57,7 +57,7 @@ all servers, and a host specific firewall configuration that extends the
 default. To accomplish this we name our variables we intend to merge with the
 following convention:
 
-```
+```text
 <host or group name>_<final var name>__to_merge
 ```
 
@@ -94,7 +94,7 @@ environment:
    the desired static IP address and netmask.
 5. Open a terminal.
 
-```bash
+```console
 gsettings set org.gnome.desktop.media-handling automount false
 sudo passwd root # Set to 'live'
 sudo sed -i 's/bullseye main$/bullseye main contrib/g' /etc/apt/sources.list
@@ -113,7 +113,7 @@ In order to boot from an iSCSI target, we first need to manually configure the
 live cd environment to be able to access the target and allow us to determine
 the disk identifiers for the playbook.
 
-```bash
+```console
 ip link set eno1 mtu 9000 # Enable jumbo frames on the SAN NIC
 apt install --yes open-iscsi
 systemctl start open-iscsi
@@ -127,16 +127,16 @@ iSCSI target.
 
 #### System BIOS Settings > Network Settings
 
-![](images/iscsi-bios1.png)
+![iscsi bois setup part 1](images/iscsi-bios1.png)
 
 #### System BIOS Settings > Network Settings > ISCSI Device1 Settings
 
-![](images/iscsi-bios2.png)
+![iscsi bios setup part 2](images/iscsi-bios2.png)
 
 #### System BIOS Settings > Network Settings > ISCSI Device1 Settings > Connection 1 Settings
 
-![](images/iscsi-bios3.png)
-![](images/iscsi-bios4.png)
+![iscsi bios setup part 3](images/iscsi-bios3.png)
+![iscsi bios setup part 4](images/iscsi-bios4.png)
 
 ### Configure the Ansible host
 
@@ -173,7 +173,7 @@ zpool_disk_identifiers:
   - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
 ```
 
-#### iSCSI Boot
+#### iSCSI Booting
 
 If booting from iSCSI, you should use `ls -l /dev/disk/by-path/*` for the disk
 identifiers:
@@ -189,7 +189,7 @@ zpool_disk_identifiers:
 After you've determined which disks you'll be using, you must manually zap the
 partition tables:
 
-```bash
+```console
 sgdisk --zap-all /dev/disk/by-id/<disk identifier>
 # or
 sgdisk --zap-all /dev/disk/by-path/<iscsi target disk path>
@@ -203,7 +203,7 @@ Finally, run through each playbook and you'll have a provisioned Debian server
 with ZFS root. Two users will be created; `ansible` and `marc`. Their passwords
 are `changeme` and should be changed immediately.
 
-```bash
+```console
 ansible-playbook -i dev bootstrap/debian-zfs-root-part1.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
 ansible-playbook -i dev bootstrap/debian-zfs-root-part2.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
 ansible-playbook -i dev bootstrap/debian-zfs-root-part3.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
@@ -230,10 +230,10 @@ for encrypted zfs datasets with MFA.
 To add a new encrypted dataset, or decrypt an existing one, you will need to
 physically be at the server.
 
-```bash
-$ zfs create -o encryption=on -o keylocation=prompt -o keyformat=passphrase spool/data
+```console
+zfs create -o encryption=on -o keylocation=prompt -o keyformat=passphrase spool/data
 # Enter a temporary encryption passphrase.
-$ shavee -c -y 1 -z spool/data
+shavee -c -y 1 -z spool/data
 # Enter real passphrase.
 ```
 
@@ -263,7 +263,7 @@ shavee_encrypted_datasets:
 
 And re-run the server playbook:
 
-```bash
+```console
 ansible-playbook -i dev server.yml -l <the server hostname> --tags=zfs,shavee
 ```
 
