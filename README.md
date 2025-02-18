@@ -261,5 +261,5 @@ And re-run the server playbook:
 ansible-playbook -i dev server.yml -l <the server hostname> --tags=zfs,shavee
 ```
 
-[this guide]: https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Buster%20Root%20on%20ZFS.html#step-8-full-software-installation
+[this guide]: https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Bookworm%20Root%20on%20ZFS.html
 [ansible-merge-vars]: https://github.com/leapfrogonline/ansible-merge-vars
