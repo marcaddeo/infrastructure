@@ -17,11 +17,13 @@ docker run --rm -it -v $(pwd):/ansible marcaddeo/ansible-runner ansible-playbook
 bootstrap playbooks.
 
 ## Merging variables
+
 In order to easily be able to merge host specific variables with default
 variables, we're using [ansible-merge-vars][]. We can use this the following
 way:
 
 _group_vars/servers.yml_
+
 ```yaml
 # Firewall Configuration.
 servers_firewall_allowed_tcp_ports__to_merge:
@@ -30,6 +32,7 @@ servers_firewall_allowed_tcp_ports__to_merge:
 ```
 
 _host_vars/testbed.addeo.net.yml_
+
 ```yaml
 # Firewall Configuration.
 testbed_firewall_allowed_tcp_ports__to_merge:
@@ -37,6 +40,7 @@ testbed_firewall_allowed_tcp_ports__to_merge:
 ```
 
 _server.yml_
+
 ```yaml
   # ...
   pre_tasks:
@@ -61,15 +65,18 @@ Finally, we merge the variables into the final usable variable in the playbooks
 `pre_tasks`.
 
 ## Bootstrap a Debian 11 Bullseye server with ZFS root
+
 This setup is based on [this guide][] and will provision a Debian 11 Bullseye
 server with ZFS root which is optionally encrypted, and optionally booted via
 iSCSI.
 
 ### Notes
+
 * The IP addresses used in the setup of the host should be the final desired
   static IPs for the host.
 
 ### Prepare the install environment
+
 In order to provision a server with Debian 11 Bullseye with ZFS root first boot
 to the live cd, and perform the following manual steps to prepare the
 environment:
@@ -88,30 +95,31 @@ environment:
 5. Open a terminal.
 
 ```bash
-$ gsettings set org.gnome.desktop.media-handling automount false
-$ sudo passwd root # Set to 'live'
-$ sudo sed -i 's/bullseye main$/bullseye main contrib/g' /etc/apt/sources.list
-$ sudo apt update
-$ sudo apt install --yes openssh-server
-$ sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
-$ sudo systemctl restart ssh
+gsettings set org.gnome.desktop.media-handling automount false
+sudo passwd root # Set to 'live'
+sudo sed -i 's/bullseye main$/bullseye main contrib/g' /etc/apt/sources.list
+sudo apt update
+sudo apt install --yes openssh-server
+sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+sudo systemctl restart ssh
 ```
 
 Now, using the static ip you can ssh into the server using the credentials
 `root:live`.
 
 ### iSCSI Boot
+
 In order to boot from an iSCSI target, we first need to manually configure the
 live cd environment to be able to access the target and allow us to determine
 the disk identifiers for the playbook.
 
 ```bash
-$ ip link set eno1 mtu 9000 # Enable jumbo frames on the SAN NIC
-$ apt install --yes open-iscsi
-$ systemctl start open-iscsi
-$ iscsiadm -m discovery -t st -p <target host ip>
-$ sed -i 's/node.startup = manual/node.startup = automatic/g' /etc/iscsi/nodes/<iscsi target id>/<ip info>/default # (tab complete this) e.g iqn.iscsi-test.addeo.net\:lun1/172.1.0.15\,3260\,1/default
-$ systemctl restart open-iscsi
+ip link set eno1 mtu 9000 # Enable jumbo frames on the SAN NIC
+apt install --yes open-iscsi
+systemctl start open-iscsi
+iscsiadm -m discovery -t st -p <target host ip>
+sed -i 's/node.startup = manual/node.startup = automatic/g' /etc/iscsi/nodes/<iscsi target id>/<ip info>/default # (tab complete this) e.g iqn.iscsi-test.addeo.net\:lun1/172.1.0.15\,3260\,1/default
+systemctl restart open-iscsi
 ```
 
 The servers BIOS will also need to be updated to configure booting from the
@@ -131,6 +139,7 @@ iSCSI target.
 ![](images/iscsi-bios4.png)
 
 ### Configure the Ansible host
+
 Create a new entry in the desired environments playbook and place the new host
 in the `boostrap` group.
 
@@ -150,6 +159,7 @@ configure the host how you like, e.g. enabling ZFS encryption on root, iSCSI
 booting, etc.
 
 #### Determine which disks will be used and their identifiers
+
 Next, we need to determine which disks will be used for boot and root and put
 their identifiers into the servers `host_vars` file. We can use `fdisk` and `ls
 -l /dev/disk/by-id/*` to do so. We also need to define the pool type, which can
@@ -164,6 +174,7 @@ zpool_disk_identifiers:
 ```
 
 #### iSCSI Boot
+
 If booting from iSCSI, you should use `ls -l /dev/disk/by-path/*` for the disk
 identifiers:
 
@@ -174,6 +185,7 @@ zpool_disk_identifiers:
 ```
 
 #### Zap the partition table
+
 After you've determined which disks you'll be using, you must manually zap the
 partition tables:
 
@@ -186,14 +198,15 @@ sgdisk --zap-all /dev/disk/by-path/<iscsi target disk path>
 **_Note: This should be run for each disk_**
 
 ### Bootstrap the server
+
 Finally, run through each playbook and you'll have a provisioned Debian server
 with ZFS root. Two users will be created; `ansible` and `marc`. Their passwords
 are `changeme` and should be changed immediately.
 
 ```bash
-$ ansible-playbook -i dev bootstrap/debian-zfs-root-part1.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
-$ ansible-playbook -i dev bootstrap/debian-zfs-root-part2.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
-$ ansible-playbook -i dev bootstrap/debian-zfs-root-part3.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
+ansible-playbook -i dev bootstrap/debian-zfs-root-part1.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
+ansible-playbook -i dev bootstrap/debian-zfs-root-part2.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
+ansible-playbook -i dev bootstrap/debian-zfs-root-part3.yml -e 'ansible_user=root ansible_ssh_pass=live' --ssh-common-args='-o userknownhostsfile=/dev/null'
 ```
 
 ## Rollback ZFS root
@@ -210,6 +223,7 @@ $ ansible-playbook -i dev bootstrap/debian-zfs-root-part3.yml -e 'ansible_user=r
 no password necessary??
 
 ## Encrypted ZFS Datasets with Shavee
+
 In this setup we're using Shavee to allow us to use a passphrase + YubiKey HMAC
 for encrypted zfs datasets with MFA.
 
@@ -248,8 +262,9 @@ shavee_encrypted_datasets:
 ```
 
 And re-run the server playbook:
+
 ```bash
-$ ansible-playbook -i dev server.yml -l <the server hostname> --tags=zfs,shavee
+ansible-playbook -i dev server.yml -l <the server hostname> --tags=zfs,shavee
 ```
 
 [this guide]: https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Buster%20Root%20on%20ZFS.html#step-8-full-software-installation
