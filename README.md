@@ -64,9 +64,9 @@ following convention:
 Finally, we merge the variables into the final usable variable in the playbooks
 `pre_tasks`.
 
-## Bootstrap a Debian 11 Bullseye server with ZFS root
+## Bootstrap a Debian 12 Bookworm server with ZFS root
 
-This setup is based on [this guide][] and will provision a Debian 11 Bullseye
+This setup is based on [this guide][] and will provision a Debian 12 Bookworm
 server with ZFS root which is optionally encrypted, and optionally booted via
 iSCSI.
 
@@ -77,7 +77,7 @@ iSCSI.
 
 ### Prepare the install environment
 
-In order to provision a server with Debian 11 Bullseye with ZFS root first boot
+In order to provision a server with Debian 12 Bookworm with ZFS root first boot
 to the live cd, and perform the following manual steps to prepare the
 environment:
 
@@ -92,16 +92,10 @@ environment:
    static.
 4. (Optional) If booting from ISCSI, also configure the network adapter with
    the desired static IP address and netmask.
-5. Open a terminal.
+5. Open a terminal and run the following command:
 
 ```console
-gsettings set org.gnome.desktop.media-handling automount false
-sudo passwd root # Set to 'live'
-sudo sed -i 's/bullseye main$/bullseye main contrib/g' /etc/apt/sources.list
-sudo apt update
-sudo apt install --yes openssh-server
-sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
-sudo systemctl restart ssh
+curl --proto "=https" --tlsv1.2 -sSf https://raw.githubusercontent.com/marcaddeo/infrastructure/refs/heads/master/prepare-install-environment.sh | sh
 ```
 
 Now, using the static ip you can ssh into the server using the credentials

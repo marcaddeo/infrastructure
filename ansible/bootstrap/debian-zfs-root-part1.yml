@@ -63,20 +63,9 @@
     - name: Create the boot pool
       shell: >-
         zpool create
+        -o ashift=12
+        -o compatability=grub2
         -o cachefile=/etc/zfs/zpool.cache
-        -o ashift=12 -d
-        -o feature@async_destroy=enabled
-        -o feature@bookmarks=enabled
-        -o feature@embedded_data=enabled
-        -o feature@empty_bpobj=enabled
-        -o feature@enabled_txg=enabled
-        -o feature@extensible_dataset=enabled
-        -o feature@filesystem_limits=enabled
-        -o feature@hole_birth=enabled
-        -o feature@large_blocks=enabled
-        -o feature@lz4_compress=enabled
-        -o feature@spacemap_histogram=enabled
-        -o feature@zpool_checkpoint=enabled
         -O acltype=posixacl -O canmount=off -O compression=lz4
         -O devices=off -O normalization=formD -O relatime=on -O xattr=sa
         -O mountpoint=/boot -R /mnt
@@ -216,7 +205,7 @@
         state: directory
 
     - name: Install the minimal system
-      shell: debootstrap bullseye /mnt
+      shell: debootstrap bookworm /mnt
       args:
         creates: /mnt/etc/debian_version
 
@@ -278,12 +267,12 @@
         line: "{{ item }}"
         create: true
       loop:
-        - deb http://deb.debian.org/debian bullseye main contrib
-        - deb-src http://deb.debian.org/debian bullseye main contrib
-        - deb http://security.debian.org/debian-security bullseye-security main contrib
-        - deb-src http://security.debian.org/debian-security bullseye-security main contrib
-        - deb http://deb.debian.org/debian bullseye-updates main contrib
-        - deb-src http://deb.debian.org/debian bullseye-updates main contrib
+        - deb http://deb.debian.org/debian bookworm main contrib non-free-firmware
+        - deb-src http://deb.debian.org/debian bookworm main contrib non-free-firmware
+        - deb http://security.debian.org/debian-security bookworm-security main contrib non-free-firmware
+        - deb-src http://security.debian.org/debian-security bookworm-security main contrib non-free-firmware
+        - deb http://deb.debian.org/debian bookworm-updates main contrib non-free-firmware
+        - deb-src http://deb.debian.org/debian bookworm-updates main contrib non-free-firmware
 
     - name: Bind the virtual filesystems from the Live CD environemt to the new system
       shell: "mount --rbind {{ item.src }} {{ item.dest }}"

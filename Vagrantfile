@@ -3,6 +3,7 @@ require_relative "lib/vagrant/plugins"
 servers = [
   {
     hostname: "testbed.addeo.net",
+    # @TODO update vagrant box to bookworm
     box: "bullseye64-zfsroot",
     cpu: 2,
     memory: 2048,

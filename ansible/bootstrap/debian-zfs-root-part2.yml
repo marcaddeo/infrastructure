@@ -21,11 +21,10 @@
         bpool_snapshot_status.rc == 0 and
         rpool_snapshot_status.rc == 0
 
-    - name: Symlink mtab
-      file:
-        src: /proc/self/mounts
-        dest: /etc/mtab
-        state: link
+    # @see: https://github.com/mitogen-hq/mitogen/issues/849
+    - name: Manually install python3-apt to workaround Mitogen issue
+      shell:
+        cmd: apt update && apt install -y python3-apt
 
     - name: Configure basic system environment
       apt:
