@@ -29,8 +29,10 @@
       when: harden_server is defined and harden_server
     - role: oefenweb.fail2ban
       when: harden_server is defined and harden_server
-    - role: dell-omsa
-      when: install_dell_omsa is defined and install_dell_omsa
+    # @bug: my dell-omsa role no longer works with Debian 12, and OMSA is
+    # deprecated now. May need to use iSM instead.
+    # - role: dell-omsa
+    #   when: install_dell_omsa is defined and install_dell_omsa
     - role: plymouth
       when: install_plymouth is defined and install_plymouth
       tags: plymouth
