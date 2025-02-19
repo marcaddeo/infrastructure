@@ -5,6 +5,11 @@ manage_network_interfaces: false
 # Firewall Configuration.
 manage_firewall: false
 
+install_plymouth: false
+harden_server: false
+manage_unattended_upgradse: false
+install_postfix: false
+
 # Proxmox Configuration.
 pve_group: proxmox_servers
 pve_reboot_on_kernel_update: false

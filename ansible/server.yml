@@ -23,9 +23,12 @@
         expected_type: list
       tags: users
   roles:
-    - os_hardening
-    - ssh_hardening
-    - oefenweb.fail2ban
+    - role: os_hardening
+      when: harden_server is defined and harden_server
+    - role: ssh_hardening
+      when: harden_server is defined and harden_server
+    - role: oefenweb.fail2ban
+      when: harden_server is defined and harden_server
     - role: dell-omsa
       when: install_dell_omsa is defined and install_dell_omsa
     - role: plymouth
@@ -35,8 +38,10 @@
       when: manage_firewall is defined and manage_firewall
       tags: firewall
     - geerlingguy.ntp
-    - oefenweb.postfix
-    - jnv.unattended-upgrades
+    - role: oefenweb.postfix
+      when: install_postfix is defined and install_postfix
+    - role: jnv.unattended-upgrades
+      when: manage_unattended_upgrades is defined and manage_unattended_upgrades
     - role: maxhoesel.nut_netclient
       when: install_nut is defined and install_nut
     - role: shavee
@@ -52,6 +57,7 @@
       tags: tmux
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
+      when: manage_unattended_upgrades is defined and manage_unattended_upgrades
       blockinfile:
         path: /usr/lib/apt/apt.systemd.daily
         insertbefore: "# auto upgrade all upgradeable packages"
@@ -137,6 +143,7 @@
       copy:
         dest: /etc/hostname
         content: "{{ server_hostname }}\n"
+      when: manage_hostname is defined and manage_hostname
 
     - name: Ensure the servers hostname/fqdn are in /etc/hosts
       lineinfile:
@@ -153,3 +160,4 @@
           {% else -%}
             127.0.1.1       {{ server_hostname }}
           {% endif %}
+      when: manage_hostname is defined and manage_hostname
