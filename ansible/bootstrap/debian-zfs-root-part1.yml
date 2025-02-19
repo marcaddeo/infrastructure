@@ -64,7 +64,7 @@
       shell: >-
         zpool create
         -o ashift=12
-        -o compatability=grub2
+        -o compatibility=grub2
         -o cachefile=/etc/zfs/zpool.cache
         -O acltype=posixacl -O canmount=off -O compression=lz4
         -O devices=off -O normalization=formD -O relatime=on -O xattr=sa
