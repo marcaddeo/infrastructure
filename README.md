@@ -13,8 +13,15 @@ docker build -t marcaddeo/ansible-runner -f Dockerfile.ansible-runner .
 docker run --rm -it -v $(pwd):/ansible marcaddeo/ansible-runner ansible-playbook ...
 ```
 
+@note: i think the UEFI stuff _is_ completed?
 **NOTE:** I dont think I actually completed the UEFI functionality of the
 bootstrap playbooks.
+
+**TODO:**
+
+- [ ] Convert bootstrap to use <https://docs.zfsbootmenu.org/en/v2.3.x/guides/debian/bookworm-uefi.html>
+- [ ] Fix dell-omsa role on Debian 12
+- [ ] Finish(start?) iSCSI configuration
 
 ## Merging variables
 
@@ -72,7 +79,7 @@ iSCSI.
 
 ### Notes
 
-* The IP addresses used in the setup of the host should be the final desired
+- The IP addresses used in the setup of the host should be the final desired
   static IPs for the host.
 
 ### Prepare the install environment
