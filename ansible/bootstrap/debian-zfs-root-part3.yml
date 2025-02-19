@@ -3,6 +3,13 @@
   become: true
   collections:
     - community.general.zfs
+  pre_tasks:
+    - name: Merge server_users
+      merge_vars:
+        suffix_to_merge: server_users__to_merge
+        merged_var_name: server_users
+        expected_type: list
+      tags: users
   tasks:
     - shell: zfs list bpool/boot/debian@bootstrap
       ignore_errors: true
