@@ -30,7 +30,7 @@ roles:
 
   - name: lae.proxmox
     src: https://github.com/lae/ansible-role-proxmox
-    version: develop
+    version: v1.9.1
 
   - name: andrewrothstein.tmux
     version: v1.0.7
