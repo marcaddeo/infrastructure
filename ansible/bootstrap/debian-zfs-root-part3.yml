@@ -145,6 +145,7 @@
         name: "rpool/home/{{ item.name }}"
         state: present
       loop: "{{ bootstrap_users }}"
+      no_log: true
 
     - name: Create base users
       user:
@@ -153,6 +154,7 @@
         password: "{{ (item.password | default(bootstrap_users_default_password)) | password_hash('sha512', 'salt') }}"
         shell: /bin/bash
       loop: "{{ bootstrap_users }}"
+      no_log: true
 
     - name: Copy user skeletons into place
       copy:
@@ -162,6 +164,7 @@
         group: "{{ item.name }}"
         remote_src: true
       loop: "{{ bootstrap_users }}"
+      no_log: true
 
     - name: Add authorized ssh keys for base users
       authorized_key:
@@ -170,6 +173,7 @@
         state: present
       loop: "{{ bootstrap_users }}"
       when: item.ssh_public_key_file is defined
+      no_log: true
 
     - name: Enable passwordless sudo for the sudo group
       lineinfile:
