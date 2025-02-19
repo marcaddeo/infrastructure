@@ -102,6 +102,34 @@ zfs_datasets:
       # Encryption is enabled, but is manually managed.
       # encryption: true
     state: present
+  spool/data/test:
+    properties:
+      sharenfs: "rw=172.16.115.67,anonuid=1000,anongid=1000,no_root_squash,all_squash"
+    state: present
+  spool/data/downloads:
+    state: present
+  spool/data/downloads/complete:
+    properties:
+      sharenfs: "rw=172.16.115.67,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+    state: present
+  spool/data/downloads/incomplete:
+    properties:
+      sharenfs: "rw=172.16.115.67,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+    state: present
+  spool/data/media:
+    state: present
+  spool/data/media/movies:
+    properties:
+      sharenfs: "rw=172.16.115.67,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+    state: present
+  spool/data/media/tv:
+    properties:
+      sharenfs: "rw=172.16.115.67,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+    state: present
+  spool/data/timemachines:
+    state: present
+  spool/data/timemachines/aviato:
+    state: present
 
 # Shavee Configuration.
 install_shavee: true
