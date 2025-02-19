@@ -47,11 +47,11 @@ pve_acls:
       - PVEAdmin
     groups:
       - Administrators
-pve_storages:
-  - name: local-zfs
-    type: zfspool
-    content:
-      - images
-      - rootdir
-    pool: spool/data/proxmox/local-zfs
-    sparse: true
+# pve_storages:
+#   - name: local-zfs
+#     type: zfspool
+#     content:
+#       - images
+#       - rootdir
+#     pool: spool/data/proxmox/local-zfs
+#     sparse: true
