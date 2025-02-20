@@ -13,8 +13,8 @@
 
 - import_tasks: manage_datasets.yml
 
-# - import_tasks: manage_iscsi.yml
-#   when: zfs_datasets | dict2items | json_query('[*].value.properties.shareiscsi') | difference([false, 'off']) | length > 0
+- import_tasks: manage_iscsi.yml
+  when: zfs_datasets | dict2items | json_query('[*].value.properties.shareiscsi') | difference([false, 'off']) | length > 0
 
 - import_tasks: manage_scrub_timers.yml
   when: zfs_pools | dict2items | json_query('[*].value.scrub') | length > 0

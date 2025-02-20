@@ -1,2 +1,5 @@
 ---
-# handlers file for zfs
+- name: reload tgt
+  service:
+    name: tgt
+    state: reloaded

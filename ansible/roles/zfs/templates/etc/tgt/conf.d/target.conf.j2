@@ -1,0 +1,9 @@
+{% set target = item.value.properties.shareiscsi %}
+# {{ ansible_managed }}
+
+<target {{ target.iqn }}>
+    backing-store /dev/zvol/{{ item.key }}
+{% if target.options is defined and target.options %}
+{{ target.options | indent(4, true) }}
+{% endif %}
+</target>

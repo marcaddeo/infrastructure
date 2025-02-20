@@ -1,0 +1,28 @@
+---
+- name: manage_iscsi | Ensure tgt is installed
+  apt:
+    package: tgt
+    state: present
+
+- name: manage_iscsi | Install zfs iscsi targets
+  template:
+    src: etc/tgt/conf.d/target.conf.j2
+    dest: "/etc/tgt/conf.d/zvol-{{ item.key | regex_replace('/', '-') }}.conf"
+    group: root
+    owner: root
+    mode: 0600
+  loop: "{{ zfs_datasets | dict2items }}"
+  when:
+    (item.value.properties.shareiscsi is defined and item.value.properties.shareiscsi is not false)
+    and item.value.properties.volsize is defined
+  notify: reload tgt
+
+- name: manage_iscsi | Remove zfs iscsi targets
+  file:
+    path: "/etc/tgt/conf.d/zvol-{{ item.key | regex_replace('/', '-') }}.conf"
+    state: absent
+  loop: "{{ zfs_datasets | dict2items }}"
+  when:
+    (item.value.properties.shareiscsi is defined and item.value.properties.shareiscsi is false)
+    and item.value.properties.volsize is defined
+  notify: reload tgt
