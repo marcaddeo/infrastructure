@@ -8,6 +8,14 @@ zfs_readonly_properties:
 # Custom ZFS properties used to add functionality via this role.
 zfs_custom_properties:
   - shareiscsi
+  - passphrase
+
+# ZFS encryption properties.
+zfs_encryption_properties:
+  - encryption
+  - keyformat
+  - keylocation
+  - pbkdf2iters
 
 # Valid frequencies to scrub a pool.
 zfs_scrub_frequencies:

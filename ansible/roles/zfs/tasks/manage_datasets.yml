@@ -1,7 +1,43 @@
 ---
+- name: manage_datasets | Get existing ZFS dataset names
+  shell: zfs list -H -o name
+  changed_when: false
+  check_mode: false
+  register: zfs_dataset_names
+
+- set_fact:
+    zfs_dataset_names: "{{ zfs_dataset_names.stdout_lines }}"
+
+- name: manage_datasets | Create missing encrypted ZFS datasets
+  shell: >-
+    {% set passphrase = item.value.properties.passphrase %}
+    {% set excluded_properties = zfs_custom_properties %}
+    {% if passphrase is defined %}
+      {% set excluded_properties = excluded_properties + ['keylocation', 'keyformat'] %}
+    {% endif %}
+    {% set props = item.value.properties | default({}) | dict2items | rejectattr('key', 'in', excluded_properties) | list | items2dict %}
+    {% if passphrase is defined %}
+      echo "{{ passphrase }}" |
+    {%- endif -%}
+    zfs create -p
+    {% for key, value in props.items() -%}
+    {% if key == 'volsize' %}-V {{ value }}
+    {% elif key == 'volblocksize' %}-b {{ value }}
+    {% else %}-o {{ key }}={{ value }}
+    {% endif %}
+    {%- endfor -%}
+    {%- if passphrase is defined -%}
+      -o keylocation=prompt -o keyformat=passphrase
+    {%- endif %}
+    {{ item.key }}
+  loop: "{{ zfs_datasets | dict2items }}"
+  when: item.value.properties.encryption is defined and
+    item.value.state == "present" and
+    item.key not in zfs_dataset_names
+
 - name: manage_datasets | Manage ZFS datasets
   zfs:
     name: "{{ item.key }}"
-    extra_zfs_properties: "{{ item.value.properties | default({}) | dict2items | rejectattr('key', 'in', zfs_custom_properties) | list | items2dict }}"
+    extra_zfs_properties: "{{ item.value.properties | default({}) | dict2items | rejectattr('key', 'in', zfs_custom_properties) | rejectattr('key', 'in', zfs_encryption_properties) | list | items2dict }}"
     state: "{{ item.value.state }}"
   loop: "{{ zfs_datasets | dict2items }}"
