@@ -111,10 +111,6 @@ zfs_datasets:
       keyformat: passphrase
       keylocation: prompt
     state: present
-  spool/data/test:
-    properties:
-      sharenfs: "rw=172.16.115.67,anonuid=1000,anongid=1000,no_root_squash,all_squash"
-    state: present
   spool/data/downloads:
     state: present
   spool/data/downloads/complete:
