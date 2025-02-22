@@ -23,6 +23,6 @@
     state: absent
   loop: "{{ zfs_datasets | dict2items }}"
   when:
-    (item.value.properties.shareiscsi is defined and item.value.properties.shareiscsi is false)
+    (item.value.properties.shareiscsi is defined and (item.value.properties.shareiscsi is false or item.value.state == "absent"))
     and item.value.properties.volsize is defined
   notify: reload tgt

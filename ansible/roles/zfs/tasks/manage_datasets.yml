@@ -35,6 +35,13 @@
     item.value.state == "present" and
     item.key not in zfs_dataset_names
 
+- name: manage_datasets | Delete iSCSI targets that are to be removed
+  shell: tgt-admin --delete {{ item.value.properties.shareiscsi.iqn }}
+  loop: "{{ zfs_datasets | dict2items }}"
+  when:
+    (item.value.properties.shareiscsi is defined and item.value.state == "absent")
+    and item.value.properties.volsize is defined
+
 - name: manage_datasets | Manage ZFS datasets
   zfs:
     name: "{{ item.key }}"
