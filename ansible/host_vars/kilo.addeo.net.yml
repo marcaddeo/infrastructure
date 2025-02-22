@@ -106,8 +106,10 @@ zfs_datasets:
   spool/data:
     properties:
       compression: lz4
-      # Encryption is enabled, but is manually managed.
-      # encryption: true
+      # Encryption key is managed by Shavee.
+      encryption: "on"
+      keyformat: passphrase
+      keylocation: prompt
     state: present
   spool/data/test:
     properties:
