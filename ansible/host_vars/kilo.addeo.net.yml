@@ -81,19 +81,26 @@ zfs_pools:
     state: present
 
 zfs_datasets:
-  # iSCSI datasets need to be outside of spool/data because it's encrypted.
-  # Servers booting via iSCSI should encrypt root on their end.
   spool/iscsi:
     properties:
-      dedup: off
-      compression: off
+      dedup: "off"
+      compression: "off"
+      mountpoint: none
+      canmount: noauto
+      encryption: "on"
+      keyformat: raw
+      keylocation: file:///etc/key.d/spool-iscsi.key
     state: present
   spool/iscsi/cantilever:
     properties:
-      volsize: 100G
-      # volblocksize can only be set during creation of the dataset.
+      volsize: 32G
+      # @note ansible zfs module doesn't properly strip this for existing
+      # datasets. Should be fixed in newer version of ansible once we update
+      # the playbooks.
       # volblocksize: 32K
-      shareiscsi: true
+      shareiscsi:
+        iqn: iqn.iscsi-init-test.addeo.net:lun1 # @TODO
+        options: []
     state: present
   # The main encrypted dataset for most types of data.
   spool/data:
