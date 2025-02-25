@@ -224,10 +224,10 @@
         regexp: ^GRUB_CMDLINE_LINUX=""$
         line: >-
           GRUB_CMDLINE_LINUX="
-          bootstrap_iscsi_initiator={{ bootstrap_iscsi_initiator }}
-          bootstrap_iscsi_target_name={{ bootstrap_iscsi_target_name }}
-          bootstrap_iscsi_target_ip={{ bootstrap_iscsi_target_ip }}
-          bootstrap_iscsi_target_port={{ bootstrap_iscsi_target_port }}
+          iscsi_initiator={{ bootstrap_iscsi_initiator }}
+          iscsi_target_name={{ bootstrap_iscsi_target_name }}
+          iscsi_target_ip={{ bootstrap_iscsi_target_ip }}
+          iscsi_target_port={{ bootstrap_iscsi_target_port }}
           root=ZFS=rpool/root/debian
           ip={{ bootstrap_iscsi_initiator_ip }}:{{ bootstrap_iscsi_target_ip }}::255.255.255.0:{{ bootstrap_hostname }}:{{ bootstrap_iscsi_interface_name }}:off"
       when: bootstrap_iscsi_boot == true
