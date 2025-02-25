@@ -4,6 +4,7 @@
   changed_when: false
   check_mode: false
   register: zpool_names
+
 - set_fact:
     zpool_names: "{{ zpool_names.stdout_lines }}"
 
@@ -12,8 +13,22 @@
   changed_when: false
   check_mode: false
   register: zpool_devices
+
 - set_fact:
     zpool_devices: "{{ zpool_devices.stdout_lines }}"
+
+- name: manage_zpools | Prepare disks
+  shell: >-
+    {% set devices = (item.value.vdevs | map(attribute='devices') | flatten | select('string')) + (item.value.vdevs | map(attribute='devices') | flatten | reject('string') | map(attribute='devices') | flatten) %}
+    {% for device in devices %}
+      wipefs -a {{ device }}
+      sgdisk --zap-all {{ device }}
+    {% endfor %}
+  loop: "{{ zfs_pools | dict2items }}"
+  when: >
+    item.value.state == "present" and
+    item.key not in zpool_names and
+    (((item.value.vdevs | map(attribute='devices') | flatten | select('string')) + (item.value.vdevs | map(attribute='devices') | flatten | reject('string') | map(attribute='devices') | flatten)) | intersect(zpool_devices)) | length == 0
 
 - name: manage_zpools | Create zpools
   command: >-
@@ -55,6 +70,7 @@
 
 - name: manage_zpools | Get zpool properties
   zpool_facts:
+
 - set_fact:
     ansible_zfs_pools: >
       {
