@@ -25,3 +25,18 @@ iface {{ interface.name }} inet {{ interface.inet }}
   {%- endif %}
   dns-nameservers {{ nameservers | join(' ') }}
 {% endif %}
+{% if interface.mtu | default() %}
+  mtu {{ interface.mtu }}
+{% endif %}
+{% if interface.pre_up | default() %}
+  {%- set pre_up = interface.pre_up -%}
+  {%- if pre_up is string -%}
+    {% set pre_up = [pre_up] %}
+  {%- endif %}
+  {% for entry in pre_up -%}
+    pre-up {{ entry }}
+  {% endfor %}
+{% endif %}
+{% if interface.extra | default() %}
+{{ interface.extra |  indent(2, true) }}
+{% endif %}
