@@ -4,19 +4,37 @@ server_hostname: cantilever
 server_fqdn: cantilever.addeo.net
 
 # Bootstrap Configuration.
-# bootstrap_iscsi_boot: true
-# bootstrap_iscsi_interface_name: eno1
-# bootstrap_iscsi_initiator: iqn.iscsi-init-test.addeo.net:test
-# bootstrap_iscsi_initiator_ip: 172.1.0.10
-# bootstrap_iscsi_target_name: iqn.iscsi-test.addeo.net:lun1
-# bootstrap_iscsi_target_ip: 172.1.0.15
-# bootstrap_zpool_encrypt_root: false
-# bootstrap_zpool_type: single
-# bootstrap_zpool_disk_identifiers:
-#   - /dev/disk/by-path/ip-172.1.0.15:3260-iscsi-iqn.iscsi-test.addeo.net:lun1-lun-1
 bootstrap_boot_type: uefi
+bootstrap_iscsi_boot: true
+bootstrap_iscsi_interface_name: eno1
+bootstrap_iscsi_initiator: iqn.2020-08.net.addeo:cantilever
+bootstrap_iscsi_initiator_ip: 172.16.0.64
+bootstrap_iscsi_target_name: iqn.2020-08.net.addeo:kilo:spool-iscsi-cantilever
+bootstrap_iscsi_target_ip: 172.16.0.65
+bootstrap_zpool_encrypt_root: false
+bootstrap_zpool_type: single
 bootstrap_zpool_disk_identifiers:
-  - /dev/disk/by-id/ata-ADATA_SP550_2F4920016280
+  - /dev/disk/by-path/ip-172.16.0.65:3260-iscsi-iqn.2020-08.net.addeo:kilo:spool-iscsi-cantilever-lun-1
+
+# Network Interfaces Configuration.
+network_interfaces:
+  # iSCSI boot interface.
+  eno1:
+    auto: true
+    no_auto_down: true
+    inet: static
+    address: 172.16.0.64/24
+    mtu: 9000
+    pre_up: /usr/sbin/ip link set eno1 mtu 9000
+    state: present
+  # SRVMGMT Network.
+  eno3:
+    auto: true
+    inet: static
+    address: 10.1.15.14/24
+    gateway: 10.1.15.1
+    dns_nameservers: 10.1.15.1
+    state: present
 
 # ZFS Configuration.
 zfs_pools:

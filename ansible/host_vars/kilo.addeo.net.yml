@@ -20,12 +20,14 @@ bootstrap_zpool_disk_identifiers:
 
 # Network Interfaces Configuration.
 network_interfaces:
+  # iSCSI boot for cantilever.
   eno1:
     auto: true
-    no_auto_down: true
     inet: static
-    address: 172.16.115.65/31
+    address: 172.16.0.65/30
+    mtu: 9000
     state: present
+  # SRVMGMT network.
   eno3:
     auto: true
     inet: static
@@ -33,11 +35,11 @@ network_interfaces:
     gateway: 10.1.15.1
     dns_nameservers: 10.1.15.1
     state: present
+  # Storage network for cantilever.
   enp65s0:
     auto: true
-    no_auto_down: true
     inet: static
-    address: 172.16.115.66/31
+    address: 172.16.115.66/31 # @TODO change to 172.16.0.65/31 after migration of prod (update interface ip to 66/31 and mounts in portainer)
     state: present
 
 # Firewall Configuration.

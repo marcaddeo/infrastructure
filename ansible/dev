@@ -1,12 +1,10 @@
 [dell_servers]
-cantilever.addeo.net ansible_host=10.1.15.14
 crimson.addeo.net ansible_host=10.1.15.5
 
 [storage_servers]
 testbed.addeo.net ansible_host=10.1.15.66
 
 [proxmox_servers]
-cantilever.addeo.net ansible_host=10.1.15.14
 crimson.addeo.net ansible_host=10.1.15.5
 
 [docker_servers]
