@@ -99,8 +99,9 @@ zfs_datasets:
       # the playbooks.
       # volblocksize: 32K
       shareiscsi:
-        iqn: iqn.iscsi-init-test.addeo.net:lun1 # @TODO
-        options: []
+        iqn: iqn.2020-08.net.addeo:kilo:spool-iscsi-cantilever
+        options: |
+          initiator-address 172.16.0.64
     state: present
   # The main encrypted dataset for most types of data.
   spool/data:
