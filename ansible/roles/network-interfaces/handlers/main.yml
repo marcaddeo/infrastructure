@@ -1,7 +1,7 @@
 ---
 - name: restart networking
   shell: "ip addr flush {{ interface_name }} && systemctl restart networking"
-  when: item.changed
+  when: item.changed and (item.item.no_auto_down is not defined or item.item.no_auto_down is false)
   with_items: "{{ network_interfaces_updates.results }}"
   vars:
     interface_name: "{{ item.item.name | default(item.item.key) }}"
