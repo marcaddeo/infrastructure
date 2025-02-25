@@ -1,11 +1,10 @@
 ---
 # Network Interfaces Configuration.
-manage_network_interfaces: false
+manage_network_interfaces: true
 #
 # Firewall Configuration.
 manage_firewall: false
 
-install_plymouth: false
 harden_server: false
 manage_unattended_upgradse: false
 install_postfix: false
