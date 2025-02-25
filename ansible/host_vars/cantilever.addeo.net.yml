@@ -59,3 +59,12 @@ zfs_pools:
       xattr: sa
       utf8only: "on"
     state: present
+
+# Proxmox Configuration.
+pve_storages:
+  - name: local-vmpool
+    type: zfspool
+    content:
+      - images
+      - rootdir
+    pool: vmpool
