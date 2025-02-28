@@ -27,6 +27,7 @@ bootstrap_users: "{{ server_users }}"
 manage_network_interfaces: true
 
 # ZFS Configuration.
+manage_zfs: true
 zfs_enable_monitoring: true
 zfs_monitoring_email_dest: !vault |
   $ANSIBLE_VAULT;1.1;AES256

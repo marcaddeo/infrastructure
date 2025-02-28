@@ -50,6 +50,7 @@
       when: install_shavee is defined and install_shavee
       tags: shavee
     - role: zfs
+      when: manage_zfs is defined and manage_zfs
       tags: zfs
     - role: network-interfaces
       when: manage_network_interfaces is defined and manage_network_interfaces
@@ -59,7 +60,7 @@
       tags: tmux
   tasks:
     - name: Ensure ZFS snapshots are taken before unattended upgrades are performed
-      when: manage_unattended_upgrades is defined and manage_unattended_upgrades
+      when: (manage_zfs is defined and manage_zfs) and (manage_unattended_upgrades is defined and manage_unattended_upgrades)
       blockinfile:
         path: /usr/lib/apt/apt.systemd.daily
         insertbefore: "# auto upgrade all upgradeable packages"
@@ -76,7 +77,7 @@
         name: "rpool/home/{{ item.name }}"
         state: present
       loop: "{{ server_users }}"
-      when: item.create_home is not defined or item.create_home
+      when: (manage_zfs is defined and manage_zfs) and (item.create_home is not defined or item.create_home)
       no_log: true
       tags: users
 
