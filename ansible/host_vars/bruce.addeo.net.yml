@@ -28,3 +28,17 @@ mounts:
     opts: rsize=8192,wsize=8192,timeo=14
     fstype: nfs
     state: mounted
+
+# Proxmox Backup Server Configuration.
+# @note initial datastore creation takes quite a long time over nfs.
+pbs_datastores:
+  - name: kilo
+    backing_path: /mnt/backups
+    gc_schedule: weekly
+    prune_schedule: daily
+    prune_options:
+      keep_daily: 3
+      keep_weekly: 2
+      keep_monthly: 1
+    comment: spool/data/backups/proxmox on kilo via nfs
+    state: present
