@@ -124,3 +124,6 @@
         and (item.gc_schedule != (existing_datastores | selectattr('name', 'eq', item.name))[0]["gc-schedule"]
         or item.comment != (existing_datastores | selectattr('name', 'eq', item.name))[0].comment)
       tags: pbs_datastores
+
+    # @TODO
+    # - name: Update prune schedules
