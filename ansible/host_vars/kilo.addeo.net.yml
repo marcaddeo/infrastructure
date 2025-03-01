@@ -28,6 +28,13 @@ network_interfaces:
     address: 172.16.0.65/29
     mtu: 9000
     state: present
+  # SAN for crimson.
+  eno2:
+    auto: true
+    inet: static
+    address: 172.16.2.65/29
+    mtu: 9000
+    state: present
   # SRVMGMT network.
   eno3:
     auto: true
