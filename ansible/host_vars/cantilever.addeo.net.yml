@@ -36,6 +36,12 @@ network_interfaces:
     gateway: 10.1.15.1
     dns_nameservers: 10.1.15.1
     state: present
+  # SAN interface.
+  enp4s0:
+    auto: true
+    inet: manual
+    mtu: 9000
+    state: present
 
 # ZFS Configuration.
 zfs_pools:
