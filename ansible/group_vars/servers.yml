@@ -48,6 +48,7 @@ install_postfix: true
 manage_hostname: true
 
 # SSH Hardening Configuration.
+# @TODO why is this enabled?
 sftp_enabled: true
 
 # Firewall Configuration.

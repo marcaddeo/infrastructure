@@ -68,6 +68,7 @@ zfs_pools:
     state: present
 
 # Proxmox Configuration.
+# @TODO encryption?
 pve_storages:
   - name: local-vmpool
     type: zfspool
