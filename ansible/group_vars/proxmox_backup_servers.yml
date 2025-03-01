@@ -4,7 +4,7 @@ network_interfaces_single_file: true
 
 # ZFS Configuration.
 manage_zfs: false
-#
+
 # Firewall Configuration.
 manage_firewall: false
 
