@@ -1,0 +1,30 @@
+---
+# Server Configuration.
+server_hostname: bruce
+server_fqdn: bruce.addeo.net
+
+# Network Interfaces Configuration.
+network_interfaces:
+  ens18:
+    comment: SRVMGMT network interface.
+    auto: true
+    inet: static
+    address: 10.1.15.79/24
+    gateway: 10.1.15.1
+    dns_nameservers: 10.1.15.1
+    state: present
+  ens19:
+    comment: SAN network interface.
+    auto: true
+    inet: static
+    address: 172.16.1.79/24
+    mtu: 9000
+    state: present
+
+# Mount Point Configuration.
+mounts:
+  - src: 172.16.1.65:/spool/data/backups/proxmox-backups
+    path: /mnt/backups
+    opts: rsize=8192,wsize=8192,timeo=14,intr
+    fstype: nfs
+    state: mounted

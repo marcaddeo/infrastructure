@@ -7,6 +7,9 @@ testbed.addeo.net ansible_host=10.1.15.66
 [proxmox_servers]
 crimson.addeo.net ansible_host=10.1.15.5
 
+[proxmox_backup_servers]
+bruce.addeo.net ansible_host=10.1.15.79
+
 [docker_servers]
 violet.addeo.net ansible_host=10.1.15.50
 
@@ -17,6 +20,7 @@ dell_servers
 physical_servers
 storage_servers
 proxmox_servers
+proxmox_backup_servers
 docker_servers
 
 [bootstrap]
