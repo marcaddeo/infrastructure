@@ -10,12 +10,14 @@
         merged_var_name: firewall_allowed_tcp_ports
         expected_type: list
       tags: firewall
+
     - name: Merge firewall_allowed_udp_ports
       merge_vars:
         suffix_to_merge: firewall_allowed_udp_ports__to_merge
         merged_var_name: firewall_allowed_udp_ports
         expected_type: list
       tags: firewall
+
     - name: Merge server_users
       merge_vars:
         suffix_to_merge: server_users__to_merge
@@ -23,38 +25,51 @@
         expected_type: list
       tags: users
   roles:
+    - geerlingguy.ntp
+
     - role: os_hardening
       when: harden_server is defined and harden_server
+
     - role: ssh_hardening
       when: harden_server is defined and harden_server
+
     - role: oefenweb.fail2ban
       when: harden_server is defined and harden_server
+
     # @bug: my dell-omsa role no longer works with Debian 12, and OMSA is
     # deprecated now. May need to use iSM instead.
     # - role: dell-omsa
     #   when: install_dell_omsa is defined and install_dell_omsa
+
     - role: plymouth
       when: install_plymouth is defined and install_plymouth
       tags: plymouth
+
     - role: geerlingguy.firewall
       when: manage_firewall is defined and manage_firewall
       tags: firewall
-    - geerlingguy.ntp
+
     - role: oefenweb.postfix
       when: install_postfix is defined and install_postfix
+
     - role: jnv.unattended-upgrades
       when: manage_unattended_upgrades is defined and manage_unattended_upgrades
+
     - role: maxhoesel.nut_netclient
       when: install_nut is defined and install_nut
+
     - role: shavee
       when: install_shavee is defined and install_shavee
       tags: shavee
+
     - role: zfs
       when: manage_zfs is defined and manage_zfs
       tags: zfs
+
     - role: network-interfaces
       when: manage_network_interfaces is defined and manage_network_interfaces
       tags: network-interfaces
+
     - role: andrewrothstein.tmux
       when: install_tmux is defined and install_tmux
       tags: tmux
