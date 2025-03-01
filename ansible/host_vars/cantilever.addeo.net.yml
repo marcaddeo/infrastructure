@@ -8,7 +8,8 @@ bootstrap_boot_type: uefi
 bootstrap_iscsi_boot: true
 bootstrap_iscsi_interface_name: eno1
 bootstrap_iscsi_initiator: iqn.2020-08.net.addeo:cantilever
-bootstrap_iscsi_initiator_ip: 172.16.0.64
+# @TODO add netmask setting.
+bootstrap_iscsi_initiator_ip: 172.16.0.66
 bootstrap_iscsi_target_name: iqn.2020-08.net.addeo:kilo:spool-iscsi-cantilever
 bootstrap_iscsi_target_ip: 172.16.0.65
 bootstrap_zpool_encrypt_root: false
@@ -23,7 +24,7 @@ network_interfaces:
     auto: true
     no_auto_down: true
     inet: static
-    address: 172.16.0.64/24
+    address: 172.16.0.66/29
     mtu: 9000
     pre_up: /usr/sbin/ip link set eno1 mtu 9000
     state: present

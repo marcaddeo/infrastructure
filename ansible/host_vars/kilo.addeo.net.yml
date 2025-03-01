@@ -23,8 +23,9 @@ network_interfaces:
   # iSCSI boot for cantilever.
   eno1:
     auto: true
+    no_auto_down: true
     inet: static
-    address: 172.16.0.65/30
+    address: 172.16.0.65/29
     mtu: 9000
     state: present
   # SRVMGMT network.
@@ -103,7 +104,7 @@ zfs_datasets:
       shareiscsi:
         iqn: iqn.2020-08.net.addeo:kilo:spool-iscsi-cantilever
         options: |
-          initiator-address 172.16.0.64
+          initiator-address 172.16.0.66
     state: present
   # The main encrypted dataset for most types of data.
   spool/data:
