@@ -32,7 +32,7 @@ network_interfaces:
   eno2:
     auto: true
     inet: static
-    address: 172.16.2.65/29
+    address: 172.16.2.65/24
     mtu: 9000
     state: present
   # SRVMGMT network.
@@ -47,7 +47,7 @@ network_interfaces:
   enp65s0:
     auto: true
     inet: static
-    address: 172.16.1.65/29
+    address: 172.16.1.65/24
     mtu: 9000
     state: present
 
