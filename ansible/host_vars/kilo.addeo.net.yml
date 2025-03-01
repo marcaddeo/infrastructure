@@ -125,7 +125,7 @@ zfs_datasets:
     state: present
   spool/data/backups/proxmox:
     properties:
-      sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+      sharenfs: "rw=172.16.1.79,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/downloads:
     state: present
