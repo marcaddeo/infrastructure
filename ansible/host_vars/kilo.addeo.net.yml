@@ -36,11 +36,12 @@ network_interfaces:
     gateway: 10.1.15.1
     dns_nameservers: 10.1.15.1
     state: present
-  # Storage network for cantilever.
+  # SAN for cantilever.
   enp65s0:
     auto: true
     inet: static
-    address: 172.16.115.66/31 # @TODO change to 172.16.0.65/31 after migration of prod (update interface ip to 66/31 and mounts in portainer)
+    address: 172.16.1.65/29
+    mtu: 9000
     state: present
 
 # Firewall Configuration.
@@ -119,21 +120,21 @@ zfs_datasets:
     state: present
   spool/data/downloads/complete:
     properties:
-      sharenfs: "rw=172.16.115.67,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+      sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/downloads/incomplete:
     properties:
-      sharenfs: "rw=172.16.115.67,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+      sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/media:
     state: present
   spool/data/media/movies:
     properties:
-      sharenfs: "rw=172.16.115.67,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+      sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/media/tv:
     properties:
-      sharenfs: "rw=172.16.115.67,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+      sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/timemachines:
     state: present
