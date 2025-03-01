@@ -179,3 +179,22 @@
             127.0.1.1       {{ server_hostname }}
           {% endif %}
       when: manage_hostname is defined and manage_hostname
+
+    - set_fact:
+        has_nfs_mounts: "{{ mounts | json_query('[?fstype == `nfs`]') | length > 0 }}"
+      when: manage_mounts is defined and manage_mounts
+      tags: mounts
+
+    - name: Ensure nfs-common is installed if there are nfs mounts
+      apt:
+        name: nfs-common
+        update_cache: true
+        state: present
+      when: (manage_mounts is defined and manage_mounts) and has_nfs_mounts
+      tags: mounts
+
+    - name: Ensure mount points are configured
+      mount: "{{ item }}"
+      loop: "{{ mounts }}"
+      when: manage_mounts is defined and manage_mounts
+      tags: mounts
