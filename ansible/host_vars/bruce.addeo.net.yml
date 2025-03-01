@@ -23,8 +23,8 @@ network_interfaces:
 
 # Mount Point Configuration.
 mounts:
-  - src: 172.16.1.65:/spool/data/backups/proxmox-backups
+  - src: 172.16.1.65:/spool/data/backups/proxmox
     path: /mnt/backups
-    opts: rsize=8192,wsize=8192,timeo=14,intr
+    opts: rsize=8192,wsize=8192,timeo=14
     fstype: nfs
     state: mounted

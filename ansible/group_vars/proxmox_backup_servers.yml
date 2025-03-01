@@ -12,6 +12,7 @@ harden_server: false
 manage_unattended_upgradse: false
 install_postfix: false
 install_nut: false
+manage_mounts: true
 
 # Proxmox Backup Server Configuration.
 pbs_root_password: !vault |
