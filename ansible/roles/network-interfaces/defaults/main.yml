@@ -1,2 +1,4 @@
 ---
 # defaults file for network-interfaces
+network_interfaces_scaffold_interfaces: true
+network_interfaces_single_file: false

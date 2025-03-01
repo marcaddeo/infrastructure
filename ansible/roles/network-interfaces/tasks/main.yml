@@ -1,15 +1,56 @@
 ---
-- name: Generate network interface configuration
+- set_fact:
+    interfaces: "{{ network_interfaces }}"
+
+- set_fact:
+    interface: "{{ item.value | combine({'name': item.value.name | default(item.key) }) }}"
+  with_dict: "{{ interfaces }}"
+  register: interfaces
+
+- set_fact:
+    interfaces: "{{ interfaces.results | map(attribute='ansible_facts.interface') | list }}"
+
+- name: Generate /etc/network/intefaces file to source interfaces.d/*
+  template:
+    src: interfaces.j2
+    dest: /etc/network/interfaces
+    owner: root
+    group: root
+    mode: 0644
+  when: not network_interfaces_single_file and network_interfaces_scaffold_interfaces
+  notify:
+    - restart networking
+
+- name: Generate /etc/network/interfaces.d/ files
   template:
     src: interface.j2
-    dest: "/etc/network/interfaces.d/{{ item.value.name | default(item.key) }}"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-  with_dict: "{{ network_interfaces }}"
-  when: item.value.state | default("present") not in ["absent", "ignore"]
-  vars:
-    interface: "{{ item.value | combine({'name': item.value.name | default(item.key) }) }}"
+    dest: "/etc/network/interfaces.d/{{ item.name }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ interfaces }}"
+  when: not network_interfaces_single_file
+    and (item.value.state | default("present") not in ["absent", "ignore"])
   register: network_interfaces_updates
+  notify:
+    - restart networking
+
+- name: Generate /etc/network/intefaces file (Single file)
+  template:
+    src: interface.j2
+    dest: /etc/network/interfaces
+    owner: root
+    group: root
+    mode: 0644
+  when: network_interfaces_single_file
+  notify:
+    - restart networking
+
+- name: Remove managed interfaces from interfaces.d
+  file:
+    path: "/etc/network/interfaces.d/{{ item.name }}"
+    state: absent
+  loop: "{{ interfaces }}"
+  when: network_interfaces_single_file
   notify:
     - restart networking

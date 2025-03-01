@@ -1,5 +1,9 @@
 # {{ ansible_managed }}
 
+{% macro make_interface(interface) -%}
+{% if interface.comment | default() %}
+# {{ interface.comment }}
+{% endif %}
 {% if interface.auto | default() %}
 auto {{ interface.name }}
 {% elif interface.allow | default() %}
@@ -25,6 +29,13 @@ iface {{ interface.name }} inet {{ interface.inet }}
   {%- endif %}
   dns-nameservers {{ nameservers | join(' ') }}
 {% endif %}
+{% if interface.dns_search | default() %}
+  {%- set search = interface.dns_search -%}
+  {%- if search is string -%}
+    {% set search = [search] %}
+  {%- endif %}
+  dns-search {{ search | join(' ') }}
+{% endif %}
 {% if interface.mtu | default() %}
   mtu {{ interface.mtu }}
 {% endif %}
@@ -38,5 +49,23 @@ iface {{ interface.name }} inet {{ interface.inet }}
   {% endfor %}
 {% endif %}
 {% if interface.extra | default() %}
-{{ interface.extra |  indent(2, true) }}
+{{ interface.extra | indent(2, true) }}
+{% endif %}
+{% endmacro %}
+
+{%- if not network_interfaces_single_file %}
+  {%- set interfaces = [item] -%}
+{% else %}
+# The loopback network interface.
+auto lo
+iface lo inet loopback
+
+{% endif -%}
+
+{% for interface in interfaces -%}
+  {{ make_interface(interface) }}
+{% endfor -%}
+
+{% if network_interfaces_single_file %}
+source /etc/network/interfaces.d/*
 {% endif %}
