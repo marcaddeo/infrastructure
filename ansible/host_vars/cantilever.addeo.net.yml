@@ -72,8 +72,8 @@ network_interfaces:
       bridge-ports enp4s0
       bridge-stp off
       bridge-fd 0
-      up ip route add 10.1.15.79 dev vmbr0
-      down ip route del 10.1.15.79 dev vmbr0
+      up ip route add 10.1.15.79 dev vmbr1
+      down ip route del 10.1.15.79 dev vmbr1
     state: present
 
 # ZFS Configuration.
