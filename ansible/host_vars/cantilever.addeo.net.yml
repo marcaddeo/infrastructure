@@ -89,7 +89,7 @@ zfs_pools:
       - type: mirror
         devices:
           - /dev/disk/by-id/ata-ADATA_SP550_2F4920016280
-          - /dev/disk/by-id/ata-ADATA_SP550_2F4920033841
+          - /dev/disk/by-id/ata-KINGSTON_SA400S37240G_50026B778345A773
     scrub: weekly
     properties:
       ashift: 12
