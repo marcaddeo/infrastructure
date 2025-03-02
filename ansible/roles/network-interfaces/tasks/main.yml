@@ -54,3 +54,5 @@
   when: network_interfaces_single_file
   notify:
     - restart networking
+
+  # sudo, add ansible to sudo, passwordless sudo, python3

@@ -11,6 +11,7 @@ cantilever.addeo.net ansible_host=10.1.15.14
 [proxmox_backup_servers]
 
 [docker_servers]
+violet.addeo.net ansible_host=10.1.15.50
 
 [physical_servers:children]
 dell_servers

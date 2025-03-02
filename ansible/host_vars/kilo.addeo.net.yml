@@ -131,6 +131,7 @@ zfs_datasets:
     state: present
   spool/data/downloads/complete:
     properties:
+      # @TODO these need to be changed to 172.16.1.50 when we update violet
       sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/downloads/incomplete:
