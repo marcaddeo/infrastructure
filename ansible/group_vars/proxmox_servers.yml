@@ -1,6 +1,7 @@
 ---
 # Network Interfaces Configuration.
 manage_network_interfaces: true
+network_interfaces_single_file: true
 
 # Firewall Configuration.
 manage_firewall: false

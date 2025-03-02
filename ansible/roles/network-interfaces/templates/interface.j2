@@ -13,11 +13,13 @@ allow-{{ interface.allow }} {{ interface.name }}
 no-auto-down {{ interface.name }}
 {% endif %}
 iface {{ interface.name }} inet {{ interface.inet }}
+{% if interface.address | default() %}
   address {{ interface.address | ansible.utils.ipaddr('address') }}
   netmask {{ interface.address | ansible.utils.ipaddr('netmask') }}
 {% set broadcast = interface.address | ansible.utils.ipaddr('broadcast') %}
 {% if broadcast is not none %}
   broadcast {{ broadcast }}
+{% endif %}
 {% endif %}
 {% if interface.gateway | default() %}
   gateway {{ interface.gateway }}

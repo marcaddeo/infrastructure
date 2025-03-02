@@ -19,8 +19,8 @@ bootstrap_zpool_disk_identifiers:
 
 # Network Interfaces Configuration.
 network_interfaces:
-  # iSCSI boot interface.
   eno1:
+    comment: iSCSI boot interface.
     auto: true
     no_auto_down: true
     inet: static
@@ -28,19 +28,52 @@ network_interfaces:
     mtu: 9000
     pre_up: /usr/sbin/ip link set eno1 mtu 9000
     state: present
-  # SRVMGMT Network.
-  eno3:
-    auto: true
-    inet: static
-    address: 10.1.15.14/24
-    gateway: 10.1.15.1
-    dns_nameservers: 10.1.15.1
+  eno2:
+    inet: manual
     state: present
-  # SAN interface.
+  eno3:
+    comment: SRVMGMT interface.
+    inet: manual
+    state: present
+  eno4:
+    inet: manual
+    state: present
   enp4s0:
+    comment: SAN interface.
     auto: true
     inet: manual
     mtu: 9000
+    state: present
+  vmbr0:
+    auto: true
+    inet: manual
+    extra: |
+      bridge-ports eno3
+      bridge-stp off
+      bridge-fd 0
+      bridge-vlan-aware yes
+      bridge-vids 2-4094
+    state: present
+  vmbr0.115:
+    comment: SRVMGMT Network.
+    auto: true
+    inet: static
+    address: 10.1.15.14/24 # @TODO change .66
+    gateway: 10.1.15.1
+    dns_nameservers: 10.1.15.1
+    state: present
+  vmbr1:
+    comment: SAN bridge.
+    auto: true
+    inet: static
+    address: 172.16.1.66/24
+    mtu: 9000
+    extra: |
+      bridge-ports enp4s0
+      bridge-stp off
+      bridge-fd 0
+      up ip route add 10.1.15.79 dev vmbr0
+      down ip route del 10.1.15.79 dev vmbr0
     state: present
 
 # ZFS Configuration.
