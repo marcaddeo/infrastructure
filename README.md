@@ -2,15 +2,13 @@
 
 ## Ansible controller requirements
 
-The current Ansible playbooks are incompatible with the current version of
-Ansible, and need to be run using the `2.13` ansible-core.
-
-This can easily be accomplished via Docker:
+Currently using latest Ansible with `pipx` in order to get `ansible-lint` to
+work:
 
 ```console
-cd ansible
-docker build -t marcaddeo/ansible-runner -f Dockerfile.ansible-runner .
-docker run --rm -it -v $(pwd):/ansible marcaddeo/ansible-runner ansible-playbook ...
+pipx install ansible
+pipx inject --include-apps ansible ansible-lint netaddr jmespath
+pip3 install ansible-merge-vars passlib --break-system-packages
 ```
 
 **TODO:**

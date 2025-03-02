@@ -23,8 +23,8 @@ roles:
   - name: oefenweb.postfix
     version: v3.5.1
 
-  - name: jnv.unattended-upgrades
-    version: v1.11.0
+  - name: hifis.unattended_upgrades
+    version: v3.2.1
 
   - name: maxhoesel.nut_netclient
 

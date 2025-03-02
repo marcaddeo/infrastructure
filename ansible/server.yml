@@ -52,7 +52,7 @@
     - role: oefenweb.postfix
       when: install_postfix is defined and install_postfix
 
-    - role: jnv.unattended-upgrades
+    - role: hifis.unattended_upgrades
       when: manage_unattended_upgrades is defined and manage_unattended_upgrades
 
     - role: maxhoesel.nut_netclient

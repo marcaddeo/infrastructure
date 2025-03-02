@@ -1,3 +1,0 @@
-FROM willhallonline/ansible:2.13-alpine-3.12
-
-RUN pip3 install ansible_merge_vars netaddr
