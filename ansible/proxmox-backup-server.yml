@@ -74,7 +74,7 @@
         existing_datastores: "{{ existing_datastores.stdout_lines[0] | from_json }}"
       tags: pbs_datastores
 
-    - name: Create missing datastores
+    - name: Create missing datastores # noqa: no-changed-when
       command: >-
         proxmox-backup-manager datastore create {{ item.name }} {{ item.backing_path }}
         {% if item.comment is defined -%}
@@ -106,10 +106,9 @@
         {%- endif %}
       loop: "{{ pbs_datastores }}"
       when: item.state == "present" and item.name not in existing_datastore_names
-      changed_when: false
       tags: pbs_datastores
 
-    - name: Updating existing datastores
+    - name: Updating existing datastores # noqa: no-changed-when
       command: >-
         proxmox-backup-manager datastore update {{ item.name }}
         {% if item.comment is defined -%}
@@ -122,7 +121,6 @@
       when: (item.state == "present" and item.name in existing_datastore_names)
         and (item.gc_schedule | default() != (existing_datastores | selectattr('name', 'eq', item.name))[0]["gc-schedule"] | default()
         or item.comment | default() != (existing_datastores | selectattr('name', 'eq', item.name))[0].comment | default())
-      changed_when: false
       tags: pbs_datastores
 
     - name: Get existing users
@@ -140,7 +138,7 @@
         existing_users: "{{ existing_users.stdout_lines[0] | from_json | rejectattr('userid', 'eq', 'root@pam') }}"
       tags: pbs_users
 
-    - name: Create missing users
+    - name: Create missing users # noqa: no-changed-when
       command: >-
         proxmox-backup-manager user create {{ item.username }}
         {% if item.comment is defined -%}
@@ -167,10 +165,9 @@
       loop: "{{ pbs_users }}"
       when: item.state | default("present") == "present" and item.username not in existing_user_names
       no_log: true
-      changed_when: false
       tags: pbs_users
 
-    - name: Updating existing users
+    - name: Updating existing users # noqa: no-changed-when
       command: >-
         proxmox-backup-manager user update {{ item.username }}
         {% if item.comment is defined -%}
@@ -200,10 +197,9 @@
         or item.firstname | default() != (existing_users | selectattr('userid', 'eq', item.username))[0].firstname | default()
         or item.lastname | default() != (existing_users | selectattr('userid', 'eq', item.username))[0].lastname | default())
       no_log: true
-      changed_when: false
       tags: pbs_users
 
-    - name: Update users access
+    - name: Update users access # noqa: no-changed-when
       command: >-
         proxmox-backup-manager acl update
         {% if item.1.state == "absent" %}--delete{% endif %}
@@ -211,7 +207,6 @@
       loop: "{{ pbs_users | subelements('access') }}"
       when: item.1.state | default("present") in ["present", "absent"] and item.0.username in existing_user_names
       no_log: true
-      changed_when: false
       tags: pbs_users
 
     # @TODO
