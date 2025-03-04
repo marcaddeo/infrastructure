@@ -3,6 +3,16 @@
   hosts: proxmox_backup_servers
   become: true
   tasks:
+    - name: Ensure QEMU guest agent is installed
+      apt:
+        name: qemu-guest-agent
+
+    - name: Ensure QEMU guest agent is enabled and started
+      service:
+        name: qemu-guest-agent
+        enabled: true
+        state: started
+
     - name: Add Proxmox GPG key
       get_url:
         url: https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg
