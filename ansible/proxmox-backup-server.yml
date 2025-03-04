@@ -75,7 +75,7 @@
       tags: pbs_datastores
 
     - name: Create missing datastores
-      shell: >-
+      command: >-
         proxmox-backup-manager datastore create {{ item.name }} {{ item.backing_path }}
         {% if item.comment is defined -%}
           --comment "{{ item.comment }}"
@@ -110,7 +110,7 @@
       tags: pbs_datastores
 
     - name: Updating existing datastores
-      shell: >-
+      command: >-
         proxmox-backup-manager datastore update {{ item.name }}
         {% if item.comment is defined -%}
           --comment "{{ item.comment }}"
