@@ -120,8 +120,8 @@
         {%- endif %}
       loop: "{{ pbs_datastores }}"
       when: (item.state == "present" and item.name in existing_datastore_names)
-        and (item.gc_schedule != (existing_datastores | selectattr('name', 'eq', item.name))[0]["gc-schedule"]
-        or item.comment != (existing_datastores | selectattr('name', 'eq', item.name))[0].comment)
+        and (item.gc_schedule | default() != (existing_datastores | selectattr('name', 'eq', item.name))[0]["gc-schedule"] | default()
+        or item.comment | default() != (existing_datastores | selectattr('name', 'eq', item.name))[0].comment | default())
       changed_when: false
       tags: pbs_datastores
 
