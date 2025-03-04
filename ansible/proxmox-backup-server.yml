@@ -125,7 +125,6 @@
     #   changed_when: false
     #   tags: pbs_datastores
 
-    # @TODO untested but should work lol
     - name: Get existing users
       command: proxmox-backup-manager user list --output-format json
       changed_when: false
@@ -134,7 +133,7 @@
       tags: pbs_users
 
     - set_fact: # noqa: name[missing]
-        existing_user_names: "{{ existing_users.stdout_lines[0] | from_json | json_query('[*].name') }}"
+        existing_user_names: "{{ existing_users.stdout_lines[0] | from_json | json_query('[*].userid') }}"
       tags: pbs_users
 
     - set_fact: # noqa: name[missing]
@@ -142,7 +141,7 @@
       tags: pbs_users
 
     - name: Create missing users
-      shell: >-
+      command: >-
         proxmox-backup-manager user create {{ item.username }}
         {% if item.comment is defined -%}
           --comment "{{ item.comment }}"
@@ -166,13 +165,13 @@
           --password "{{ item.password }}"
         {%- endif %}
       loop: "{{ pbs_users }}"
-      when: item.state == "present" and item.name not in existing_user_names
+      when: item.state | default("present") == "present" and item.username not in existing_user_names
       no_log: true
       changed_when: false
       tags: pbs_users
 
     - name: Updating existing users
-      shell: >-
+      command: >-
         proxmox-backup-manager user update {{ item.username }}
         {% if item.comment is defined -%}
           --comment "{{ item.comment }}"
@@ -193,25 +192,27 @@
           --lastname "{{ item.lastname }}"
         {%- endif %}
       loop: "{{ pbs_users }}"
-      when: (item.state == "present" and item.name in existing_user_names)
-        and (item.comment != (existing_users | selectattr('name', 'eq', item.name))[0].comment
-        or item.email != (existing_users | selectattr('name', 'eq', item.name))[0].email
-        or item.enable != (existing_users | selectattr('name', 'eq', item.name))[0].enable
-        or item.expire != (existing_users | selectattr('name', 'eq', item.name))[0].expire
-        or item.firstname != (existing_users | selectattr('name', 'eq', item.name))[0].firstname
-        or item.lastname != (existing_users | selectattr('name', 'eq', item.name))[0].lastname)
+      when: (item.state | default("present") == "present" and item.username in existing_user_names)
+        and (item.comment | default() != (existing_users | selectattr('userid', 'eq', item.username))[0].comment | default()
+        or item.email | default() != (existing_users | selectattr('userid', 'eq', item.username))[0].email | default()
+        or item.enable | default() != (existing_users | selectattr('userid', 'eq', item.username))[0].enable | default()
+        or item.expire | default() != (existing_users | selectattr('userid', 'eq', item.username))[0].expire | default()
+        or item.firstname | default() != (existing_users | selectattr('userid', 'eq', item.username))[0].firstname | default()
+        or item.lastname | default() != (existing_users | selectattr('userid', 'eq', item.username))[0].lastname | default())
       no_log: true
       changed_when: false
       tags: pbs_users
 
-    # @TODO
-    # - name: Add user access
-    #   shell: >-
-    #     proxmox-backup-manager acl update {{ item.path }} {{ item.role }} --auth-id {{ item.username }}
-    #   loop: "{{ pbs_users }}"
-    #   when: item.state == "present"
-    #   no_log: true
-    #   tags: pbs_users
+    - name: Update users access
+      command: >-
+        proxmox-backup-manager acl update
+        {% if item.1.state == "absent" %}--delete{% endif %}
+        {{ item.1.path }} {{ item.1.role }} --auth-id {{ item.0.username }}
+      loop: "{{ pbs_users | subelements('access') }}"
+      when: item.1.state | default("present") in ["present", "absent"] and item.0.username in existing_user_names
+      no_log: true
+      changed_when: false
+      tags: pbs_users
 
     # @TODO
     # - name: Update prune schedules

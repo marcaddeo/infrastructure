@@ -58,3 +58,4 @@ pbs_users:
     access:
       - path: /datastore
         role: DatastoreBackup
+        state: present
