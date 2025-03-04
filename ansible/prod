@@ -9,6 +9,7 @@ kilo.addeo.net ansible_host=10.1.15.65
 cantilever.addeo.net ansible_host=10.1.15.14
 
 [proxmox_backup_servers]
+bruce.addeo.net ansible_host=10.1.15.79
 
 [docker_servers]
 violet.addeo.net ansible_host=10.1.15.50
