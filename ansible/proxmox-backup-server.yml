@@ -1,21 +1,19 @@
 ---
-- hosts: proxmox_backup_servers
+- name: Provision Proxmox Backup Servers
+  hosts: proxmox_backup_servers
   become: true
   tasks:
-    # - name: Install curl
-    #   apt:
-    #     name: curl
-    #     state: present
-    #
     # - name: Add Proxmox GPG key
-    #   command: curl https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg -o /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
-    #   args:
-    #     creates: /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+    #   get_url:
+    #     url: https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg
+    #     dest: /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+    #     mode: "0644"
     #
     # - name: Empty the /etc/apt/sources.list file
     #   copy:
     #     content: "# File intentionally left blank."
     #     dest: /etc/apt/sources.list
+    #     mode: "0644"
     #
     # - name: Add apt repositories
     #   apt_repository:
@@ -51,7 +49,7 @@
     #     firstmatch: true
     #     backup: true
     #
-    # - set_fact:
+    # - set_fact: # noqa: name[missing]
     #     pbs_root_password: "{{ pbs_root_password }}"
     #   no_log: true
     #
@@ -62,17 +60,17 @@
     #   no_log: true
     #
     # - name: Get existing datastores
-    #   shell: proxmox-backup-manager datastore list --output-format json
+    #   command: proxmox-backup-manager datastore list --output-format json
     #   changed_when: false
     #   check_mode: false
     #   register: existing_datastores
     #   tags: pbs_datastores
     #
-    # - set_fact:
+    # - set_fact: # noqa: name[missing]
     #     existing_datastore_names: "{{ existing_datastores.stdout_lines[0] | from_json | json_query('[*].name') }}"
     #   tags: pbs_datastores
     #
-    # - set_fact:
+    # - set_fact: # noqa: name[missing]
     #     existing_datastores: "{{ existing_datastores.stdout_lines[0] | from_json }}"
     #   tags: pbs_datastores
     #
@@ -108,6 +106,7 @@
     #     {%- endif %}
     #   loop: "{{ pbs_datastores }}"
     #   when: item.state == "present" and item.name not in existing_datastore_names
+    #   changed_when: false
     #   tags: pbs_datastores
     #
     # - name: Updating existing datastores
@@ -123,21 +122,22 @@
     #   when: (item.state == "present" and item.name in existing_datastore_names)
     #     and (item.gc_schedule != (existing_datastores | selectattr('name', 'eq', item.name))[0]["gc-schedule"]
     #     or item.comment != (existing_datastores | selectattr('name', 'eq', item.name))[0].comment)
+    #   changed_when: false
     #   tags: pbs_datastores
 
     # @TODO untested but should work lol
     - name: Get existing users
-      shell: proxmox-backup-manager user list --output-format json
+      command: proxmox-backup-manager user list --output-format json
       changed_when: false
       check_mode: false
       register: existing_users
       tags: pbs_users
 
-    - set_fact:
+    - set_fact: # noqa: name[missing]
         existing_user_names: "{{ existing_users.stdout_lines[0] | from_json | json_query('[*].name') }}"
       tags: pbs_users
 
-    - set_fact:
+    - set_fact: # noqa: name[missing]
         existing_users: "{{ existing_users.stdout_lines[0] | from_json | rejectattr('userid', 'eq', 'root@pam') }}"
       tags: pbs_users
 
@@ -168,6 +168,7 @@
       loop: "{{ pbs_users }}"
       when: item.state == "present" and item.name not in existing_user_names
       no_log: true
+      changed_when: false
       tags: pbs_users
 
     - name: Updating existing users
@@ -200,6 +201,7 @@
         or item.firstname != (existing_users | selectattr('name', 'eq', item.name))[0].firstname
         or item.lastname != (existing_users | selectattr('name', 'eq', item.name))[0].lastname)
       no_log: true
+      changed_when: false
       tags: pbs_users
 
     # @TODO
