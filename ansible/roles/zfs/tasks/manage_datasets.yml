@@ -1,14 +1,14 @@
 ---
 - name: manage_datasets | Get existing ZFS dataset names
-  shell: zfs list -H -o name
+  command: zfs list -H -o name
   changed_when: false
   check_mode: false
   register: zfs_dataset_names
 
-- set_fact:
+- set_fact: # noqa: name[missing]
     zfs_dataset_names: "{{ zfs_dataset_names.stdout_lines }}"
 
-- name: manage_datasets | Create missing encrypted ZFS datasets
+- name: manage_datasets | Create missing encrypted ZFS datasets # noqa: risky-shell-pipe jinja[spacing] no-changed-when
   shell: >-
     {% set passphrase = item.value.properties.passphrase %}
     {% set excluded_properties = zfs_custom_properties %}
@@ -35,8 +35,8 @@
     item.value.state == "present" and
     item.key not in zfs_dataset_names
 
-- name: manage_datasets | Delete iSCSI targets that are to be removed
-  shell: tgt-admin --delete {{ item.value.properties.shareiscsi.iqn }}
+- name: manage_datasets | Delete iSCSI targets that are to be removed # noqa: no-changed-when
+  command: tgt-admin --delete {{ item.value.properties.shareiscsi.iqn }}
   loop: "{{ zfs_datasets | dict2items }}"
   when:
     (item.value.properties.shareiscsi is defined and item.value.state == "absent")
@@ -45,6 +45,6 @@
 - name: manage_datasets | Manage ZFS datasets
   zfs:
     name: "{{ item.key }}"
-    extra_zfs_properties: "{{ item.value.properties | default({}) | dict2items | rejectattr('key', 'in', zfs_custom_properties) | rejectattr('key', 'in', zfs_encryption_properties) | list | items2dict }}"
+    extra_zfs_properties: "{{ item.value.properties | default({}) | dict2items | rejectattr('key', 'in', zfs_custom_properties) | rejectattr('key', 'in', zfs_encryption_properties) | list | items2dict }}" # noqa: yaml[line-length]
     state: "{{ item.value.state }}"
   loop: "{{ zfs_datasets | dict2items }}"

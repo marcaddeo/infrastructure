@@ -1,5 +1,5 @@
 ---
-- name: reload tgt
+- name: reload tgt # noqa: name[casing]
   service:
     name: tgt
     state: reloaded

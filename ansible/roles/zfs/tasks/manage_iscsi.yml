@@ -10,7 +10,7 @@
     dest: "/etc/tgt/conf.d/zvol-{{ item.key | regex_replace('/', '-') }}.conf"
     group: root
     owner: root
-    mode: 0600
+    mode: "0600"
   loop: "{{ zfs_datasets | dict2items }}"
   when:
     (item.value.properties.shareiscsi is defined and item.value.properties.shareiscsi is not false)

@@ -1,5 +1,6 @@
 ---
-- hosts: storage_servers
+- name: Provision Storage Servers
+  hosts: storage_servers
   become: true
   roles:
     - role: shavee

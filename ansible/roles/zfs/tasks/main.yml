@@ -1,20 +1,20 @@
 ---
-- import_tasks: configure_zfs.yml
+- import_tasks: configure_zfs.yml # noqa: name[missing]
 
-- import_tasks: configure_zed.yml
+- import_tasks: configure_zed.yml # noqa: name[missing]
 
-- import_tasks: install_nfs.yml
+- import_tasks: install_nfs.yml # noqa: name[missing]
   when: zfs_datasets | dict2items | json_query('[*].value.properties.sharenfs') | difference([false, 'off']) | length > 0
 
-- import_tasks: install_samba.yml
+- import_tasks: install_samba.yml # noqa: name[missing]
   when: zfs_datasets | dict2items | json_query('[*].value.properties.sharesmb') | difference([false, 'off']) | length > 0
 
-- import_tasks: manage_pools.yml
+- import_tasks: manage_pools.yml # noqa: name[missing]
 
-- import_tasks: manage_datasets.yml
+- import_tasks: manage_datasets.yml # noqa: name[missing]
 
-- import_tasks: manage_iscsi.yml
+- import_tasks: manage_iscsi.yml # noqa: name[missing]
   when: zfs_datasets | dict2items | json_query('[*].value.properties.shareiscsi') | difference([false, 'off']) | length > 0
 
-- import_tasks: manage_scrub_timers.yml
+- import_tasks: manage_scrub_timers.yml # noqa: name[missing]
   when: zfs_pools | dict2items | json_query('[*].value.scrub') | length > 0

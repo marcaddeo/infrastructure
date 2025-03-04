@@ -1,6 +1,5 @@
+exclude_paths:
+  - collections
 skip_list:
   - fqcn-builtins
-  # - fqcn[action]
-  # - fqcn[action-core]
-  # - fqcn[canonical]
-  # - name[casing]
+  - fqcn[action]

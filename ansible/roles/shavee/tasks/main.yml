@@ -22,7 +22,7 @@
       - libpam0g-dev
     state: present
 
-- name: Build Shavee
+- name: Build Shavee # noqa: command-instead-of-shell
   shell: ~/.cargo/bin/cargo build --release
   args:
     chdir: /usr/local/src/shavee
@@ -38,18 +38,21 @@
 - name: Ensure /usr/local/lib/security dir exists
   file:
     path: /usr/local/lib/security
+    mode: "0755"
     state: directory
 
 - name: Install Shavee PAM module
   copy:
     src: /usr/local/src/shavee/target/release/libshavee_pam.so
     dest: /usr/local/lib/security/libshavee_pam.so
+    mode: "0644"
     remote_src: true
 
 - name: Install Shavee systemd unit
   template:
     src: zfs-shavee-unlock@.service.j2
     dest: /etc/systemd/system/zfs-shavee-unlock@.service
+    mode: "0644"
 
 - name: Enable Shavee ZFS dataset unlock units
   systemd:

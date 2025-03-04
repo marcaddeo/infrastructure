@@ -3,11 +3,13 @@
   template:
     src: etc/default/zfs.j2
     dest: /etc/default/zfs
+    mode: "0644"
 
 - name: configure_zfs | Configure ZFS kernel parameters
   template:
     src: etc/modprobe.d/zfs.conf.j2
     dest: /etc/modprobe.d/zfs.conf
+    mode: "0644"
   when: >
     zfs_kernel_parameters is defined and
     zfs_kernel_parameters.keys() | length > 0

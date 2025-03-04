@@ -1,5 +1,6 @@
 ---
-- hosts: proxmox_servers
+- name: Provision Proxmox Servers
+  hosts: proxmox_servers
   become: true
   roles:
     - lae.proxmox

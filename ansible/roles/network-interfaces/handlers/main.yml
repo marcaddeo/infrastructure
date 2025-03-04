@@ -1,5 +1,5 @@
 ---
-- name: restart networking
+- name: restart networking # noqa: name[casing] no-changed-when
   shell: "ip addr flush {{ item.item.name }} && systemctl restart networking"
   when: (item.changed or network_interfaces_single_file) and (item.item.no_auto_down is not defined or item.item.no_auto_down is false)
   with_items: "{{ network_interfaces_updates.results | default(interfaces) }}"
@@ -7,7 +7,7 @@
   poll: 0
   register: net_restarting
 
-- name: check restart networking status
+- name: check restart networking status # noqa: name[casing] no-changed-when
   async_status:
     jid: "{{ item.ansible_job_id }}"
   with_items: "{{ net_restarting.results }}"

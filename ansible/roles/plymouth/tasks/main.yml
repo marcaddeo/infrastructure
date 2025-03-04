@@ -42,10 +42,10 @@
       - s/brogit-plymouth-theme-master/brogit-plymouth-theme/
 
 - name: Get current Plymouth theme
-  shell: plymouth-set-default-theme
+  command: plymouth-set-default-theme
   register: current_theme
   changed_when: false
 
-- name: Set Plymouth theme
-  shell: "plymouth-set-default-theme -R {{ plymouth_theme }}"
+- name: Set Plymouth theme # noqa: no-changed-when
+  command: "plymouth-set-default-theme -R {{ plymouth_theme }}"
   when: current_theme.stdout != plymouth_theme

@@ -1,5 +1,6 @@
 ---
-- hosts: docker_servers
+- name: Provision Docker Servers
+  hosts: docker_servers
   become: true
   tasks:
     - meta: end_play

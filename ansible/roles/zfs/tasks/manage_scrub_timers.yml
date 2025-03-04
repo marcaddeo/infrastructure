@@ -10,23 +10,25 @@
     dest: /etc/systemd/system/zpool-scrub@.service
     group: root
     owner: root
-    mode: 0644
+    mode: "0644"
   register: zfs_scrub_service
 
 - name: manage_scrub_timers | Install systemd scrub timer unit
   template:
     src: etc/systemd/system/zpool-scrub@.timer.j2
     dest: /etc/systemd/system/zpool-scrub@.timer
+    mode: "0644"
   register: zfs_scrub_timer
 
 - name: manage_scrub_timers | Create hard links for valid scrub frequencies
   file:
     src: /etc/systemd/system/zpool-scrub@.timer
     dest: "/etc/systemd/system/zpool-scrub-{{ item }}@.timer"
+    mode: "0644"
     state: hard
   loop: "{{ zfs_scrub_frequencies }}"
 
-- name: manage_scrub_timers | Enable and start systemd scrub timers
+- name: manage_scrub_timers | Enable and start systemd scrub timers # noqa: literal-compare
   systemd:
     name: "zpool-scrub-{{ item.value.scrub }}@{{ item.key }}.timer"
     enabled: true
@@ -35,13 +37,13 @@
   loop: "{{ zfs_pools | dict2items }}"
   when: item.value.scrub != false
 
-- name: manage_scrub_timers | Get list of systemd scrub timer units to disable
+- name: manage_scrub_timers | Get list of systemd scrub timer units to disable # noqa: literal-compare no-changed-when risky-shell-pipe command-instead-of-module yaml[line-length]
   shell: "systemctl show \"zpool-scrub*@{{ item.key }}.timer\" | grep Id= | cut -d'=' -f2"
   register: zfs_scrub_disable
   loop: "{{ zfs_pools | dict2items }}"
   when: item.value.scrub == false
 
-- name: manage_scrub_timers | Disable and stop systemd scrub timers
+- name: manage_scrub_timers | Disable and stop systemd scrub timers # noqa: no-handler
   systemd:
     name: "{{ item }}"
     enabled: false

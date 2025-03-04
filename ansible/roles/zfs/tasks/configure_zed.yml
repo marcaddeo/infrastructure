@@ -5,7 +5,7 @@
     dest: /etc/zfs/zed.d/zed.rc
     owner: root
     group: root
-    mode: 0600
+    mode: "0600"
 
 - name: configure_zed | Enable and start ZED
   systemd:

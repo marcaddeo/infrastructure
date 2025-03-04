@@ -1,23 +1,23 @@
 ---
-- name: manage_zpools | Get existing zpool names
-  shell: zpool list -H -o name
+- name: manage_zpools | Get existing zpool names # noqa: name[casing]
+  command: zpool list -H -o name
   changed_when: false
   check_mode: false
   register: zpool_names
 
-- set_fact:
+- set_fact: # noqa: name[missing]
     zpool_names: "{{ zpool_names.stdout_lines }}"
 
-- name: manage_zpools | Get existing zpool devices
+- name: manage_zpools | Get existing zpool devices # noqa: no-tabs risky-shell-pipe name[casing]
   shell: "zpool list -H -P -v | grep '/' | cut -d'	' -f2"
   changed_when: false
   check_mode: false
   register: zpool_devices
 
-- set_fact:
+- set_fact: # noqa: name[missing]
     zpool_devices: "{{ zpool_devices.stdout_lines }}"
 
-- name: manage_zpools | Prepare disks
+- name: manage_zpools | Prepare disks # noqa: name[casing] no-changed-when
   shell: >-
     {% set devices = (item.value.vdevs | map(attribute='devices') | flatten | select('string')) + (item.value.vdevs | map(attribute='devices') | flatten | reject('string') | map(attribute='devices') | flatten) %}
     {% for device in devices %}
@@ -30,7 +30,7 @@
     item.key not in zpool_names and
     (((item.value.vdevs | map(attribute='devices') | flatten | select('string')) + (item.value.vdevs | map(attribute='devices') | flatten | reject('string') | map(attribute='devices') | flatten)) | intersect(zpool_devices)) | length == 0
 
-- name: manage_zpools | Create zpools
+- name: manage_zpools | Create zpools # noqa: name[casing] no-changed-when jinja[spacing]
   command: >-
     zpool create
     {% if item.value.force is defined and item.value.force %}-f{% endif -%}
@@ -61,17 +61,17 @@
     item.key not in zpool_names and
     (((item.value.vdevs | map(attribute='devices') | flatten | select('string')) + (item.value.vdevs | map(attribute='devices') | flatten | reject('string') | map(attribute='devices') | flatten)) | intersect(zpool_devices)) | length == 0
 
-- name: manage_zpools | Destroy zpools
+- name: manage_zpools | Destroy zpools # noqa: name[casing] no-changed-when
   command: "zpool destroy -f {{ item.key }}"
   loop: "{{ zfs_pools | dict2items }}"
   when: >
     item.value.state == "absent" and
     item.key in zpool_names
 
-- name: manage_zpools | Get zpool properties
+- name: manage_zpools | Get zpool properties # noqa: name[casing]
   zpool_facts:
 
-- set_fact:
+- set_fact: # noqa: name[missing]
     ansible_zfs_pools: >
       {
         {% for pool in ansible_zfs_pools %}
@@ -79,7 +79,7 @@
         {% endfor %}
       }
 
-- name: manage_zpools | Manage zpool properties
+- name: manage_zpools | Manage zpool properties # noqa: name[casing]
   shell: >-
     {% set readonly_properties = [
       'alloc',
@@ -102,9 +102,9 @@
   changed_when:
     - "result.cmd != ' true;'"
 
-- name: manage_zpools | Manage zpool root fileystem properties
+- name: manage_zpools | Manage zpool root fileystem properties # noqa: name[casing]
   zfs:
     name: "{{ item.key }}"
     extra_zfs_properties: "{{ item.value | dict2items | rejectattr('key', 'in', zfs_readonly_properties) | list | items2dict }}"
     state: present
-  loop: "{{ dict(zfs_pools | dict2items | selectattr('value.state', 'equalto', 'present') | json_query('[?value.filesystem_properties].[key, value.filesystem_properties]')) | dict2items }}"
+  loop: "{{ dict(zfs_pools | dict2items | selectattr('value.state', 'equalto', 'present') | json_query('[?value.filesystem_properties].[key, value.filesystem_properties]')) | dict2items }}" # noqa: yaml[line-length]

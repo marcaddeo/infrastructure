@@ -1,13 +1,13 @@
 ---
-- set_fact:
+- set_fact: # noqa: name[missing]
     interfaces: "{{ network_interfaces }}"
 
-- set_fact:
-    interface: "{{ item.value | combine({'name': item.value.name | default(item.key) }) }}"
+- set_fact: # noqa: name[missing]
+    interface: "{{ item.value | combine({'name': item.value.name | default(item.key)}) }}"
   with_dict: "{{ interfaces }}"
   register: interfaces
 
-- set_fact:
+- set_fact: # noqa: name[missing]
     interfaces: "{{ interfaces.results | map(attribute='ansible_facts.interface') | list }}"
 
 - name: Generate /etc/network/intefaces file to source interfaces.d/*
@@ -16,7 +16,7 @@
     dest: /etc/network/interfaces
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when: not network_interfaces_single_file and network_interfaces_scaffold_interfaces
   notify:
     - restart networking
@@ -27,7 +27,7 @@
     dest: "/etc/network/interfaces.d/{{ item.name }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   loop: "{{ interfaces }}"
   when: not network_interfaces_single_file
     and (item.value.state | default("present") not in ["absent", "ignore"])
@@ -41,7 +41,7 @@
     dest: /etc/network/interfaces
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when: network_interfaces_single_file
   notify:
     - restart networking
@@ -54,5 +54,3 @@
   when: network_interfaces_single_file
   notify:
     - restart networking
-
-  # sudo, add ansible to sudo, passwordless sudo, python3

@@ -1,8 +1,7 @@
 ---
-- hosts: servers
+- name: Provision Base Servers
+  hosts: servers
   become: true
-  collections:
-    - devsec.hardening
   pre_tasks:
     - name: Merge firewall_allowed_tcp_ports
       merge_vars:
@@ -27,10 +26,10 @@
   roles:
     - geerlingguy.ntp
 
-    - role: os_hardening
+    - role: devsec.hardening.os_hardening
       when: harden_server is defined and harden_server
 
-    - role: ssh_hardening
+    - role: devsec.hardening.ssh_hardening
       when: harden_server is defined and harden_server
 
     - role: oefenweb.fail2ban
@@ -100,7 +99,7 @@
       user:
         name: "{{ item.name }}"
         groups: "{{ item.groups | default(omit) }}"
-        password: "{{ (item.password is defined) | ternary(item.password | default(omit) | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string), '!') }}"
+        password: "{{ (item.password is defined) | ternary(item.password | default(omit) | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string), '!') }}" # noqa: yaml[line-length]
         shell: "{{ item.shell | default('/bin/bash') }}"
         password_lock: "{{ item.password_lock | default(false) }}"
         create_home: "{{ item.create_home | default(true) }}"
@@ -125,6 +124,7 @@
         group: "{{ item.0.name }}"
         remote_src: true
         force: "{{ not item.1.stat.exists }}"
+        mode: "0744"
       loop: "{{ server_users | zip(server_users_stat.results) | list }}"
       when: item.0.create_home is not defined or item.0.create_home
       no_log: true
@@ -136,6 +136,7 @@
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
         state: directory
+        mode: "0755"
       loop: "{{ server_users }}"
       when: item.create_home is not defined or item.create_home
       no_log: true
@@ -161,6 +162,7 @@
       copy:
         dest: /etc/hostname
         content: "{{ server_hostname }}\n"
+        mode: "0644"
       when: manage_hostname is defined and manage_hostname
 
     - name: Ensure the servers hostname/fqdn are in /etc/hosts
@@ -180,7 +182,7 @@
           {% endif %}
       when: manage_hostname is defined and manage_hostname
 
-    - set_fact:
+    - set_fact: # noqa: name[missing]
         has_nfs_mounts: "{{ mounts | json_query('[?fstype == `nfs`]') | length > 0 }}"
       when: manage_mounts is defined and manage_mounts
       tags: mounts
@@ -193,7 +195,7 @@
       when: (manage_mounts is defined and manage_mounts) and has_nfs_mounts
       tags: mounts
 
-    - name: Ensure mount points are configured
+    - name: Ensure mount points are configured # noqa: args
       mount: "{{ item }}"
       loop: "{{ mounts }}"
       when: manage_mounts is defined and manage_mounts
