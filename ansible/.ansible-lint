@@ -1,5 +1,6 @@
 exclude_paths:
   - collections
+  - roles/*.*
 skip_list:
   - fqcn-builtins
   - fqcn[action]
