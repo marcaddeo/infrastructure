@@ -44,7 +44,7 @@ network_interfaces:
     dns_nameservers: 10.1.15.1
     state: present
   # SAN for cantilever.
-  enp65s0:
+  enp3s0:
     auto: true
     inet: static
     address: 172.16.1.65/24
