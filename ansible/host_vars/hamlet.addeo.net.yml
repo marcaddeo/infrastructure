@@ -7,6 +7,16 @@ server_hostname: hamlet
 server_fqdn: hamlet.addeo.net
 
 # Switch Configuration.
+local_ssh_config: |
+  Host 10.1.10.5
+    User root
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_rsa@hamlet.addeo.net
+    KexAlgorithms +diffie-hellman-group1-sha1
+    PubkeyAcceptedKeyTypes=+ssh-rsa
+    HostKeyAlgorithms=+ssh-rsa
+    PreferredAuthentications publickey
+
 brocade_root_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   38623461396439353836336162346236393833363531313266353461666438376639636631386634
