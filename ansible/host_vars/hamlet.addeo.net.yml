@@ -1,0 +1,137 @@
+---
+# Brocade ICX-6450 24P Switch
+# @note: just placeholder vars for now
+
+# Server Configuration.
+server_hostname: hamlet
+server_fqdn: hamlet.addeo.net
+
+# Switch Configuration.
+brocade_startup_config: |
+  ver 08.0.30uT313
+  !
+  stack unit 1
+    module 1 icx6450-24p-poe-port-management-module
+    module 2 icx6450-sfp-plus-4port-40g-module
+    no legacy-inline-power
+  !
+  global-stp
+  !
+  !
+  !
+  vlan 1 name DEFAULT-VLAN by port
+  router-interface ve 1
+  !
+  vlan 110 by port
+  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  untagged ethe 1/1/12 ethe 1/1/15 ethe 1/1/17
+  router-interface ve 110
+  !
+  vlan 115 by port
+  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  untagged ethe 1/1/10
+  router-interface ve 115
+  !
+  vlan 150 by port
+  tagged ethe 1/2/1
+  router-interface ve 150
+  !
+  vlan 151 by port
+  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  untagged ethe 1/1/5
+  router-interface ve 151
+  !
+  vlan 152 by port
+  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  router-interface ve 152
+  !
+  vlan 160 by port
+  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  router-interface ve 160
+  !
+  vlan 161 by port
+  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  router-interface ve 161
+  !
+  !
+  !
+  !
+  !
+  aaa authentication web-server default local
+  aaa authentication login default local
+  hostname hamlet
+  ip dhcp-client disable
+  ip dns server-address 10.1.10.1
+  ip route 0.0.0.0/0 10.1.10.1
+  !
+  no telnet server
+  username root password 8 $1$mti5hoki$eVbKiIF39p6HVtm79oSx50
+  !
+  !
+  clock summer-time
+  clock timezone us Eastern
+  !
+  !
+  ntp
+  disable serve
+  server 216.239.35.0
+  server 216.239.35.4
+  !
+  !
+  web-management https
+  !
+  !
+  !
+  interface ethernet 1/1/12
+  inline power
+  !
+  interface ethernet 1/1/18
+  inline power
+  !
+  interface ethernet 1/1/20
+  inline power
+  !
+  interface ethernet 1/1/22
+  inline power
+  !
+  interface ethernet 1/1/24
+  inline power
+  !
+  interface ethernet 1/2/1
+  speed-duplex 1000-full-master
+  !
+  interface ve 1
+  !
+  interface ve 110
+  ip address 10.1.10.5 255.255.255.0
+  ip helper-address 1 10.1.10.1
+  !
+  interface ve 115
+  ip helper-address 1 10.1.15.1
+  !
+  interface ve 150
+  ip helper-address 1 10.1.50.1
+  !
+  interface ve 151
+  ip helper-address 1 10.1.51.1
+  !
+  interface ve 152
+  ip helper-address 1 10.1.50.1
+  !
+  interface ve 160
+  ip helper-address 1 10.1.60.1
+  !
+  interface ve 161
+  ip helper-address 1 10.1.61.1
+  !
+  !
+  !
+  !
+  !
+  !
+  !
+  ip ssh  password-authentication no
+  ip ssh  interactive-authentication no
+  !
+  !
+  end
