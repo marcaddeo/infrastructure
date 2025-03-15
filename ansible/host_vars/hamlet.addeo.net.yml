@@ -50,7 +50,7 @@ brocade_startup_config: |
   router-interface ve 112
   !
   vlan 115 name SRVMGMT by port
-  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 ethe 1/1/24 ethe 1/2/1
   untagged ethe 1/1/2 ethe 1/1/10
   router-interface ve 115
   !
