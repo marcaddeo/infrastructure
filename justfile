@@ -26,4 +26,4 @@ alias e := edit
     ansible-inventory -i ansible/{{ inventory }} --graph
 
 @host-info host inventory="prod":
-    ansible-inventory -i ansible/{{ inventory }} --host {{ host }} | jq
+    ansible-inventory -i ansible/{{ inventory }} --host {{ if host =~ '\.' { host } else { host + ".addeo.net" }  }} | jq
