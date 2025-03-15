@@ -40,6 +40,7 @@ cam06.addeo.net
 [dell_servers]
 kilo.addeo.net ansible_host=10.1.15.65
 cantilever.addeo.net ansible_host=10.1.15.14
+crimson.addeo.net
 r710.addeo.net
 
 [storage_servers]
