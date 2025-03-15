@@ -42,7 +42,7 @@ brocade_startup_config: |
   !
   vlan 110 by port
   tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
-  untagged ethe 1/1/12 ethe 1/1/15 ethe 1/1/17
+  untagged ethe 1/1/12 ethe 1/1/14 to 1/1/15 ethe 1/1/17
   router-interface ve 110
   !
   vlan 115 by port
