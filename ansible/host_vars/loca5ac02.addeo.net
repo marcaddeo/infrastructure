@@ -1,0 +1,8 @@
+---
+device_name: Garage Bridge
+device_hostname: loco5ac02
+device_fqdn: loco5ac02.addeo.net
+device_ip: 10.1.10.36
+device_type: Unifi airMAX NanoStation 5AC Loco
+device_model: Loco5AC
+device_mac: E0:63:DA:FE:AF:78

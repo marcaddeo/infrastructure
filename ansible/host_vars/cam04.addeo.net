@@ -1,0 +1,8 @@
+---
+device_name: ServerCam
+device_hostname: cam04
+device_fqdn: cam04.addeo.net
+device_ip: 10.1.61.106 # @TODO use static ip
+device_type: Unifi G3 Instant Camera
+device_model: UVC-G3-INS
+device_mac: 74:AC:B9:9F:54:79

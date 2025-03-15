@@ -1,0 +1,8 @@
+---
+device_name: Garage
+device_hostname: cam06
+device_fqdn: cam06.addeo.net
+device_ip: 10.1.61.108 # @TODO use static ip
+device_type: Unifi G4 Pro Camera
+device_model: UVC-G4-PRO
+device_mac: 74:AC:B9:9F:E2:10

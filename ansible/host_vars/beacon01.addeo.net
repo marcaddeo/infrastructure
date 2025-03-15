@@ -1,0 +1,8 @@
+---
+device_name: Foyer Beacon
+device_hostname: beacon01
+device_fqdn: beacon01.addeo.net
+device_ip: 10.1.10.112 # @TODO use static ip
+device_type: Unifi BeaconHD WiFi Extender
+device_model: UAP-BeaconHD
+device_mac: D0:21:F9:72:9F:F4

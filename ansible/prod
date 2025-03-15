@@ -1,6 +1,46 @@
+[routers]
+edge.addeo.net
+rtr01.addeo.net
+
+[switches]
+hamlet.addeo.net
+swt02.addeo.net
+
+[ups]
+ups01.addeo.net
+
+[unifi_controllers]
+unifi.addeo.net
+
+[ptp_bridges]
+loco5ac01.addeo.net
+loco5ac02.addeo.net
+
+[accses_points]
+acpro01.addeo.net
+uappro01.addeo.net
+iwhd01.addeo.net
+iwhd02.addeo.net
+iwhd03.addeo.net
+
+[wifi_extenders]
+beacon01.addeo.net
+beacon02.addeo.net
+beacon03.addeo.net
+beacon04.addeo.net
+
+[cameras]
+cam01.addeo.net
+cam02.addeo.net
+cam03.addeo.net
+cam04.addeo.net
+cam05.addeo.net
+cam06.addeo.net
+
 [dell_servers]
 kilo.addeo.net ansible_host=10.1.15.65
 cantilever.addeo.net ansible_host=10.1.15.14
+r710.addeo.net
 
 [storage_servers]
 kilo.addeo.net ansible_host=10.1.15.65

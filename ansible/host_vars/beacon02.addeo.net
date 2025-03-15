@@ -1,0 +1,8 @@
+---
+device_name: Upstairs Beacon
+device_hostname: beacon02
+device_fqdn: beacon02.addeo.net
+device_ip: 10.1.10.114 # @TODO use static ip
+device_type: Unifi BeaconHD WiFi Extender
+device_model: UAP-BeaconHD
+device_mac: D0:21:F9:72:A0:00

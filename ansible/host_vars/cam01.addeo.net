@@ -1,0 +1,8 @@
+---
+device_name: CoopCam
+device_hostname: cam01
+device_fqdn: cam01.addeo.net
+device_ip: 10.1.61.165 # @TODO use static ip
+device_type: Unifi G3 Flex Camera
+device_model: UVC-G3-FLEX
+device_mac: 74:83:C2:3F:39:4F

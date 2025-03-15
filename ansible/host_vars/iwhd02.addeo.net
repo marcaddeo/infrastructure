@@ -1,0 +1,8 @@
+---
+device_name: Office IWAP
+device_hostname: iwhd02
+device_fqdn: iwhd02.addeo.net
+device_ip: 10.1.10.109 # @TODO use static ip
+device_type: Unifi In-Wall HD Access Point
+device_model: UAP-IW-HD
+device_mac: 78:45:58:D6:F2:7C

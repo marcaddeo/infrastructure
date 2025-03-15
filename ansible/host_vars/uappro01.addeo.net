@@ -1,0 +1,8 @@
+---
+device_name: Garage AP
+device_hostname: uappro01
+device_fqdn: uappro01.addeo.net
+device_ip: 10.1.10.37
+device_type: Unifi Access Point # @TODO not accurate
+device_model: UAP Pro # @TODO not accurate
+device_mac: 80:2A:A8:16:C7:5C

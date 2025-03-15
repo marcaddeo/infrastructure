@@ -1,0 +1,8 @@
+---
+device_name: Living Room IWAP
+device_hostname: iwhd01
+device_fqdn: iwhd01.addeo.net
+device_ip: 10.1.10.108 # @TODO use static ip
+device_type: Unifi In-Wall HD Access Point
+device_model: UAP-IW-HD
+device_mac: 78:45:58:D6:FA:94

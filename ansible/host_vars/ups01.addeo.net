@@ -1,0 +1,7 @@
+---
+device_hostname: ups01
+device_fqdn: ups01.addeo.net
+device_ip: 10.1.10.10
+device_type: APC Smart-UPS 2200
+device_model: Smart-UPS 2200 RM
+device_mac: 00:C0:B7:74:18:64
