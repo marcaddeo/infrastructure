@@ -21,3 +21,9 @@ alias e := edit
 
 @genhost *args:
     ./genhost {{ args }}
+
+@inventory-graph inventory="prod":
+    ansible-inventory -i ansible/{{ inventory }} --graph
+
+@host-info host inventory="prod":
+    ansible-inventory -i ansible/{{ inventory }} --host {{ host }} | jq
