@@ -162,6 +162,7 @@ brocade_startup_config: |
   interface ve 1
   !
   interface ve 110
+  port-name MGMT
   ip address 10.1.10.5 255.255.255.0
   ip helper-address 1 10.1.10.1
   !
@@ -169,21 +170,27 @@ brocade_startup_config: |
   port-name STORAGE
   !
   interface ve 115
+  port-name SRVMGMT
   ip helper-address 1 10.1.15.1
   !
   interface ve 150
+  port-name LAN
   ip helper-address 1 10.1.50.1
   !
   interface ve 151
+  port-name TRUSTEDWIFI
   ip helper-address 1 10.1.51.1
   !
   interface ve 152
+  port-name GUESTWIFI
   ip helper-address 1 10.1.50.1
   !
   interface ve 160
+  port-name IOT
   ip helper-address 1 10.1.60.1
   !
   interface ve 161
+  port-name IPCAM
   ip helper-address 1 10.1.61.1
   !
   !
