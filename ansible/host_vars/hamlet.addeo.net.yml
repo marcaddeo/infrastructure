@@ -41,13 +41,13 @@ brocade_startup_config: |
   router-interface ve 1
   !
   vlan 110 by port
-  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
   untagged ethe 1/1/12 ethe 1/1/14 to 1/1/15 ethe 1/1/17
   router-interface ve 110
   !
   vlan 115 by port
-  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
-  untagged ethe 1/1/10
+  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  untagged ethe 1/1/2 ethe 1/1/10
   router-interface ve 115
   !
   vlan 150 by port
@@ -55,20 +55,19 @@ brocade_startup_config: |
   router-interface ve 150
   !
   vlan 151 by port
-  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
-  untagged ethe 1/1/5
+  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
   router-interface ve 151
   !
   vlan 152 by port
-  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
   router-interface ve 152
   !
   vlan 160 by port
-  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
   router-interface ve 160
   !
   vlan 161 by port
-  tagged ethe 1/1/9 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
+  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
   router-interface ve 161
   !
   !
@@ -100,22 +99,60 @@ brocade_startup_config: |
   !
   !
   !
+  interface ethernet 1/1/1
+  port-name r710
+  !
+  interface ethernet 1/1/2
+  port-name kilo-3
+  !
+  interface ethernet 1/1/3
+  port-name cantilever-3
+  !
+  interface ethernet 1/1/4
+  port-name kilo-4
+  !
+  interface ethernet 1/1/6
+  port-name crimson-1
+  !
   interface ethernet 1/1/12
   inline power
+  !
+  interface ethernet 1/1/13
+  port-name rtr01-idrac
+  !
+  interface ethernet 1/1/14
+  port-name ups01
+  !
+  interface ethernet 1/1/15
+  port-name cantilever-idrac
+  !
+  interface ethernet 1/1/17
+  port-name kilo-idrac
   !
   interface ethernet 1/1/18
   inline power
   !
+  interface ethernet 1/1/19
+  port-name crimson-idrac
+  !
   interface ethernet 1/1/20
   inline power
   !
+  interface ethernet 1/1/21
+  port-name r710-idrac
+  !
   interface ethernet 1/1/22
+  inline power
+  !
+  interface ethernet 1/1/23
+  port-name loco5ac01
   inline power
   !
   interface ethernet 1/1/24
   inline power
   !
   interface ethernet 1/2/1
+  port-name rtr01-2
   speed-duplex 1000-full-master
   !
   interface ve 1
