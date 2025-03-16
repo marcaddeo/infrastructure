@@ -19,7 +19,7 @@ dns_records:
 
 # Switch Configuration.
 local_ssh_config: |
-  Host 10.1.10.5
+  Host hamlet.addeo.net
     User root
     IdentitiesOnly yes
     IdentityFile ~/.ssh/id_rsa@hamlet.addeo.net
