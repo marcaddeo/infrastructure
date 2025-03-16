@@ -148,3 +148,10 @@ pve_storages:
       31623063663862356432653764323136323464353334623563386234306233656364373133383537
       65306536393439336531626535376538653166336231306565313565373930353036653839386463
       3162
+  - name: kilo-bruce-backup
+    type: nfs
+    content:
+      - backup
+    server: kilo.san.addeo.net
+    export: /spool/data/backups/bruce.addeo.net
+    options: nfsvers=4
