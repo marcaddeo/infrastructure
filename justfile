@@ -22,11 +22,13 @@ alias e := edit
 @genhost *args:
     ./genhost {{ args }}
 
+[working-directory("ansible")]
 @inventory-graph inventory="prod":
-    ansible-inventory -i ansible/{{ inventory }} --graph
+    ansible-inventory -i {{ inventory }} --graph
 
+[working-directory("ansible")]
 @host-info host inventory="prod":
-    ansible-inventory -i ansible/{{ inventory }} --host {{ if host =~ '\.' { host } else { host + ".addeo.net" }  }} | jq
+    ansible-inventory -i {{ inventory }} --host {{ if host =~ '\.' { host } else { host + ".addeo.net" }  }} | jq
 
 [working-directory("ansible")]
 @dns-records inventory="prod":
