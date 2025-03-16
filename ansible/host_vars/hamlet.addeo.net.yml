@@ -46,8 +46,7 @@ brocade_startup_config: |
   router-interface ve 110
   !
   vlan 112 name STORAGE by port
-  tagged ethe 1/2/3 to 1/2/4
-  untagged ethe 1/2/2
+  untagged ethe 1/2/2 to 1/2/4
   router-interface ve 112
   !
   vlan 115 name SRVMGMT by port

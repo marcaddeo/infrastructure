@@ -62,17 +62,19 @@ network_interfaces:
     gateway: 10.1.15.1
     dns_nameservers: 10.1.15.1
     state: present
+  # @TODO i should be able to undo the vlan-aware bits here, and then set the
+  # ports to untagged in the switch. think about it a bit first, not sure.
   vmbr1:
     comment: SAN bridge.
     auto: true
-    inet: manual
+    inet: static
+    address: 10.1.12.66/24
+    gateway: 10.1.12.1
     mtu: 9000
     extra: |
       bridge-ports enp4s0
       bridge-stp off
       bridge-fd 0
-      bridge-vlan-aware yes
-      bridge-vids 100-200
       up ip route add 10.1.15.79 dev vmbr1
       down ip route del 10.1.15.79 dev vmbr1
     state: present
