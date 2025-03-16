@@ -131,6 +131,7 @@ brocade_startup_config: |
   port-name crimson-1
   !
   interface ethernet 1/1/12
+  port-name unifi.addeo.net
   inline power
   !
   interface ethernet 1/1/13
@@ -146,18 +147,21 @@ brocade_startup_config: |
   port-name kilo-idrac
   !
   interface ethernet 1/1/18
+  port-name basement-wap
   inline power
   !
   interface ethernet 1/1/19
   port-name crimson-idrac
   !
   interface ethernet 1/1/20
+  port-name bedroom-iwap
   inline power
   !
   interface ethernet 1/1/21
   port-name r710-idrac
   !
   interface ethernet 1/1/22
+  port-name office-iwap
   inline power
   !
   interface ethernet 1/1/23
@@ -165,6 +169,7 @@ brocade_startup_config: |
   inline power
   !
   interface ethernet 1/1/24
+  port-name living-room-iwap
   inline power
   !
   interface ethernet 1/2/1
