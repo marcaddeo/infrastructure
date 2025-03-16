@@ -164,6 +164,12 @@ brocade_startup_config: |
   interface ethernet 1/2/2
   port-name kilo-san
   !
+  interface ethernet 1/2/3
+  port-name crimson-san
+  !
+  interface ethernet 1/2/4
+  port-name cantilever-san
+  !
   interface ve 1
   !
   interface ve 110
