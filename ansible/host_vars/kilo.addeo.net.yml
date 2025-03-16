@@ -25,6 +25,10 @@ dns_records:
     domain: addeo.net
     ip: 10.1.10.20
     descr: "iDrac: kilo"
+  - host: kilo.san
+    domain: addeo.net
+    ip: 10.1.12.65
+    descr: "SAN: kilo"
 
 # Bootstrap Configuration.
 bootstrap_zpool_encrypt_root: true

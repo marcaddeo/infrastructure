@@ -17,6 +17,10 @@ dns_records:
     domain: addeo.net
     ip: 10.1.10.16
     descr: "iDrac: cantilever"
+  - host: cantilever.san
+    domain: addeo.net
+    ip: 10.1.12.66
+    descr: "SAN: cantilever"
 
 # Bootstrap Configuration.
 bootstrap_boot_type: uefi
