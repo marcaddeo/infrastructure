@@ -6,3 +6,14 @@ device_ip: 10.1.10.6
 device_type: Unifi Switch 8 (PoE)
 device_model: US-8-60W (48W)
 device_mac: E0:63:DA:C7:D3:84
+
+# DNS Record Configuration.
+dns_records:
+  - host: swt02
+    domain: addeo.net
+    ip: 10.1.10.6
+    descr: Garage Switch
+    aliases:
+      - host: swt02.prd.ado
+        domain: addeo.net
+        description: swt02.prd.ado

@@ -6,6 +6,17 @@
 server_hostname: hamlet
 server_fqdn: hamlet.addeo.net
 
+# DNS Record Configuration.
+dns_records:
+  - host: hamlet
+    domain: addeo.net
+    ip: 10.1.10.5
+    descr: "Core Switch: hamlet"
+    aliases:
+      - host: swt01.prd.ado
+        domain: addeo.net
+        description: swt01.prd.ado
+
 # Switch Configuration.
 local_ssh_config: |
   Host 10.1.10.5

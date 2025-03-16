@@ -37,6 +37,9 @@ cam04.addeo.net
 cam05.addeo.net
 cam06.addeo.net
 
+[pfsense_servers]
+rtr01.addeo.net ansible_host=10.1.10.1
+
 [dell_servers]
 kilo.addeo.net ansible_host=10.1.15.65
 cantilever.addeo.net ansible_host=10.1.15.66

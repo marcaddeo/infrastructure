@@ -27,3 +27,7 @@ alias e := edit
 
 @host-info host inventory="prod":
     ansible-inventory -i ansible/{{ inventory }} --host {{ if host =~ '\.' { host } else { host + ".addeo.net" }  }} | jq
+
+[working-directory("ansible")]
+@dns-records inventory="prod":
+    ansible-playbook -i {{ inventory }} pfsense-server.yml --tags=dns-records

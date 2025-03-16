@@ -3,6 +3,17 @@
 server_hostname: violet
 server_fqdn: violet.addeo.net
 
+# DNS Record Configuration.
+dns_records:
+  - host: violet
+    domain: addeo.net
+    ip: 10.1.15.50
+    descr: Portainer Container Server
+    aliases:
+      - host: pcs01.prd.ado
+        domain: addeo.net
+        description: pcs01.prd.ado
+
 # Network Interfaces Configuration.
 network_interfaces:
   ens18:

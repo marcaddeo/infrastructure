@@ -1,0 +1,11 @@
+---
+- name: Provision pfSense
+  hosts: pfsense_servers
+  become: true
+  tasks:
+    - name: Provision DNS Records
+      pfsensible.core.pfsense_dns_resolver:
+        state: present
+        hosts: "{{ hostvars | json_query('*.dns_records') | flatten }}"
+      tags:
+        - dns-records

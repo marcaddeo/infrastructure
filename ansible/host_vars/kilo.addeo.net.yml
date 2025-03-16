@@ -11,6 +11,21 @@ kilo_server_users__to_merge:
     groups:
       - spool
 
+# DNS Record Configuration.
+dns_records:
+  - host: kilo
+    domain: addeo.net
+    ip: 10.1.15.65
+    descr: "Storage Server: kilo"
+    aliases:
+      - host: sto01.prd.ado
+        domain: addeo.net
+        description: sto01.prd.ado
+  - host: kilo.mgmt
+    domain: addeo.net
+    ip: 10.1.10.20
+    descr: "iDrac: kilo"
+
 # Bootstrap Configuration.
 bootstrap_zpool_encrypt_root: true
 bootstrap_zpool_type: mirror

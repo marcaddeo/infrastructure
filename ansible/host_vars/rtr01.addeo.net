@@ -10,3 +10,21 @@ device_interfaces:
     mac: D4:AE:52:C6:51:10
   - name: bce1
     mac: D4:AE:52:C6:51:11
+
+# DNS Record Configuration.
+dns_records:
+  - host: rtr01
+    domain: addeo.net
+    ip: 10.1.10.1
+    descr: pfSense
+    aliases:
+      - host: rtr01.prd.ado
+        domain: addeo.net
+        description: rtr01.prd.ado
+      - host: pfsense
+        domain: addeo.net
+        description: pfsense
+  - host: rtr01.mgmt
+    domain: addeo.net
+    ip: 10.1.10.2
+    descr: "iDrac: rtr01 (not working)"

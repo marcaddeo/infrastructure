@@ -5,3 +5,14 @@ device_ip: 10.1.10.10
 device_type: APC Smart-UPS 2200
 device_model: Smart-UPS 2200 RM
 device_mac: 00:C0:B7:74:18:64
+
+# DNS Record Configuration.
+dns_records:
+  - host: ups01
+    domain: addeo.net
+    ip: 10.1.10.10
+    descr: Core UPS
+    aliases:
+      - host: ups01.prd.ado
+        domain: addeo.net
+        description: ups01.prd.ado

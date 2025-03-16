@@ -3,6 +3,17 @@
 server_hostname: bruce
 server_fqdn: bruce.addeo.net
 
+# DNS Record Configuration.
+dns_records:
+  - host: bruce
+    domain: addeo.net
+    ip: 10.1.15.79
+    descr: "Proxmox Backup Server: bruce"
+    aliases:
+      - host: pbs01.prd.ado
+        domain: addeo.net
+        description: pbs01.prd.ado
+
 # Network Interfaces Configuration.
 network_interfaces:
   ens18:

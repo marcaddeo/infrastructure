@@ -8,6 +8,10 @@ collections:
     version: 7.12.0
     source: https://galaxy.ansible.com
 
+  - name: pfsensible.core
+    version: 0.6.2
+    source: https://galaxy.ansible.com
+
 roles:
   - name: geerlingguy.ntp
     version: 2.3.0

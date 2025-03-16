@@ -17,3 +17,14 @@ device_interfaces:
     mac: D0:21:F9:49:37:84
   - name: switch0
     mac: D0:21:F9:49:37:85
+
+# DNS Record Configuration.
+dns_records:
+  - host: edge
+    domain: addeo.net
+    ip: 172.16.10.1
+    descr: Edge Router
+    aliases:
+      - host: edge.prd.ado
+        domain: addeo.net
+        description: edge.prd.ado

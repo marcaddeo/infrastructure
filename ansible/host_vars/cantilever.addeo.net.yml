@@ -3,6 +3,21 @@
 server_hostname: cantilever
 server_fqdn: cantilever.addeo.net
 
+# DNS Record Configuration.
+dns_records:
+  - host: cantilever
+    domain: addeo.net
+    ip: 10.1.15.66
+    descr: "Proxmox Server: cantilever"
+    aliases:
+      - host: vmm01.prd.ado
+        domain: addeo.net
+        description: vmm01.prd.ado
+  - host: cantilever.mgmt
+    domain: addeo.net
+    ip: 10.1.10.16
+    descr: "iDrac: cantilever"
+
 # Bootstrap Configuration.
 bootstrap_boot_type: uefi
 bootstrap_iscsi_boot: true
