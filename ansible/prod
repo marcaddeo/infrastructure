@@ -39,7 +39,7 @@ cam06.addeo.net
 
 [dell_servers]
 kilo.addeo.net ansible_host=10.1.15.65
-cantilever.addeo.net ansible_host=10.1.15.14
+cantilever.addeo.net ansible_host=10.1.15.66
 crimson.addeo.net
 r710.addeo.net
 
@@ -47,7 +47,7 @@ r710.addeo.net
 kilo.addeo.net ansible_host=10.1.15.65
 
 [proxmox_servers]
-cantilever.addeo.net ansible_host=10.1.15.14
+cantilever.addeo.net ansible_host=10.1.15.66
 
 [proxmox_backup_servers]
 bruce.addeo.net ansible_host=10.1.15.79

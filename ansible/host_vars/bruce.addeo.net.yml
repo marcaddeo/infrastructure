@@ -17,13 +17,14 @@ network_interfaces:
     comment: SAN network interface.
     auto: true
     inet: static
-    address: 172.16.1.79/24
+    address: 10.1.12.79/24
+    gateway: 10.1.12.1
     mtu: 9000
     state: present
 
 # Mount Point Configuration.
 mounts:
-  - src: 172.16.1.65:/spool/data/backups/proxmox
+  - src: 10.1.12.65:/spool/data/backups/proxmox
     path: /mnt/backups
     opts: rsize=8192,wsize=8192,timeo=14
     fstype: nfs

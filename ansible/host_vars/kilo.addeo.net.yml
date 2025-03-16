@@ -28,11 +28,12 @@ network_interfaces:
     address: 172.16.0.65/29
     mtu: 9000
     state: present
-  # SAN for crimson.
+  # iSCSI boot for crimson.
   eno2:
     auto: true
+    no_auto_down: true
     inet: static
-    address: 172.16.2.65/24
+    address: 172.16.1.65/24
     mtu: 9000
     state: present
   # SRVMGMT network.
@@ -43,11 +44,12 @@ network_interfaces:
     gateway: 10.1.15.1
     dns_nameservers: 10.1.15.1
     state: present
-  # SAN for cantilever.
+  # SAN network.
   enp3s0:
     auto: true
     inet: static
-    address: 172.16.1.65/24
+    address: 10.1.12.65/24
+    gateway: 10.1.12.1
     mtu: 9000
     state: present
 
@@ -125,28 +127,27 @@ zfs_datasets:
     state: present
   spool/data/backups/proxmox:
     properties:
-      sharenfs: "rw=172.16.1.79,anonuid=1001,anongid=1001,no_root_squash,no_subtree_check"
+      sharenfs: "rw=10.1.12.79,anonuid=1001,anongid=1001,no_root_squash,no_subtree_check"
     state: present
   spool/data/downloads:
     state: present
   spool/data/downloads/complete:
     properties:
-      # @TODO these need to be changed to 172.16.1.50 when we update violet
-      sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+      sharenfs: "rw=10.1.12.50,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/downloads/incomplete:
     properties:
-      sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+      sharenfs: "rw=10.1.12.50,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/media:
     state: present
   spool/data/media/movies:
     properties:
-      sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+      sharenfs: "rw=10.1.12.50,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/media/tv:
     properties:
-      sharenfs: "rw=172.16.1.66,anonuid=1001,anongid=1001,no_root_squash,all_squash"
+      sharenfs: "rw=10.1.12.50,anonuid=1001,anongid=1001,no_root_squash,all_squash"
     state: present
   spool/data/timemachines:
     state: present

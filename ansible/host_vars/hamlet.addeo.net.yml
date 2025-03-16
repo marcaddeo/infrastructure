@@ -46,7 +46,8 @@ brocade_startup_config: |
   router-interface ve 110
   !
   vlan 112 name STORAGE by port
-  untagged ethe 1/2/2 to 1/2/4
+  tagged ethe 1/2/3 to 1/2/4
+  untagged ethe 1/2/2
   router-interface ve 112
   !
   vlan 115 name SRVMGMT by port
@@ -80,6 +81,7 @@ brocade_startup_config: |
   !
   aaa authentication web-server default local
   aaa authentication login default local
+  jumbo
   hostname hamlet
   ip dhcp-client disable
   ip dns server-address 10.1.10.1
@@ -159,6 +161,9 @@ brocade_startup_config: |
   port-name rtr01-2
   speed-duplex 1000-full-master
   !
+  interface ethernet 1/2/2
+  port-name kilo-san
+  !
   interface ve 1
   !
   interface ve 110
@@ -168,6 +173,7 @@ brocade_startup_config: |
   !
   interface ve 112
   port-name STORAGE
+  ip address 10.1.12.1 255.255.255.0
   !
   interface ve 115
   port-name SRVMGMT

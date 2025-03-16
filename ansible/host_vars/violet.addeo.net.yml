@@ -18,28 +18,28 @@ network_interfaces:
     comment: SAN interface.
     auto: true
     inet: static
-    address: 172.16.1.66/24 # @TODO This should probably be 172.16.1.50/24
+    address: 10.1.12.50/24
     mtu: 9000
     state: present
 
 # Mount Point Configuration.
 mounts:
-  - src: 172.16.1.65:/spool/data/media/tv
+  - src: 10.1.12.65:/spool/data/media/tv
     path: /data/media/tv
     opts: rsize=8192,wsize=8192,timeo=14,intr
     fstype: nfs
     state: mounted
-  - src: 172.16.1.65:/spool/data/media/movies
+  - src: 10.1.12.65:/spool/data/media/movies
     path: /data/media/movies
     opts: rsize=8192,wsize=8192,timeo=14,intr
     fstype: nfs
     state: mounted
-  - src: 172.16.1.65:/spool/data/downloads/incomplete
+  - src: 10.1.12.65:/spool/data/downloads/incomplete
     path: /data/downloads/incomplete
     opts: rsize=8192,wsize=8192,timeo=14,intr
     fstype: nfs
     state: mounted
-  - src: 172.16.1.65:/spool/data/downloads/complete
+  - src: 10.1.12.65:/spool/data/downloads/complete
     path: /data/downloads/complete
     opts: rsize=8192,wsize=8192,timeo=14,intr
     fstype: nfs

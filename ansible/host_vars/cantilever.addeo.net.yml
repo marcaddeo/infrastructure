@@ -58,20 +58,21 @@ network_interfaces:
     comment: SRVMGMT Network.
     auto: true
     inet: static
-    address: 10.1.15.14/24 # @TODO change .66
+    address: 10.1.15.66/24
     gateway: 10.1.15.1
     dns_nameservers: 10.1.15.1
     state: present
   vmbr1:
     comment: SAN bridge.
     auto: true
-    inet: static
-    address: 172.16.1.66/24
+    inet: manual
     mtu: 9000
     extra: |
       bridge-ports enp4s0
       bridge-stp off
       bridge-fd 0
+      bridge-vlan-aware yes
+      bridge-vids 100-200
       up ip route add 10.1.15.79 dev vmbr1
       down ip route del 10.1.15.79 dev vmbr1
     state: present
