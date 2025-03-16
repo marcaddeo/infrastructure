@@ -62,8 +62,6 @@ network_interfaces:
     gateway: 10.1.15.1
     dns_nameservers: 10.1.15.1
     state: present
-  # @TODO i should be able to undo the vlan-aware bits here, and then set the
-  # ports to untagged in the switch. think about it a bit first, not sure.
   vmbr1:
     comment: SAN bridge.
     auto: true
