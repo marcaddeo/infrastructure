@@ -18,3 +18,6 @@ trim_trailing_whitespace = false
 
 [composer.{json,lock}]
 indent_size = 4
+
+[justfile]
+indent_size = 4

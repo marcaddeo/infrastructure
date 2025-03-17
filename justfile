@@ -35,22 +35,22 @@ alias e := edit
     ansible-playbook -i {{ inventory }} pfsense-server.yml --tags=dns-records
 
 @download-startup-config:
-  expect scripts/switch-ssh-exec.expect "copy startup-config tftp 10.1.51.154 startup.config"
+    expect scripts/switch-ssh-exec.expect "copy startup-config tftp 10.1.51.154 startup.config"
 
 @download-running-config:
-  expect scripts/switch-ssh-exec.expect "copy running-config tftp 10.1.51.154 running.config"
+    expect scripts/switch-ssh-exec.expect "copy running-config tftp 10.1.51.154 running.config"
 
 [working-directory("ansible")]
 _generate-switch-config file:
-  #!/usr/bin/env bash
-  ansible -i prod hamlet.addeo.net -e '@host_vars/hamlet.addeo.net.yml' -m debug -a 'var=brocade_startup_config' \
-    | cut -d\> -f 2 \
-    | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' \
-    | jq -Mr '.brocade_startup_config' \
-    > /private/tftpboot/{{ file }}
+    #!/usr/bin/env bash
+    ansible -i prod hamlet.addeo.net -e '@host_vars/hamlet.addeo.net.yml' -m debug -a 'var=brocade_startup_config' \
+        | cut -d\> -f 2 \
+        | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' \
+        | jq -Mr '.brocade_startup_config' \
+        > /private/tftpboot/{{ file }}
 
 @upload-startup-config: (_generate-switch-config "startup.config")
-  expect scripts/switch-ssh-exec.expect "copy tftp startup-config 10.1.51.154 startup.config"
+    expect scripts/switch-ssh-exec.expect "copy tftp startup-config 10.1.51.154 startup.config"
 
 @upload-running-config: (_generate-switch-config "running.config")
-  expect scripts/switch-ssh-exec.expect "copy tftp running-config 10.1.51.154 running.config"
+    expect scripts/switch-ssh-exec.expect "copy tftp running-config 10.1.51.154 running.config"
