@@ -1,6 +1,5 @@
 ---
 # Brocade ICX-6450 24P Switch
-# @note: just placeholder vars for now
 
 # Server Configuration.
 server_hostname: hamlet
