@@ -1,0 +1,40 @@
+set timeout 10
+set input [lindex $argv 0]
+set commands [split $input "|"]
+
+spawn ssh hamlet.addeo.net
+
+expect {
+  timeout {
+    puts "Unable to connect"
+    exit 1
+  }
+
+  "*(yes/no)?" {
+    send "yes\r"
+    exp_continue
+  }
+
+  "Enter passphrase*" {
+    interact -o "\r" exp_continue
+  }
+
+  "*>" {
+    send "enable\r"
+  }
+}
+
+foreach command $commands {
+  expect {
+    "*#" {
+      send "$command\r"
+    }
+  }
+}
+
+expect {
+  "*#" {
+    send "exit\r"
+    send "exit\r"
+  }
+}
