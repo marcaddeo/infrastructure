@@ -4,43 +4,49 @@ export GENHOST_DOMAIN := "addeo.net"
 
 chooser := "grep -v choose | fzf --tmux"
 
-# Display this list of available commands
+[doc("Display this list of available commands")]
 @list:
     just --justfile "{{ source_file() }}" --list
 
 alias c := choose
-# Open an interactive chooser of available commands
-[no-exit-message]
+[doc("Open an interactive chooser of available commands")]
 @choose:
     just --justfile "{{ source_file() }}" --chooser "{{ chooser }}" --choose 2>/dev/null
 
 alias e := edit
-# Edit the justfile
+[doc("Edit the justfile")]
 @edit:
     $EDITOR "{{ justfile() }}"
 
+[doc("Generate a hostname using a wordlist")]
 @genhost *args:
     ./scripts/genhost {{ args }}
 
 [working-directory("ansible")]
+[doc("Show a graph of the ansible inventory")]
 @inventory-graph inventory="prod":
     ansible-inventory -i {{ inventory }} --graph
 
 [working-directory("ansible")]
+[doc("Show host vars for a host in the ansible inventory")]
 @host-info host inventory="prod":
     ansible-inventory -i {{ inventory }} --host {{ if host =~ '\.' { host } else { host + ".addeo.net" }  }} | jq
 
 [working-directory("ansible")]
+[doc("Update DNS records on DNS servers")]
 @update-dns-records inventory="prod":
     ansible-playbook -i {{ inventory }} pfsense-server.yml --tags=dns-records
 
+[doc("Download the startup-config from the switch")]
 @download-startup-config:
     expect scripts/switch-ssh-exec.expect "copy startup-config tftp 10.1.51.154 startup.config"
 
+[doc("Download the running-config from the switch")]
 @download-running-config:
     expect scripts/switch-ssh-exec.expect "copy running-config tftp 10.1.51.154 running.config"
 
 [working-directory("ansible")]
+[doc("Generate a configuration file for the switch")]
 _generate-switch-config file:
     #!/usr/bin/env bash
     ansible -i prod hamlet.addeo.net -e '@host_vars/hamlet.addeo.net.yml' -m debug -a 'var=brocade_startup_config' \
@@ -49,8 +55,10 @@ _generate-switch-config file:
         | jq -Mr '.brocade_startup_config' \
         > /private/tftpboot/{{ file }}
 
+[doc("Upload the switch configuration to the switches startup-config")]
 @upload-startup-config: (_generate-switch-config "startup.config")
     expect scripts/switch-ssh-exec.expect "copy tftp startup-config 10.1.51.154 startup.config"
 
+[doc("Upload the switch configuration to the switches running-config")]
 @upload-running-config: (_generate-switch-config "running.config")
     expect scripts/switch-ssh-exec.expect "copy tftp running-config 10.1.51.154 running.config"
