@@ -36,7 +36,7 @@ brocade_root_password: !vault |
   3361383833316535640a386335316263633333336464366636363066313833656565306162303435
   64636364653233343637313530323932313039613264663836386536363332316539313765343763
   3336656130306134303737306539643536336634393434316433
-brocade_startup_config: |
+brocade_startup_config: |-
   ver 08.0.30uT313
   !
   stack unit 1
@@ -49,41 +49,41 @@ brocade_startup_config: |
   !
   !
   vlan 1 name DEFAULT-VLAN by port
-  router-interface ve 1
+   router-interface ve 1
   !
   vlan 110 name MGMT by port
-  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
-  untagged ethe 1/1/12 ethe 1/1/14 to 1/1/15 ethe 1/1/17
-  router-interface ve 110
+   tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1 
+   untagged ethe 1/1/12 ethe 1/1/14 to 1/1/15 ethe 1/1/17 
+   router-interface ve 110
   !
   vlan 112 name SAN by port
-  untagged ethe 1/2/2 to 1/2/4
-  router-interface ve 112
+   untagged ethe 1/2/2 to 1/2/4 
+   router-interface ve 112
   !
   vlan 115 name SRVMGMT by port
-  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 ethe 1/1/24 ethe 1/2/1
-  untagged ethe 1/1/2 ethe 1/1/10
-  router-interface ve 115
+   tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 ethe 1/1/24 ethe 1/2/1 
+   untagged ethe 1/1/2 ethe 1/1/10 
+   router-interface ve 115
   !
   vlan 150 name LAN by port
-  tagged ethe 1/2/1
-  router-interface ve 150
+   tagged ethe 1/2/1 
+   router-interface ve 150
   !
   vlan 151 name TRUSTEDWIFI by port
-  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
-  router-interface ve 151
+   tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1 
+   router-interface ve 151
   !
   vlan 152 name GUESTWIFI by port
-  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
-  router-interface ve 152
+   tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1 
+   router-interface ve 152
   !
   vlan 160 name IOT by port
-  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
-  router-interface ve 160
+   tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1 
+   router-interface ve 160
   !
   vlan 161 name IPCAM by port
-  tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1
-  router-interface ve 161
+   tagged ethe 1/1/3 ethe 1/1/18 ethe 1/1/20 ethe 1/1/22 to 1/1/24 ethe 1/2/1 
+   router-interface ve 161
   !
   !
   !
@@ -106,9 +106,9 @@ brocade_startup_config: |
   !
   !
   ntp
-  disable serve
-  server 216.239.35.0
-  server 216.239.35.4
+   disable serve
+   server 216.239.35.0
+   server 216.239.35.4
   !
   !
   web-management https
@@ -116,109 +116,109 @@ brocade_startup_config: |
   !
   !
   interface ethernet 1/1/1
-  port-name r710
+   port-name r710
   !
   interface ethernet 1/1/2
-  port-name kilo.addeo.net
+   port-name kilo.addeo.net
   !
   interface ethernet 1/1/3
-  port-name cantilever.addeo.net
+   port-name cantilever.addeo.net
   !
   interface ethernet 1/1/4
-  port-name kilo-4
+   port-name kilo-4
   !
   interface ethernet 1/1/6
-  port-name crimson-1
+   port-name crimson-1
   !
   interface ethernet 1/1/12
-  port-name unifi.addeo.net
-  inline power
+   port-name unifi.addeo.net
+   inline power
   !
   interface ethernet 1/1/13
-  port-name rtr01.mgmt.addeo.net
+   port-name rtr01.mgmt.addeo.net
   !
   interface ethernet 1/1/14
-  port-name ups01.addeo.net
+   port-name ups01.addeo.net
   !
   interface ethernet 1/1/15
-  port-name cantilever.mgmt.addeo.net
+   port-name cantilever.mgmt.addeo.net
   !
   interface ethernet 1/1/17
-  port-name kilo.mgmt.addeo.net
+   port-name kilo.mgmt.addeo.net
   !
   interface ethernet 1/1/18
-  port-name basement-wap
-  inline power
+   port-name basement-wap
+   inline power
   !
   interface ethernet 1/1/19
-  port-name crimson.mgmt.addeo.net
+   port-name crimson.mgmt.addeo.net
   !
   interface ethernet 1/1/20
-  port-name bedroom-iwap
-  inline power
+   port-name bedroom-iwap
+   inline power
   !
   interface ethernet 1/1/21
-  port-name r710-idrac
+   port-name r710-idrac
   !
   interface ethernet 1/1/22
-  port-name office-iwap
-  inline power
+   port-name office-iwap
+   inline power
   !
   interface ethernet 1/1/23
-  port-name loco5ac01
-  inline power
+   port-name loco5ac01
+   inline power
   !
   interface ethernet 1/1/24
-  port-name living-room-iwap
-  inline power
+   port-name living-room-iwap
+   inline power
   !
   interface ethernet 1/2/1
-  port-name rtr01-2
-  speed-duplex 1000-full-master
+   port-name rtr01-2
+   speed-duplex 1000-full-master
   !
   interface ethernet 1/2/2
-  port-name kilo.san.addeo.net
+   port-name kilo.san.addeo.net
   !
   interface ethernet 1/2/3
-  port-name crimson.san.addeo.net
+   port-name crimson.san.addeo.net
   !
   interface ethernet 1/2/4
-  port-name cantilever.san.addeo.net
+   port-name cantilever.san.addeo.net
   !
   interface ve 1
   !
   interface ve 110
-  port-name MGMT
-  ip address 10.1.10.5 255.255.255.0
-  ip helper-address 1 10.1.10.1
+   port-name MGMT
+   ip address 10.1.10.5 255.255.255.0
+   ip helper-address 1 10.1.10.1
   !
   interface ve 112
-  port-name STORAGE
-  ip address 10.1.12.1 255.255.255.0
+   port-name STORAGE
+   ip address 10.1.12.1 255.255.255.0
   !
   interface ve 115
-  port-name SRVMGMT
-  ip helper-address 1 10.1.15.1
+   port-name SRVMGMT
+   ip helper-address 1 10.1.15.1
   !
   interface ve 150
-  port-name LAN
-  ip helper-address 1 10.1.50.1
+   port-name LAN
+   ip helper-address 1 10.1.50.1
   !
   interface ve 151
-  port-name TRUSTEDWIFI
-  ip helper-address 1 10.1.51.1
+   port-name TRUSTEDWIFI
+   ip helper-address 1 10.1.51.1
   !
   interface ve 152
-  port-name GUESTWIFI
-  ip helper-address 1 10.1.50.1
+   port-name GUESTWIFI
+   ip helper-address 1 10.1.50.1
   !
   interface ve 160
-  port-name IOT
-  ip helper-address 1 10.1.60.1
+   port-name IOT
+   ip helper-address 1 10.1.60.1
   !
   interface ve 161
-  port-name IPCAM
-  ip helper-address 1 10.1.61.1
+   port-name IPCAM
+   ip helper-address 1 10.1.61.1
   !
   !
   !
