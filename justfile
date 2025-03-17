@@ -20,7 +20,7 @@ alias e := edit
     $EDITOR "{{ justfile() }}"
 
 @genhost *args:
-    ./genhost {{ args }}
+    ./scripts/genhost {{ args }}
 
 [working-directory("ansible")]
 @inventory-graph inventory="prod":
