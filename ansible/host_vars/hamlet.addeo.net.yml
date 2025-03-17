@@ -119,10 +119,10 @@ brocade_startup_config: |
   port-name r710
   !
   interface ethernet 1/1/2
-  port-name kilo-3
+  port-name kilo.addeo.net
   !
   interface ethernet 1/1/3
-  port-name cantilever-3
+  port-name cantilever.addeo.net
   !
   interface ethernet 1/1/4
   port-name kilo-4
@@ -135,23 +135,23 @@ brocade_startup_config: |
   inline power
   !
   interface ethernet 1/1/13
-  port-name rtr01-idrac
+  port-name rtr01.mgmt.addeo.net
   !
   interface ethernet 1/1/14
-  port-name ups01
+  port-name ups01.addeo.net
   !
   interface ethernet 1/1/15
-  port-name cantilever-idrac
+  port-name cantilever.mgmt.addeo.net
   !
   interface ethernet 1/1/17
-  port-name kilo-idrac
+  port-name kilo.mgmt.addeo.net
   !
   interface ethernet 1/1/18
   port-name basement-wap
   inline power
   !
   interface ethernet 1/1/19
-  port-name crimson-idrac
+  port-name crimson.mgmt.addeo.net
   !
   interface ethernet 1/1/20
   port-name bedroom-iwap
@@ -177,13 +177,13 @@ brocade_startup_config: |
   speed-duplex 1000-full-master
   !
   interface ethernet 1/2/2
-  port-name kilo-san
+  port-name kilo.san.addeo.net
   !
   interface ethernet 1/2/3
-  port-name crimson-san
+  port-name crimson.san.addeo.net
   !
   interface ethernet 1/2/4
-  port-name cantilever-san
+  port-name cantilever.san.addeo.net
   !
   interface ve 1
   !
