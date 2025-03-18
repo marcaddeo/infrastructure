@@ -37,6 +37,9 @@ cam04.addeo.net
 cam05.addeo.net
 cam06.addeo.net
 
+[misc]
+klipper.addeo.net
+
 [pfsense_servers]
 rtr01.addeo.net ansible_host=10.1.10.1
 

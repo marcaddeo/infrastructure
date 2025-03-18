@@ -1,0 +1,19 @@
+---
+device_name: Klipper
+device_hostname: klipper
+device_fqdn: klipper.addeo.net
+device_ip: 10.1.51.166 # @TODO use static ip, use correct vlan
+device_type: RaspberryPi
+device_model:
+device_mac:
+
+# DNS Record Configuration.
+dns_records:
+  - host: klipper
+    domain: addeo.net
+    ip: "{{ device_ip }}"
+    descr: Klipper
+    aliases:
+      - host: fluidd
+        domain: addeo.net
+        description: Fluidd Klipper UI
