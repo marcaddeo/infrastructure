@@ -2,8 +2,6 @@
 # Device Information.
 device_name: Garage
 device_hostname: cam06
-device_fqdn: cam06.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi G4 Pro Camera
 device_model: UVC-G4-PRO
 device_vlan: IPCAM

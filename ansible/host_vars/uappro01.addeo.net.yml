@@ -2,8 +2,6 @@
 # Device Information.
 device_name: Garage AP
 device_hostname: uappro01
-device_fqdn: uappro01.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi Access Point # @TODO not accurate
 device_model: UAP Pro # @TODO not accurate
 device_vlan: MGMT

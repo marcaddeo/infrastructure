@@ -2,8 +2,6 @@
 # Device Information.
 device_name: CoopCam
 device_hostname: cam01
-device_fqdn: cam01.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi G3 Flex Camera
 device_model: UVC-G3-FLEX
 device_vlan: IPCAM

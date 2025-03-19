@@ -2,8 +2,6 @@
 # Device Information.
 device_name: Office IWAP
 device_hostname: iwhd02
-device_fqdn: iwhd02.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi In-Wall HD Access Point
 device_model: UAP-IW-HD
 device_vlan: MGMT

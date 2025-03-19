@@ -2,8 +2,6 @@
 # Device Information.
 device_name: Garage Switch
 device_hostname: swt02
-device_fqdn: swt02.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi Switch 8 (PoE)
 device_model: US-8-60W (48W)
 device_vlan: MGMT

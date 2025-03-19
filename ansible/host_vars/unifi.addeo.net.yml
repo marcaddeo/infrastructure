@@ -2,8 +2,6 @@
 # Device Information.
 device_name: Cloud Key
 device_hostname: unifi
-device_fqdn: unifi.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi CloudKey+
 device_model: UCK-G2-PLUS
 device_vlan: MGMT

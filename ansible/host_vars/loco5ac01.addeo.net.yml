@@ -2,8 +2,6 @@
 # Device Information.
 device_name: House Bridge
 device_hostname: loco5ac01
-device_fqdn: loco5ac01.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi airMAX NanoStation 5AC Loco
 device_model: Loco5AC
 device_vlan: MGMT

@@ -1,14 +1,15 @@
 ---
+# @todo the ip/default settings on eth1 seem odd here.
 device_hostname: edge
-device_fqdn: edge.addeo.net
-device_ip: 172.16.10.1
 device_type: Ubiquiti EdgeRouter X
 device_model: ER-X
 device_interfaces:
   - name: eth0
     mac: D0:21:F9:49:37:80
   - name: eth1
+    ip: 172.16.10.1
     mac: D0:21:F9:49:37:81
+    default: true
   - name: eth2
     mac: D0:21:F9:49:37:82
   - name: eth2

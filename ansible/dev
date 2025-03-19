@@ -1,3 +1,6 @@
+[all:vars]
+dns_env=dev
+
 [dell_servers]
 crimson.addeo.net ansible_host=10.1.15.5
 

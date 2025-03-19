@@ -2,8 +2,6 @@
 # Device Information.
 device_name: Living Room IWAP
 device_hostname: iwhd01
-device_fqdn: iwhd01.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi In-Wall HD Access Point
 device_model: UAP-IW-HD
 device_vlan: MGMT

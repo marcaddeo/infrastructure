@@ -2,8 +2,6 @@
 # Device Information.
 device_name: Front Door
 device_hostname: cam02
-device_fqdn: cam02.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi G3 Instant Camera
 device_model: UVC-G3-INS
 device_vlan: IPCAM

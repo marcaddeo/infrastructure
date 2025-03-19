@@ -2,8 +2,6 @@
 # Device Information.
 device_name: Foyer Beacon
 device_hostname: beacon01
-device_fqdn: beacon01.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi BeaconHD WiFi Extender
 device_model: UAP-BeaconHD
 device_vlan: MGMT

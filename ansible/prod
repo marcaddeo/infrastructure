@@ -1,3 +1,6 @@
+[all:vars]
+dns_env=prd
+
 [routers]
 edge.addeo.net
 rtr01.addeo.net

@@ -1,8 +1,7 @@
 ---
 # Device Information.
 device_hostname: aviato
-device_fqdn: aviato.addeo.net
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
+device_description: Personal MacBook Pro (aviato)
 device_type: MacBook Pro
 device_model: M1 Max
 device_vlan: TRUSTEDWIFI

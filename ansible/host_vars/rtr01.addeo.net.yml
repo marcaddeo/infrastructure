@@ -1,15 +1,14 @@
 ---
-# @TODO this should likely be treated more like a server than a device.
 device_hostname: rtr01
-device_fqdn: rtr01.addeo.net
-device_ip: 10.1.10.1
 device_type: pfSense Router
 device_model: DELL R210ii
 device_interfaces:
   - name: bce0
     mac: D4:AE:52:C6:51:10
   - name: bce1
+    ip: 10.1.10.1
     mac: D4:AE:52:C6:51:11
+    default: true
 
 # DNS Record Configuration.
 dns_records:
