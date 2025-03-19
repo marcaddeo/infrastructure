@@ -38,6 +38,11 @@ host-info host inventory="prod":
         | jq '.[]'
 
 [working-directory("ansible")]
+[doc("Show device info vars for a host in the ansible inventory")]
+@device-info host inventory="prod":
+    just --justfile "{{ source_file() }}" host-info {{ host }} {{ inventory }} | jq '. | with_entries(select(.key | startswith("device_")))'
+
+[working-directory("ansible")]
 [doc("Update DNS records on DNS servers")]
 @update-dns-records inventory="prod":
     ansible-playbook -i {{ inventory }} pfsense-server.yml --tags=dns-records
