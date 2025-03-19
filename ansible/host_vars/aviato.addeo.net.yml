@@ -1,0 +1,29 @@
+---
+# Device Information.
+device_hostname: aviato
+device_fqdn: aviato.addeo.net
+device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
+device_type: MacBook Pro
+device_model: M1 Max
+device_vlan: TRUSTEDWIFI
+device_interfaces:
+  - name: en0
+    description: Onboard WiFi
+    ip: 10.1.51.10
+    mac: BC:D0:74:24:C8:96
+  - name: en5
+    description: Wired USB-C Hub
+    ip: 10.1.51.11
+    mac: 00:E0:4C:68:01:DF
+    default: true
+
+# DNS Record Configuration.
+dns_records:
+  - host: aviato
+    domain: addeo.net
+    ip: "{{ device_interfaces | json_query('[*].ip | join(`,`, @)') }}"
+    descr: Personal MacBook Pro (aviato)
+    aliases:
+      - host: aviato.prd.ado
+        domain: addeo.net
+        description: aviato.prd.ado
