@@ -9,3 +9,34 @@
         hosts: "{{ hostvars | json_query('*.dns_records') | flatten }}"
       tags:
         - dns-records
+
+    - name: Gather DHCP Static Mappings
+      set_fact:
+        dhcp_static_mappings: "{{ dhcp_static_mappings | default([]) + (item.value.device_interfaces | json_query(_query)) }}"
+      loop: "{{ hostvars | dict2items }}"
+      loop_control:
+        label: "{{ item.value.device_hostname | default(item.key) }}"
+      when: item.value.device_hostname is defined
+        and item.value.device_vlan is defined
+        and item.value.device_fqdn is defined
+      vars:
+        _query: |-
+          [*].{
+            hostname: `{{ item.value.device_hostname }}`,
+            macaddr: mac,
+            ipaddr: ip,
+            netif: `{{ item.value.device_vlan }}`,
+            descr: join(``, [
+              `{{ item.value.device_fqdn }}:`,
+              name,
+              description && join(``, [`: `, description]) || ``
+            ])
+          }
+      tags:
+        - dhcp-static-mappings
+
+    - name: Provision DHCP static mappings # noqa: args[module]
+      pfsensible.core.pfsense_dhcp_static: "{{ item }}"
+      loop: "{{ dhcp_static_mappings }}"
+      tags:
+        - dhcp-static-mappings

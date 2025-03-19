@@ -37,6 +37,11 @@ alias e := edit
 @update-dns-records inventory="prod":
     ansible-playbook -i {{ inventory }} pfsense-server.yml --tags=dns-records
 
+[working-directory("ansible")]
+[doc("Update DHCP static mappings on pfSense")]
+@update-dhcp-static-mappings inventory="prod":
+    ansible-playbook -i {{ inventory }} pfsense-server.yml --tags=dhcp-static-mappings
+
 [doc("Download the startup-config from the switch")]
 @download-startup-config:
     expect scripts/switch-ssh-exec.expect "copy startup-config tftp 10.1.51.154 startup.config"
