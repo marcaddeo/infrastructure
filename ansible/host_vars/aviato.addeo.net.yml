@@ -21,11 +21,11 @@ manage_dhcp_static_mappings: true
 
 # DNS Record Configuration.
 dns_records:
-  - host: aviato
-    domain: addeo.net
-    ip: "{{ device_interfaces | json_query('[*].ip | join(`,`, @)') }}"
-    descr: Personal MacBook Pro (aviato)
+  - host: "{{ device_hostname }}"
+    domain: "{{ dns_fqdn }}"
+    ip: "{{ device_ips }}"
+    descr: "{{ device_description }}"
     aliases:
-      - host: aviato.prd.ado
-        domain: addeo.net
-        description: aviato.prd.ado
+      - host: "{{ device_fqdn_short }}"
+        domain: "{{ dns_domain }}"
+        description: "{{ device_description }}"
