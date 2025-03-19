@@ -29,8 +29,13 @@ alias e := edit
 
 [working-directory("ansible")]
 [doc("Show host vars for a host in the ansible inventory")]
-@host-info host inventory="prod":
-    ansible-inventory -i {{ inventory }} --host {{ if host =~ '\.' { host } else { host + ".addeo.net" }  }} | jq
+host-info host inventory="prod":
+    #!/usr/bin/env bash
+    host="{{ if host =~ '\.' { host } else { host + ".addeo.net" }  }}"
+    ansible -i {{ inventory }} "$host" -e "@host_vars/$host.yml" -m debug -a "var=hostvars['$host']" \
+        | cut -d\> -f 2 \
+        | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' \
+        | jq '.[]'
 
 [working-directory("ansible")]
 [doc("Update DNS records on DNS servers")]
