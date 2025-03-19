@@ -17,6 +17,9 @@ device_interfaces:
     mac: 00:E0:4C:68:01:DF
     default: true
 
+# Device Configuration.
+manage_dhcp_static_mappings: true
+
 # DNS Record Configuration.
 dns_records:
   - host: aviato

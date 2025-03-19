@@ -1,8 +1,13 @@
 ---
+# Device Information.
 device_name: Front Door
 device_hostname: cam02
 device_fqdn: cam02.addeo.net
-device_ip: 10.1.61.153 # @TODO use static ip
+device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi G3 Instant Camera
 device_model: UVC-G3-INS
-device_mac: D0:21:F9:98:D3:DD
+device_vlan: IPCAM
+device_interfaces:
+  - ip: 10.1.61.153 # @TODO use static ip
+    mac: D0:21:F9:98:D3:DD
+    default: true

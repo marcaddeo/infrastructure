@@ -1,8 +1,13 @@
 ---
+# Device Information.
 device_name: Living Room IWAP
 device_hostname: iwhd01
 device_fqdn: iwhd01.addeo.net
-device_ip: 10.1.10.108 # @TODO use static ip
+device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi In-Wall HD Access Point
 device_model: UAP-IW-HD
-device_mac: 78:45:58:D6:FA:94
+device_vlan: MGMT
+device_interfaces:
+  - ip: 10.1.10.108 # @TODO use static ip
+    mac: 78:45:58:D6:FA:94
+    default: true

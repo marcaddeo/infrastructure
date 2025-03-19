@@ -1,8 +1,13 @@
 ---
+# Device Information.
 device_name: Office Beacon
 device_hostname: beacon04
 device_fqdn: beacon04.addeo.net
-device_ip: 10.1.10.115 # @TODO use static ip
+device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi BeaconHD WiFi Extender
 device_model: UAP-BeaconHD
-device_mac: D0:21:F9:72:9B:68
+device_vlan: MGMT
+device_interfaces:
+  - ip: 10.1.10.115 # @TODO use static ip
+    mac: D0:21:F9:72:9B:68
+    default: true

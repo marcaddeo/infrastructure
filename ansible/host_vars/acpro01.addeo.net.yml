@@ -1,8 +1,13 @@
 ---
+# Device Information.
 device_name: Basement AP
 device_hostname: acpro01
 device_fqdn: acpro01.addeo.net
-device_ip: 10.1.10.38
+device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi Access Point # @TODO not accurate
 device_model: AC Pro # @TODO not accurate
-device_mac: 78:8A:20:86:5B:B1
+device_vlan: MGMT
+device_interfaces:
+  - ip: 10.1.10.38
+    mac: 78:8A:20:86:5B:B1
+    default: true

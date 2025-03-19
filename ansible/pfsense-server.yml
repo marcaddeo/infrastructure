@@ -16,7 +16,8 @@
       loop: "{{ hostvars | dict2items }}"
       loop_control:
         label: "{{ item.value.device_hostname | default(item.key) }}"
-      when: item.value.device_hostname is defined
+      when: (item.value.manage_dhcp_static_mappings is defined and item.value.manage_dhcp_static_mappings)
+        and item.value.device_hostname is defined
         and item.value.device_vlan is defined
         and item.value.device_fqdn is defined
       vars:
@@ -37,6 +38,6 @@
 
     - name: Provision DHCP static mappings # noqa: args[module]
       pfsensible.core.pfsense_dhcp_static: "{{ item }}"
-      loop: "{{ dhcp_static_mappings }}"
+      loop: "{{ dhcp_static_mappings | default([]) }}"
       tags:
         - dhcp-static-mappings

@@ -1,10 +1,15 @@
 ---
+# Device Information.
 device_hostname: ups01
 device_fqdn: ups01.addeo.net
-device_ip: 10.1.10.10
+device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: APC Smart-UPS 2200
 device_model: Smart-UPS 2200 RM
-device_mac: 00:C0:B7:74:18:64
+device_vlan: MGMT
+device_interfaces:
+  - ip: 10.1.10.10
+    mac: 00:C0:B7:74:18:64
+    default: true
 
 # DNS Record Configuration.
 dns_records:

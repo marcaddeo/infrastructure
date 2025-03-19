@@ -1,11 +1,16 @@
 ---
+# Device Information.
 device_name: Cloud Key
 device_hostname: unifi
 device_fqdn: unifi.addeo.net
-device_ip: 10.1.10.31
+device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: Unifi CloudKey+
 device_model: UCK-G2-PLUS
-device_mac: 68:D7:9A:22:7D:1F
+device_vlan: MGMT
+device_interfaces:
+  - ip: 10.1.10.31
+    mac: 68:D7:9A:22:7D:1F
+    default: true
 
 # DNS Record Configuration.
 dns_records:

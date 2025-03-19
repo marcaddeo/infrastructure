@@ -1,11 +1,16 @@
 ---
+# Device Information.
 device_name: Klipper
 device_hostname: klipper
 device_fqdn: klipper.addeo.net
-device_ip: 10.1.51.166 # @TODO use static ip, use correct vlan
+device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
 device_type: RaspberryPi
 device_model:
-device_mac:
+device_vlan: TRUSTEDWIFI
+device_interfaces:
+  - ip: 10.1.51.166 # @TODO use static ip, use correct vlan
+    mac:
+    default: true
 
 # DNS Record Configuration.
 dns_records:
