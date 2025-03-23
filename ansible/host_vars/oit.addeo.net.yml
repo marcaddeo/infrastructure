@@ -1,0 +1,26 @@
+---
+# Device Information.
+device_hostname: OIT2W7H99V
+device_description: Work MacBook Pro (OIT2W7H99V)
+device_type: MacBook Pro
+device_model: M3 Pro
+device_interfaces:
+  - name: en0
+    description: Onboard WiFi
+    ip: 10.1.51.30
+    mac: AA:1E:0B:D2:AA:A9
+  - name: en?
+    description: Wired USB-C Hub
+    ip: 10.1.51.31
+    mac: AC:00:F9:02:75:5F
+    default: true
+
+# Device Configuration.
+manage_dhcp_static_mappings: true
+
+# DNS Record Configuration.
+dns_default_record: true
+dns_records:
+  - host: oit
+    domain: "{{ dns_domain }}"
+    ip: "{{ device_ips }}"

@@ -1,0 +1,20 @@
+---
+# Device Information.
+device_hostname: anton2
+device_description: Gaming PC/Sim rig
+device_type: Gaming PC
+device_model: N/A
+device_interfaces:
+  - name: en0
+    description: Wired Ethernet
+    ip: 10.1.51.20
+    mac: D8:5E:D3:81:74:C2
+    default: true
+  - name: en5
+    description: WiFi
+    ip: 10.1.51.21
+    mac: BC:17:B8:91:24:4F
+
+# Device Configuration.
+manage_dhcp_static_mappings: false
+manage_default_dns_record: false
