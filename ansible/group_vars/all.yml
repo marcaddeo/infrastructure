@@ -4,17 +4,38 @@ ansible_user: ansible
 ansible_ssh_private_key_file: "{{ inventory_dir }}/host_keys/id_rsa.ansible@addeo.net"
 ansible_python_interpreter: /usr/bin/python3
 
+# VLANs.
+vlans:
+  - name: MGMT
+    id: 110
+  - name: SAN
+    id: 112
+  - name: SRVMGMT
+    id: 115
+  - name: LAN
+    id: 150
+  - name: TRUSTEDWIFI
+    id: 151
+  - name: GUESTWIFI
+    id: 152
+  - name: IOT
+    id: 160
+  - name: IPCAM
+    id: 161
+
 # DNS Configuration.
 dns_domain: addeo.net
 dns_location: ado
-dns_fqdn: "{{ dns_env }}.{{ dns_location }}.{{ dns_domain }}"
+# @TODO dont like this variable name
+dns_functional_prefix: "{{ dns_env }}.{{ dns_location }}"
+dns_functional_domain: "{{ dns_functional_prefix }}.{{ dns_domain }}"
 
 # Device Information.
 # Computed default ip for the device.
-device_ip: "{{ device_interfaces | json_query('[?default].ip | [0]') }}"
+device_ip: "{{ device_interfaces | default([]) | json_query('[?default].ip | [0]') }}"
 # Computed list of all device ips, comma-separated.
-device_ips: "{{ device_interfaces | json_query('[*].ip | join(`,`, @)') }}"
+device_ips: "{{ device_interfaces | default([]) | json_query('[*].ip | join(`,`, @)') }}"
 # Computed FQDN for the device.
-device_fqdn: "{{ device_hostname }}.{{ dns_fqdn }}"
-# Computed short FQDN for the device (FQDN sans environment and location specifiers).
-device_fqdn_short: "{{ device_hostname }}.{{ dns_domain }}"
+device_fqdn: "{{ device_hostname }}.{{ dns_domain }}"
+# Computed @TODO
+device_functional_fqdn: "{{ device_hostname }}.{{ dns_functional_domain }}"

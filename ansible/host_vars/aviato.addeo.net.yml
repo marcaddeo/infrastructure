@@ -4,7 +4,6 @@ device_hostname: aviato
 device_description: Personal MacBook Pro (aviato)
 device_type: MacBook Pro
 device_model: M1 Max
-device_vlan: TRUSTEDWIFI
 device_interfaces:
   - name: en0
     description: Onboard WiFi
@@ -18,14 +17,4 @@ device_interfaces:
 
 # Device Configuration.
 manage_dhcp_static_mappings: true
-
-# DNS Record Configuration.
-dns_records:
-  - host: "{{ device_hostname }}"
-    domain: "{{ dns_fqdn }}"
-    ip: "{{ device_ips }}"
-    descr: "{{ device_description }}"
-    aliases:
-      - host: "{{ device_fqdn_short }}"
-        domain: "{{ dns_domain }}"
-        description: "{{ device_description }}"
+manage_default_dns_record: true

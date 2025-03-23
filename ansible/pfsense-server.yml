@@ -3,10 +3,44 @@
   hosts: pfsense_servers
   become: true
   tasks:
+    - name: Gather Default DNS Records
+      set_fact:
+        default_dns_records: "{{ default_dns_records | default([]) + (item.value | json_query(_query)) }}"
+      loop: "{{ hostvars | dict2items }}"
+      loop_control:
+        label: "{{ item.value.device_hostname | default(item.key) }}"
+      when: (item.value.manage_default_dns_record is defined and item.value.manage_default_dns_record)
+        and item.value.device_hostname is defined
+        and item.value.device_fqdn is defined
+      vars:
+        _query: |-
+          [{
+            host: device_hostname,
+            domain: dns_domain,
+            ip: device_ips
+            descr: device_description || ``,
+            aliases: [{
+              host: device_hostname,
+              domain: dns_functional_domain,
+              description: device_description || ``
+            }]
+          }]
+      tags:
+        - dns-records
+
+    - name: Gather all DNS Records
+      set_fact:
+        all_dns_records: "{{ all_dns_records | default(default_dns_records | default([])) + [item] }}"
+      loop: "{{ hostvars | json_query('*.dns_records') | flatten }}"
+      loop_control:
+        label: "{{ item.host ~ '.' ~ item.domain }}"
+      tags:
+        - dns-records
+
     - name: Provision DNS Records
       pfsensible.core.pfsense_dns_resolver:
+        hosts: "{{ all_dns_records | default([]) }}"
         state: present
-        hosts: "{{ hostvars | json_query('*.dns_records') | flatten }}"
       tags:
         - dns-records
 
@@ -18,7 +52,6 @@
         label: "{{ item.value.device_hostname | default(item.key) }}"
       when: (item.value.manage_dhcp_static_mappings is defined and item.value.manage_dhcp_static_mappings)
         and item.value.device_hostname is defined
-        and item.value.device_vlan is defined
         and item.value.device_fqdn is defined
       vars:
         _query: |-
@@ -26,7 +59,6 @@
             hostname: `{{ item.value.device_hostname }}`,
             macaddr: mac,
             ipaddr: ip,
-            netif: `{{ item.value.device_vlan }}`,
             descr: join(``, [
               `{{ item.value.device_fqdn }}:`,
               name,
@@ -36,8 +68,23 @@
       tags:
         - dhcp-static-mappings
 
+    - name: Add VLAN network interface name to DHCP Static Mappings
+      set_fact:
+        dhcp_static_mappings_netif: |-
+          {{
+            dhcp_static_mappings_netif | default([])
+            + [
+              item | combine({
+                'netif': (vlans | selectattr('id', 'eq', item.ipaddr.split('.')[1:3] | join('') | int)).0.name
+              })
+            ]
+          }}
+      loop: "{{ dhcp_static_mappings | default([]) }}"
+      tags:
+        - dhcp-static-mappings
+
     - name: Provision DHCP static mappings # noqa: args[module]
       pfsensible.core.pfsense_dhcp_static: "{{ item }}"
-      loop: "{{ dhcp_static_mappings | default([]) }}"
+      loop: "{{ dhcp_static_mappings_netif | default([]) }}"
       tags:
         - dhcp-static-mappings
