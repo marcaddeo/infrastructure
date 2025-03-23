@@ -1,6 +1,6 @@
 ---
-# @todo the ip/default settings on eth1 seem odd here.
 device_hostname: edge
+device_description: Edge Router
 device_type: Ubiquiti EdgeRouter X
 device_model: ER-X
 device_interfaces:
@@ -21,11 +21,7 @@ device_interfaces:
 
 # DNS Record Configuration.
 dns_records:
-  - host: edge
-    domain: addeo.net
-    ip: 172.16.10.1
-    descr: Edge Router
-    aliases:
-      - host: edge.prd.ado
-        domain: addeo.net
-        description: edge.prd.ado
+  - host: "{{ device_hostname }}"
+    domain: "{{ dns_domain }}"
+    ip: "{{ device_interfaces | default([]) | json_query('[?name == `eth1`].ip | [0]') }}"
+    descr: "{{ device_description }}"

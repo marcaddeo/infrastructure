@@ -17,4 +17,6 @@ device_interfaces:
 
 # Device Configuration.
 manage_dhcp_static_mappings: true
-manage_default_dns_record: true
+
+# DNS Record Configuration.
+dns_default_record: true

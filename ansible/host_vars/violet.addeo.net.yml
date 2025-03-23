@@ -1,18 +1,38 @@
 ---
+# Device Information.
+device_hostname: violet
+device_description: Portainer Server
+device_type: Portainer Server
+device_model: vm
+device_interfaces:
+  - name: ens18
+    description: SRVMGMT Network
+    ip: 10.1.15.50
+    mac: 0A:DD:E0:11:50:50
+    default: true
+  - name: ens22
+    description: SAN Network
+    ip: 10.1.12.50
+    mac: 0A:DD:E0:83:CE:4A
+
+# Device Configuration.
+manage_dhcp_static_mappings: false
+
+# DNS Record Configuration.
+dns_san_interface: ens22
+dns_records:
+  - host: "{{ device_hostname }}"
+    domain: "{{ dns_domain }}"
+    ip: "{{ device_ip }}"
+    descr: "{{ device_interfaces | default([]) | json_query('[?name == `ens18`].description || [``] | [0]') }}"
+    aliases:
+      - host: "pcs01.{{ dns_functional_prefix }}"
+        domain: "{{ dns_domain }}"
+        description: "{{ device_interfaces | default([]) | json_query('[?name == `ens18`].description || [``] | [0]') }}"
+
 # Server Configuration.
 server_hostname: violet
 server_fqdn: violet.addeo.net
-
-# DNS Record Configuration.
-dns_records:
-  - host: violet
-    domain: addeo.net
-    ip: 10.1.15.50
-    descr: Portainer Container Server
-    aliases:
-      - host: pcs01.prd.ado
-        domain: addeo.net
-        description: pcs01.prd.ado
 
 # Network Interfaces Configuration.
 network_interfaces:

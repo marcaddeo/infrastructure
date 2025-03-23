@@ -1,4 +1,48 @@
 ---
+# Device Information.
+device_hostname: kilo
+device_description: Main Storage Server
+device_type: ZFS Storage Array
+device_model: DELL R720XD
+device_interfaces:
+  - name: eno1
+    description: iSCSI boot for cantilever
+    ip: 172.16.0.65
+    mac: ~
+  - name: eno2
+    description: iSCSI boot for crimson
+    ip: 172.16.1.65
+    mac: ~
+  - name: eno3
+    description: SRVMGMT Network
+    ip: 10.1.15.65
+    mac: ~
+    default: true
+  - name: enp3s0
+    description: SAN Network
+    ip: 10.1.12.65
+    mac: ~
+  - name: idrac
+    ip: 10.1.10.20
+    description: iDrac Management Interface
+    mac: ~
+
+# Device Configuration.
+manage_dhcp_static_mappings: false
+
+# DNS Record Configuration.
+dns_mgmt_interface: idrac
+dns_san_interface: enp3s0
+dns_records:
+  - host: "{{ device_hostname }}"
+    domain: "{{ dns_domain }}"
+    ip: "{{ device_ip }}"
+    descr: "{{ device_interfaces | default([]) | json_query('[?name == `eno3`].description || [``] | [0]') }}"
+    aliases:
+      - host: "sto01.{{ dns_functional_prefix }}"
+        domain: "{{ dns_domain }}"
+        description: "{{ device_interfaces | default([]) | json_query('[?name == `eno3`].description || [``] | [0]') }}"
+
 # Server Configuration.
 server_hostname: kilo
 server_fqdn: kilo.addeo.net
@@ -10,25 +54,6 @@ kilo_server_users__to_merge:
   - name: ansible
     groups:
       - spool
-
-# DNS Record Configuration.
-dns_records:
-  - host: kilo
-    domain: addeo.net
-    ip: 10.1.15.65
-    descr: "Storage Server: kilo"
-    aliases:
-      - host: sto01.prd.ado
-        domain: addeo.net
-        description: sto01.prd.ado
-  - host: kilo.mgmt
-    domain: addeo.net
-    ip: 10.1.10.20
-    descr: "iDrac: kilo"
-  - host: kilo.san
-    domain: addeo.net
-    ip: 10.1.12.65
-    descr: "SAN: kilo"
 
 # Bootstrap Configuration.
 bootstrap_zpool_encrypt_root: true

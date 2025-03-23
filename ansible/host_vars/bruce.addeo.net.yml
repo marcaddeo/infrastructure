@@ -1,18 +1,38 @@
 ---
+# Device Information.
+device_hostname: bruce
+device_description: Main Proxmox Backup Server
+device_type: Proxmox Backup Server
+device_model: vm
+device_interfaces:
+  - name: ens18
+    description: SRVMGMT Network
+    ip: 10.1.15.79
+    mac: 0A:DD:E0:C9:6E:92
+    default: true
+  - name: ens19
+    description: SAN Network
+    ip: 10.1.12.79
+    mac: 0A:DD:E0:DB:C2:5A
+
+# Device Configuration.
+manage_dhcp_static_mappings: false
+
+# DNS Record Configuration.
+dns_san_interface: ens19
+dns_records:
+  - host: "{{ device_hostname }}"
+    domain: "{{ dns_domain }}"
+    ip: "{{ device_ip }}"
+    descr: "{{ device_interfaces | default([]) | json_query('[?name == `ens18`].description || [``] | [0]') }}"
+    aliases:
+      - host: "pbs01.{{ dns_functional_prefix }}"
+        domain: "{{ dns_domain }}"
+        description: "{{ device_interfaces | default([]) | json_query('[?name == `ens18`].description || [``] | [0]') }}"
+
 # Server Configuration.
 server_hostname: bruce
 server_fqdn: bruce.addeo.net
-
-# DNS Record Configuration.
-dns_records:
-  - host: bruce
-    domain: addeo.net
-    ip: 10.1.15.79
-    descr: "Proxmox Backup Server: bruce"
-    aliases:
-      - host: pbs01.prd.ado
-        domain: addeo.net
-        description: pbs01.prd.ado
 
 # Network Interfaces Configuration.
 network_interfaces:

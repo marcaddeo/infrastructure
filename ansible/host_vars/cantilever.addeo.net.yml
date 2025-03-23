@@ -1,26 +1,47 @@
 ---
+# Device Information.
+device_hostname: cantilever
+device_description: Main Proxmox Server
+device_type: Proxmox Server
+device_model: DELL R730XD
+device_interfaces:
+  - name: eno1
+    description: iSCSI boot interface
+    ip: 172.16.0.66
+    mac: EC:F4:BB:EF:4E:C8
+  - name: vmbr0.115
+    description: SRVMGMT Network
+    ip: 10.1.15.66
+    mac: EC:F4:BB:EF:4E:CC
+    default: true
+  - name: vmbr1
+    description: SAN bridge
+    ip: 10.1.12.66
+    mac: 00:02:C9:53:74:EC
+  - name: idrac
+    ip: 10.1.10.16
+    description: iDrac Management Interface
+    mac: 18:66:DA:74:43:C4
+
+# Device Configuration.
+manage_dhcp_static_mappings: false
+
+# DNS Record Configuration.
+dns_mgmt_interface: idrac
+dns_san_interface: vmbr1
+dns_records:
+  - host: "{{ device_hostname }}"
+    domain: "{{ dns_domain }}"
+    ip: "{{ device_ip }}"
+    descr: "{{ device_interfaces | default([]) | json_query('[?name == `vmbr0.115`].description || [``] | [0]') }}"
+    aliases:
+      - host: "vmm01.{{ dns_functional_prefix }}"
+        domain: "{{ dns_domain }}"
+        description: "{{ device_interfaces | default([]) | json_query('[?name == `vmbr0.115`].description || [``] | [0]') }}"
+
 # Server Configuration.
 server_hostname: cantilever
 server_fqdn: cantilever.addeo.net
-
-# DNS Record Configuration.
-dns_records:
-  - host: cantilever
-    domain: addeo.net
-    ip: 10.1.15.66
-    descr: "Proxmox Server: cantilever"
-    aliases:
-      - host: vmm01.prd.ado
-        domain: addeo.net
-        description: vmm01.prd.ado
-  - host: cantilever.mgmt
-    domain: addeo.net
-    ip: 10.1.10.16
-    descr: "iDrac: cantilever"
-  - host: cantilever.san
-    domain: addeo.net
-    ip: 10.1.12.66
-    descr: "SAN: cantilever"
 
 # Bootstrap Configuration.
 bootstrap_boot_type: uefi

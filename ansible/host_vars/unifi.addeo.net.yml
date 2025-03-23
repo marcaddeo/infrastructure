@@ -1,22 +1,13 @@
 ---
 # Device Information.
-device_name: Cloud Key
 device_hostname: unifi
+device_description: Unifi Cloud Key Controller
 device_type: Unifi CloudKey+
 device_model: UCK-G2-PLUS
-device_vlan: MGMT
 device_interfaces:
   - ip: 10.1.10.31
     mac: 68:D7:9A:22:7D:1F
     default: true
 
 # DNS Record Configuration.
-dns_records:
-  - host: unifi
-    domain: addeo.net
-    ip: 10.1.10.31
-    descr: Unifi Controller
-    aliases:
-      - host: unifi.prd.ado
-        domain: addeo.net
-        description: unifi.prd.ado
+dns_default_record: true

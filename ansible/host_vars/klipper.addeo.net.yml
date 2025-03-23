@@ -1,22 +1,18 @@
 ---
 # Device Information.
-device_name: Klipper
 device_hostname: klipper
+device_description: Klipper
 device_type: RaspberryPi
-device_model:
-device_vlan: TRUSTEDWIFI
+device_model: ~
 device_interfaces:
   - ip: 10.1.51.166 # @TODO use static ip, use correct vlan
-    mac:
+    mac: ~
     default: true
 
 # DNS Record Configuration.
+dns_default_record: true
 dns_records:
-  - host: klipper
+  - host: fluidd
     domain: addeo.net
     ip: "{{ device_ip }}"
-    descr: Klipper
-    aliases:
-      - host: fluidd
-        domain: addeo.net
-        description: Fluidd Klipper UI
+    descr: Fluidd Klipper UI

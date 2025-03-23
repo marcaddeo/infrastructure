@@ -2,14 +2,18 @@
 - name: Provision pfSense
   hosts: pfsense_servers
   become: true
+  vars:
+    default_dns_records: []
+    mgmt_dns_records: []
+    san_dns_records: []
   tasks:
     - name: Gather Default DNS Records
       set_fact:
-        default_dns_records: "{{ default_dns_records | default([]) + (item.value | json_query(_query)) }}"
+        default_dns_records: "{{ default_dns_records + (item.value | json_query(_query)) }}"
       loop: "{{ hostvars | dict2items }}"
       loop_control:
         label: "{{ item.value.device_hostname | default(item.key) }}"
-      when: (item.value.manage_default_dns_record is defined and item.value.manage_default_dns_record)
+      when: (item.value.dns_default_record is defined and item.value.dns_default_record)
         and item.value.device_hostname is defined
         and item.value.device_fqdn is defined
       vars:
@@ -18,22 +22,72 @@
             host: device_hostname,
             domain: dns_domain,
             ip: device_ips
-            descr: device_description || ``,
-            aliases: [{
-              host: device_hostname,
-              domain: dns_functional_domain,
-              description: device_description || ``
-            }]
+            descr: device_description || ``
+          }]
+      tags:
+        - dns-records
+
+    - name: Gather MGMT DNS Records
+      set_fact:
+        mgmt_dns_records: "{{ mgmt_dns_records + (item.value | json_query(_query)) }}"
+      loop: "{{ hostvars | dict2items }}"
+      loop_control:
+        label: "{{ item.value.device_hostname | default(item.key) }}"
+      when: item.value.dns_mgmt_interface is defined
+        and item.value.device_hostname is defined
+        and item.value.device_fqdn is defined
+      vars:
+        _interface: "{{ item.value.dns_mgmt_interface }}"
+        _device_hostname: "{{ item.value.device_hostname }}.mgmt"
+        _ip: "{{ item.value.device_interfaces | default([]) | json_query('[?name == `' ~ _interface ~ '`].ip | [0]') }}"
+        _interface_description: "{{ _device_hostname }}.{{ dns_domain }}:{{ _interface }}: {{ item.value.device_interfaces | default([]) | json_query('[?name == `' ~ _interface ~ '`].description | [0]') }}" # noqa: yaml[line-length]
+        _query: |-
+          [{
+            host: `{{ _device_hostname }}`,
+            domain: dns_domain,
+            ip: `{{ _ip }}`,
+            descr: `{{ _interface_description }}`
+          }]
+      tags:
+        - dns-records
+
+    - name: Gather SAN DNS Records
+      set_fact:
+        san_dns_records: "{{ san_dns_records + (item.value | json_query(_query)) }}"
+      loop: "{{ hostvars | dict2items }}"
+      loop_control:
+        label: "{{ item.value.device_hostname | default(item.key) }}"
+      when: item.value.dns_san_interface is defined
+        and item.value.device_hostname is defined
+        and item.value.device_fqdn is defined
+      vars:
+        _interface: "{{ item.value.dns_san_interface }}"
+        _device_hostname: "{{ item.value.device_hostname }}.san"
+        _ip: "{{ item.value.device_interfaces | default([]) | json_query('[?name == `' ~ _interface ~ '`].ip | [0]') }}"
+        _interface_description: "{{ _device_hostname }}.{{ dns_domain }}:{{ _interface }}: {{ item.value.device_interfaces | default([]) | json_query('[?name == `' ~ _interface ~ '`].description | [0]') }}" # noqa: yaml[line-length]
+        _query: |-
+          [{
+            host: `{{ _device_hostname }}`,
+            domain: dns_domain,
+            ip: `{{ _ip }}`,
+            descr: `{{ _interface_description }}`
           }]
       tags:
         - dns-records
 
     - name: Gather all DNS Records
       set_fact:
-        all_dns_records: "{{ all_dns_records | default(default_dns_records | default([])) + [item] }}"
+        all_dns_records: "{{ all_dns_records | default(default_dns_records + mgmt_dns_records + san_dns_records) + [item] }}"
       loop: "{{ hostvars | json_query('*.dns_records') | flatten }}"
       loop_control:
         label: "{{ item.host ~ '.' ~ item.domain }}"
+      tags:
+        - dns-records
+
+    - name: Remove existing DNS Records
+      pfsensible.core.pfsense_dns_resolver:
+        hosts: []
+        state: present
       tags:
         - dns-records
 

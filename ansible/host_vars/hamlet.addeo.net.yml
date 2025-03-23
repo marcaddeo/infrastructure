@@ -1,20 +1,20 @@
 ---
 # Brocade ICX-6450 24P Switch
+device_hostname: hamlet
+device_description: Core Switch
+device_type: Brocade PoE Switch
+device_model: ICX-6450 24P
+device_interfaces:
+  - ip: 10.1.10.5
+    mac: ~
+    default: true
 
 # Server Configuration.
 server_hostname: hamlet
 server_fqdn: hamlet.addeo.net
 
 # DNS Record Configuration.
-dns_records:
-  - host: hamlet
-    domain: addeo.net
-    ip: 10.1.10.5
-    descr: "Core Switch: hamlet"
-    aliases:
-      - host: swt01.prd.ado
-        domain: addeo.net
-        description: swt01.prd.ado
+dns_default_record: true
 
 # Switch Configuration.
 local_ssh_config: |
