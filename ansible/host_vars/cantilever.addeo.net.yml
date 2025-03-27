@@ -175,4 +175,4 @@ pve_storages:
       - backup
     server: kilo.san.addeo.net
     export: /spool/data/backups/bruce.addeo.net
-    options: nfsvers=4
+    options: vers=4.1
