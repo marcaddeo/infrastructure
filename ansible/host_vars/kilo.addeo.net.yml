@@ -159,6 +159,18 @@ zfs_datasets:
         options: |
           initiator-address 172.16.0.66
     state: present
+  spool/iscsi/crimson:
+    properties:
+      volsize: 32G
+      # @note ansible zfs module doesn't properly strip this for existing
+      # datasets. Should be fixed in newer version of ansible once we update
+      # the playbooks.
+      # volblocksize: 32K
+      shareiscsi:
+        iqn: iqn.2020-08.net.addeo:kilo:spool-iscsi-crimson
+        options: |
+          initiator-address 172.16.1.67
+    state: present
   # The main encrypted dataset for most types of data.
   spool/data:
     properties:
