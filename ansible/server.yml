@@ -180,7 +180,9 @@
           {% else -%}
             127.0.1.1       {{ server_hostname }}
           {% endif %}
-      when: manage_hostname is defined and manage_hostname
+      when: (manage_hostname is defined and manage_hostname) and
+        (manage_hosts_file is defined and manage_hosts_file)
+      tags: hosts_file
 
     - set_fact: # noqa: name[missing]
         has_nfs_mounts: "{{ mounts | json_query('[?fstype == `nfs`]') | length > 0 }}"

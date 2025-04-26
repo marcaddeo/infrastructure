@@ -6,6 +6,9 @@ network_interfaces_single_file: true
 # Firewall Configuration.
 manage_firewall: false
 
+# /etc/hosts Configuration.
+manage_hosts_file: false
+
 harden_server: false
 manage_unattended_upgradse: false
 install_postfix: false

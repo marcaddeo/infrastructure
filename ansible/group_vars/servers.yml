@@ -26,6 +26,9 @@ bootstrap_users: "{{ server_users }}"
 # Network Interfaces Configuration.
 manage_network_interfaces: true
 
+# /etc/hosts Configuration.
+manage_hosts_file: true
+
 # ZFS Configuration.
 manage_zfs: true
 zfs_enable_monitoring: true
