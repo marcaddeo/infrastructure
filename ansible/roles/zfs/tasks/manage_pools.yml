@@ -46,7 +46,7 @@
     {% endif %}
     {{ item.key }}
     {%- for vdev in item.value.vdevs %}
-      {{ vdev.type -}}
+      {{ vdev.type | default() -}}
       {% for device in vdev.devices -%}
         {% if device is mapping %}
           {{ device.type }} {{ device.devices | join(" ") -}}
@@ -97,7 +97,7 @@
         zpool set {{ property }}={{ value }} {{ item.key }};
       {%- endif -%}
     {%- endfor -%}
-  loop: "{{ dict(zfs_pools | dict2items | json_query('[?value.properties].[key, value.properties]')) | dict2items }}"
+  loop: "{{ dict(zfs_pools | dict2items | json_query('[?value.state==`present`]') | json_query('[?value.properties].[key, value.properties]')) | dict2items }}"
   register: result
   changed_when:
     - "result.cmd != ' true;'"
