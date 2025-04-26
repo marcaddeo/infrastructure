@@ -128,9 +128,10 @@ zfs_pools:
     vdevs:
       - type: mirror
         devices:
-          - /dev/disk/by-id/ata-ADATA_SP550_2F4920016280
-          - /dev/disk/by-id/ata-KINGSTON_SA400S37240G_50026B778345A773
+          - /dev/disk/by-id/wwn-0x55cd2e414e327efa
+          - /dev/disk/by-id/wwn-0x55cd2e414e3616b5
     scrub: weekly
+    force: true
     properties:
       ashift: 12
     filesystem_properties:
