@@ -51,7 +51,7 @@ pve_acls:
     groups:
       - Administrators
 pve_storages:
-  - name: local-vmpool
+  - name: vmpool
     type: zfspool
     content:
       - images
