@@ -107,7 +107,6 @@ network_interfaces:
     auto: true
     inet: static
     address: 10.1.12.66/24
-    gateway: 10.1.12.1
     mtu: 9000
     extra: |
       bridge-ports enp4s0
