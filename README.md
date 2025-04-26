@@ -81,18 +81,12 @@ In order to provision a server with Debian 12 Bookworm with ZFS root first boot
 to the live cd, and perform the following manual steps to prepare the
 environment:
 
-1. Run through the setup utility, and close out of the Getting Started help
-   page.
-2. Go to Settings (Drop down in top right corner > Settings) > Power and
-   disable Automatic Suspend so that the server doesn't suspend/shut down
-   during provisioning.
-3. Go to the Networking Settings and configure the server with a static IP so
-   that Ansible can reboot and continue running commands. Make sure to set the
-   DNS server. Cycle the wired connection in the GUI to switch from DHCP to
-   static.
-4. (Optional) If booting from ISCSI, also configure the network adapter with
-   the desired static IP address and netmask.
-5. Open a terminal and run the following command:
+1. Configure network interfaces via `/etc/network/interfaces`. You'll need to
+   configure the main interface with the desired static IP that will be used
+   during and after bootstrapping.
+2. (Optional) Configure the network interface used to boot from ISCSI, setting
+   a static IP address that will be used during and after bootstrapping.
+3. Open a terminal and run the following command:
 
 ```console
 curl --proto "=https" --tlsv1.2 -sSf https://raw.githubusercontent.com/marcaddeo/infrastructure/refs/heads/master/prepare-install-environment.sh | sh
