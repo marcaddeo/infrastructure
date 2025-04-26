@@ -15,6 +15,13 @@ install_postfix: false
 
 # Proxmox Configuration.
 pve_group: proxmox_servers
+pve_manage_hosts_enabled: true
+pve_cluster_enabled: true
+pve_cluster_clustername: armada
+pve_datacenter_cfg:
+  mac_prefix: 0A:DD:E0
+  migration: type=secure,network=10.1.12.0/24
+  tag-style: color-map=docker:1D64EE:FFFFFF;pbs:E57000:FFFFFF
 pve_reboot_on_kernel_update: false
 pve_remove_old_kernels: false
 pve_zfs_enabled: false

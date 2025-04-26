@@ -186,7 +186,7 @@ zfs_datasets:
     state: present
   spool/data/backups/bruce.addeo.net:
     properties:
-      sharenfs: "rw=10.1.12.66,anonuid=1001,anongid=1001,no_root_squash,no_subtree_check"
+      sharenfs: "rw=10.1.12.66:10.1.12.67,anonuid=1001,anongid=1001,no_root_squash,no_subtree_check"
     state: present
   spool/data/downloads:
     state: present

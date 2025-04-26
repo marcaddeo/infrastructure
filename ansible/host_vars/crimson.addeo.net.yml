@@ -1,1 +1,144 @@
 ---
+# Device Information.
+device_hostname: crimson
+device_description: Secondary Proxmox Server
+device_type: Proxmox Server
+device_model: DELL R710
+device_interfaces:
+  - name: eno1
+    description: iSCSI boot interface
+    ip: 172.16.1.67
+    mac: 00:26:B9:3C:28:0F
+  - name: vmbr0.115
+    description: SRVMGMT Network
+    ip: 10.1.15.67
+    mac: 00:26:B9:3C:28:11
+    default: true
+  - name: vmbr1
+    description: SAN bridge
+    ip: 10.1.12.67
+    mac: 00:02:C9:53:74:EC
+  - name: idrac
+    ip: 10.1.10.15
+    description: iDrac Management Interface
+    mac: 00:26:B9:3C:28:17
+
+# Device Configuration.
+manage_dhcp_static_mappings: false
+
+# DNS Record Configuration.
+dns_mgmt_interface: idrac
+dns_san_interface: vmbr1
+dns_records:
+  - host: "{{ device_hostname }}"
+    domain: "{{ dns_domain }}"
+    ip: "{{ device_ip }}"
+    descr: "{{ device_interfaces | default([]) | json_query('[?name == `vmbr0.115`].description || [``] | [0]') }}"
+    aliases:
+      - host: "vmm02.{{ dns_functional_prefix }}"
+        domain: "{{ dns_domain }}"
+        description: "{{ device_interfaces | default([]) | json_query('[?name == `vmbr0.115`].description || [``] | [0]') }}"
+
+# Server Configuration.
+server_hostname: crimson
+server_fqdn: crimson.addeo.net
+
+# Bootstrap Configuration.
+bootstrap_boot_type: bios
+bootstrap_iscsi_boot: true
+bootstrap_iscsi_interface_name: eno1
+bootstrap_iscsi_initiator: iqn.2020-08.net.addeo:crimson
+# @TODO add netmask setting.
+bootstrap_iscsi_initiator_ip: 172.16.1.67
+bootstrap_iscsi_target_name: iqn.2020-08.net.addeo:kilo:spool-iscsi-crimson
+bootstrap_iscsi_target_ip: 172.16.1.65
+bootstrap_zpool_encrypt_root: false
+bootstrap_zpool_type: single
+bootstrap_zpool_disk_identifiers:
+  - /dev/disk/by-path/ip-172.16.1.65:3260-iscsi-iqn.2020-08.net.addeo:kilo:spool-iscsi-crimson-lun-1
+
+# Network Interfaces Configuration.
+network_interfaces:
+  eno1:
+    comment: iSCSI boot interface.
+    auto: true
+    no_auto_down: true
+    inet: static
+    address: 172.16.1.67/29
+    state: present
+  eno2:
+    comment: SRVMGMT interface.
+    inet: manual
+    state: present
+  eno3:
+    comment: CLUSTER interface.
+    auto: true
+    inet: static
+    address: 10.1.16.67/24
+    state: present
+  eno4:
+    inet: manual
+    state: present
+  enp6s0:
+    comment: SAN interface.
+    auto: true
+    inet: manual
+    mtu: 9000
+    state: present
+  vmbr0:
+    auto: true
+    inet: manual
+    extra: |
+      bridge-ports eno2
+      bridge-stp off
+      bridge-fd 0
+      bridge-vlan-aware yes
+      bridge-vids 2-4094
+    state: present
+  vmbr0.115:
+    comment: SRVMGMT Network.
+    auto: true
+    inet: static
+    address: 10.1.15.67/24
+    gateway: 10.1.15.1
+    dns_nameservers: 10.1.15.1
+    state: present
+  vmbr1:
+    comment: SAN bridge.
+    auto: true
+    inet: static
+    address: 10.1.12.67/24
+    mtu: 9000
+    extra: |
+      bridge-ports enp6s0
+      bridge-stp off
+      bridge-fd 0
+      up ip route add 10.1.15.79 dev vmbr1
+      down ip route del 10.1.15.79 dev vmbr1
+    state: present
+
+# ZFS Configuration.
+zfs_pools:
+  bpool:
+    scrub: false
+    state: scrub
+  rpool:
+    scrub: weekly
+    state: scrub
+  vmpool:
+    vdevs:
+      - devices:
+          - /dev/disk/by-id/wwn-0x55cd2e414e325e9f
+    scrub: weekly
+    force: true
+    properties:
+      ashift: 12
+    filesystem_properties:
+      compression: lz4
+      relatime: "on"
+      xattr: sa
+      utf8only: "on"
+    state: present
+
+# Proxmox Configuration.
+pve_cluster_addr0: 10.1.16.67

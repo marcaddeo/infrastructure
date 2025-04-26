@@ -12,6 +12,8 @@ vlans:
     id: 112
   - name: SRVMGMT
     id: 115
+  - name: CLUSTER
+    id: 116
   - name: LAN
     id: 150
   - name: TRUSTEDWIFI

@@ -76,7 +76,10 @@ network_interfaces:
     inet: manual
     state: present
   eno4:
-    inet: manual
+    comment: CLUSTER interface.
+    auto: true
+    inet: static
+    address: 10.1.16.66/24
     state: present
   enp4s0:
     comment: SAN interface.
@@ -142,3 +145,4 @@ zfs_pools:
     state: present
 
 # Proxmox Configuration.
+pve_cluster_addr0: 10.1.16.66
