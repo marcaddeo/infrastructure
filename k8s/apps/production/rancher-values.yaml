@@ -1,0 +1,11 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rancher
+  namespace: cattle-system
+spec:
+  chart:
+    spec:
+      version: "*"
+  values:
+    hostname: rancher.addeo.net
