@@ -77,3 +77,16 @@ _generate-switch-config file:
 [doc("Upload the switch configuration to the switches running-config")]
 @upload-running-config: (_generate-switch-config "running.config")
     expect scripts/switch-ssh-exec.expect "copy tftp running-config 10.1.51.154 running.config"
+
+[working-directory("tofu")]
+k8s-rebuild:
+    tofu destroy
+    tofu apply
+    tofu output -raw kubeconfig > kubeconfig.yaml
+    KUBECONFIG=./kubeconfig.yaml:~/.kube/config kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
+    rm kubeconfig.yaml
+    git rm ../k8s/clusters/production/flux-system/*
+    git commit -m "Remove old flux" || true
+    git push
+    GITHUB_TOKEN="$(gh auth token)" flux bootstrap github --token-auth --owner=marcaddeo --repository=infrastructure --branch=master --path=../k8s/clusters/production --personal
+    git pull --rebase
