@@ -21,7 +21,7 @@ metadata:
 spec:
   interval: 30m
   dependsOn:
-    - name: metallb
+    - name: metallb-config
       namespace: metallb-system
   chart:
     spec:
@@ -32,7 +32,3 @@ spec:
         name: ingress-nginx
         namespace: ingress-nginx
       interval: 12h
-  values:
-    controller:
-      service:
-        type: NodePort
