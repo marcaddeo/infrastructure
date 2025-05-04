@@ -85,7 +85,7 @@ k8s-rebuild:
     tofu output -raw kubeconfig > kubeconfig.yaml
     KUBECONFIG=./kubeconfig.yaml:~/.kube/config kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
     rm kubeconfig.yaml
-    git rm ../k8s/clusters/production/flux-system/*
+    git rm ../k8s/clusters/production/flux-system/* || true
     git commit -m "Remove old flux" || true
     git push
     GITHUB_TOKEN="$(gh auth token)" flux bootstrap github --token-auth --owner=marcaddeo --repository=infrastructure --branch=master --path=../k8s/clusters/production --personal
