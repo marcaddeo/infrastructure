@@ -1,0 +1,92 @@
+---
+# Device Information.
+device_hostname: alfred
+device_description: Low Power Proxmox Server
+device_type: Proxmox Server
+device_model: Dell Wyse 5070 Thin Client
+device_interfaces:
+  - name: enp1s0
+    description: SRVMGMT Network
+    ip: 10.1.15.69
+    mac: 54:48:10:CD:64:1C
+    default: true
+
+# Device Configuration.
+manage_dhcp_static_mappings: false
+
+# DNS Record Configuration.
+dns_default_record: true
+
+# Server Configuration.
+server_hostname: alfred
+server_fqdn: alfred.addeo.net
+
+# Bootstrap Configuration.
+bootstrap_boot_type: uefi
+bootstrap_zpool_disk_identifiers:
+  - /dev/disk/by-id/wwn-0x5001b44cd6af012c
+
+# Network Interfaces Configuration.
+network_interfaces:
+  enp1s0:
+    inet: manual
+    state: present
+  vmbr0:
+    auto: true
+    inet: manual
+    extra: |
+      bridge-ports enp1s0
+      bridge-stp off
+      bridge-fd 0
+      bridge-vlan-aware yes
+      bridge-vids 2-4094
+    state: present
+  vmbr0.112:
+    comment: SAN Network.
+    auto: true
+    inet: static
+    address: 10.1.12.69/24
+    state: present
+  vmbr0.115:
+    comment: SRVMGMT Network.
+    auto: true
+    inet: static
+    address: 10.1.15.69/24
+    gateway: 10.1.15.1
+    dns_nameservers: 10.1.15.1
+    state: present
+  vmbr0.116:
+    comment: CLUSTER Network.
+    auto: true
+    inet: static
+    address: 10.1.16.69/24
+    state: present
+
+# ZFS Configuration.
+zfs_pools:
+  bpool:
+    scrub: false
+    state: scrub
+  rpool:
+    scrub: weekly
+    state: scrub
+  # @TODO add vmpool drives
+  # vmpool:
+  #   vdevs:
+  #     - type: mirror
+  #       devices:
+  #         - /dev/disk/by-id/wwn-0x
+  #         - /dev/disk/by-id/wwn-0x
+  #   scrub: weekly
+  #   force: true
+  #   properties:
+  #     ashift: 12
+  #   filesystem_properties:
+  #     compression: lz4
+  #     relatime: "on"
+  #     xattr: sa
+  #     utf8only: "on"
+  #   state: present
+
+# Proxmox Configuration.
+pve_cluster_addr0: 10.1.16.69
