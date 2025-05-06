@@ -58,6 +58,7 @@ pve_acls:
     groups:
       - Administrators
 pve_storages:
+  # @TODO didn't i have local in here?
   - name: vmpool
     type: zfspool
     content:

@@ -2,6 +2,7 @@
 
 main() {
   sudo usermod --password $(openssl passwd -1 'live') root
+  # @TODO this also needs to remove the live cd line as it causes problems for some raeson
   sudo sed -i 's/bookworm main non-free-firmware$/bookworm main contrib non-free-firmware/g' /etc/apt/sources.list
   sudo apt update
   sudo apt install --yes openssh-server gdisk
