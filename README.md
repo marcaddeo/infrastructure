@@ -1,18 +1,5 @@
 # Homelab Infrastructure
 
-## Kubernetes
-
-```console
-### Provision Talos nodes & get kubeconfig
-cd tofu
-tofu apply
-tofu output -raw kubeconfig > kubeconfig.yaml
-KUBECONFIG=./kubeconfig.yaml:~/.kube/config kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
-rm kubeconfig.yaml
-### Bootstrap flux and cluster infra
-GITHUB_TOKEN="$(gh auth token)" flux bootstrap github --token-auth --owner=marcaddeo --repository=infrastructure --branch=master --path=../k8s/clusters/production --personal
-```
-
 ## Ansible controller requirements
 
 Currently using latest Ansible with `pipx` in order to get `ansible-lint` to

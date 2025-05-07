@@ -78,12 +78,15 @@ _generate-switch-config file:
 @upload-running-config: (_generate-switch-config "running.config")
     expect scripts/switch-ssh-exec.expect "copy tftp running-config 10.1.51.154 running.config"
 
-[working-directory("tofu")]
-k8s-rebuild:
-    tofu destroy
-    tofu apply
-    tofu output -raw kubeconfig > kubeconfig.yaml
-    KUBECONFIG=./kubeconfig.yaml:~/.kube/config kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
-    rm kubeconfig.yaml
+k8s-up:
+    tofu -chdir=tofu apply
+    tofu -chdir=tofu output -raw kubeconfig > tmp-kubeconfig.yaml
+    KUBECONFIG=./tmp-kubeconfig.yaml:~/.kube/config kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
+    rm tmp-kubeconfig.yaml
     helm install flux-operator oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator --namespace flux-system --create-namespace
-    kubectl apply -f ../k8s/clusters/production/flux.yaml
+    kubectl apply -f k8s/clusters/production/flux.yaml
+
+k8s-down:
+    tofu -chdir=tofu destroy
+
+k8s-rebuild: k8s-down k8s-up
