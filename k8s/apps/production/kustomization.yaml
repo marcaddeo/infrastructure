@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - ../base/rancher
 patches:
-  - path: rancher-values.yaml
+  - path: rancher.yaml
     target:
       kind: HelmRelease
