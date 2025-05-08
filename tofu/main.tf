@@ -24,7 +24,7 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
 
   cpu {
     cores = 8
-    type  = "host"
+    type  = "x86-64-v2-AES"
   }
 
   memory {
@@ -79,7 +79,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker_01" {
 
   cpu {
     cores = 4
-    type  = "host"
+    type  = "x86-64-v2-AES"
   }
 
   memory {
