@@ -10,7 +10,20 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: selfsigned
+  name: letsencrypt
   namespace: cert-manager
 spec:
-  selfSigned: {}
+  acme:
+    email: ops@addeo.net
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-key
+    solvers:
+      - dns01:
+          cloudflare:
+            apiKeySecretRef:
+              name: cloudflare-api-token
+              key: credential
+        selector:
+          dnsZones:
+            - staging.addeo.net
