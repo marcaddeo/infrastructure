@@ -5,3 +5,4 @@ resources:
   - metallb.yaml
   - cert-manager.yaml
   - ingress-nginx.yaml
+  - onepassword-operator.yaml
