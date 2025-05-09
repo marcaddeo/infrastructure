@@ -17,7 +17,7 @@ spec:
   patches:
     - patch: |
         - op: replace
-          path: /spec/values/ipAddressPools/0/spec/addresses
+          path: /spec/values/ipAddressPools/0/spec/addresses/0
           value: 10.1.15.97-10.1.15.99
       target:
         kind: HelmRelease
