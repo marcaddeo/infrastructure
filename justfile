@@ -89,7 +89,7 @@ k8s-up:
     rm 1password-credentials.json
     kubectl create secret generic onepassword-token --from-literal="token=$(op read "op://Infrastructure/x35elwai2jgploujunynk6bt3y/credential")" --namespace op-system
     helm install flux-operator oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator --namespace flux-system --create-namespace
-    kubectl apply -f k8s/clusters/production/flux.yaml
+    kubectl apply -f k8s/clusters/staging/flux.yaml
 
 k8s-down:
     tofu -chdir=tofu destroy
