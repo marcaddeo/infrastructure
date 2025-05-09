@@ -17,6 +17,7 @@ spec:
   # https://github.com/rancher/rancher/blob/release/v2.8/chart/values.yaml
   values:
     ingress:
+      ingressClassName: nginx
       tls:
         source: secret
       extraAnnotations:
