@@ -33,7 +33,7 @@ spec:
       clusters:
         - url: https://cantilever.addeo.net:8006/api2/json
           insecure: true
-          token_id: kubernetes-csi!provider
+          token_id: kubernetes-csi@pve!provider
           token_secret: "${PROXMOX_CSI_TOKEN}"
           region: armada
 ---
