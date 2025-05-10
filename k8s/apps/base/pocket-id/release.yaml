@@ -27,7 +27,6 @@ spec:
       enabled: true
       className: nginx
       annotations:
-        nginx.ingress.kubernetes.io/configuration-snippet: |
-          proxy_busy_buffers_size 512k;
-          proxy_buffers 4 512k;
-          proxy_buffer_size 256k;
+        nginx.ingress.kubernetes.io/proxy-busy-buffers-size: 512k
+        nginx.ingress.kubernetes.io/proxy-buffers-number: 4
+        nginx.ingress.kubernetes.io/proxy-buffer-size: 256k
