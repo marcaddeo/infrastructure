@@ -10,7 +10,7 @@ apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
   name: proxmox-csi-token
-  namespace: proxmox-csi-system
+  namespace: flux-system
 spec:
   itemPath: vaults/k8s/items/kubernetes-csi@pve
 ---
@@ -42,9 +42,5 @@ spec:
         - url: https://cantilever.addeo.net:8006/api2/json
           insecure: true
           token_id: kubernetes-csi!provider
+          token_secret: "${proxmox-csi-token}"
           region: armada
-  valuesFrom:
-    - kind: Secret
-      name: proxmox-csi-token
-      valuesKey: credential
-      targetPath: config.clusters[0].token_secret
