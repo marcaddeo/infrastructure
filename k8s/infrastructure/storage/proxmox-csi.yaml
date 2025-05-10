@@ -47,3 +47,4 @@ spec:
     - kind: Secret
       name: proxmox-csi-values
       valuesKey: proxmox-csi-values.yaml
+      targetPath: config.clusters[0].token_secret
