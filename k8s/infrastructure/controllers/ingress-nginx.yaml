@@ -32,3 +32,5 @@ spec:
         name: ingress-nginx
         namespace: ingress-nginx
       interval: 12h
+  values:
+    enableSnippets: true
