@@ -9,4 +9,4 @@ spec:
       version: "*"
   values:
     ingress:
-      host: rancher.staging.addeo.net
+      host: id.staging.addeo.net
