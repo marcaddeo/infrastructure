@@ -34,14 +34,7 @@ spec:
       interval: 12h
   values:
     enableSnippets: true
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ingress-nginx-controller
-  namespace: ingress-nginx
-  labels:
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/part-of: ingress-nginx
-data:
-  allow-snippet-annotations: "true"
+    controller:
+      config:
+        allow-snippet-annotations: "true"
+        annotations-risk-level: Critical
