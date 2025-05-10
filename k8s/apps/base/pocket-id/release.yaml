@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pocket-id
+  namespace: pocket-id-system
+spec:
+  releaseName: pocket-id
+  chart:
+    spec:
+      chart: pocket-id
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: anza-labs
+  interval: 12h
+  # Default values
+  # https://github.com/anza-labs/charts/blob/main/charts/pocket-id/values.yaml
+  values:
+    timeZone: "America/New_York"
+    maxmindLicenseKey: "REDACTED"
+    persistence:
+      data:
+        enabled: true
+        storageClass: vmpool
+    ingress:
+      enabled: true
+      className: nginx
