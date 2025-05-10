@@ -2,7 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../base/rancher
+  - ../base/pocket-id
 patches:
   - path: rancher.yaml
+    target:
+      kind: HelmRelease
+  - path: pocket-id.yaml
     target:
       kind: HelmRelease
