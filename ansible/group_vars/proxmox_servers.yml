@@ -50,6 +50,9 @@ pve_users:
     lastname: Addeo
     groups:
       - Administrators
+  - name: tofu@pve
+    groups:
+      - Administrators
 pve_acls:
   - path: /
     roles:
