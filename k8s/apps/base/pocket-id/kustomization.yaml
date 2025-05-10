@@ -7,3 +7,6 @@ resources:
   - repository.yaml
   - release.yaml
   - secrets.yaml
+secretGenerator:
+  - name: pocket-id-maxmind-license-key
+    namespace: pocket-id-system

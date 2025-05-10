@@ -15,7 +15,3 @@ spec:
   prune: true
   wait: true
   timeout: 5m0s
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: pocket-id-maxmind-license-key
