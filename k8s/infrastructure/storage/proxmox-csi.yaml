@@ -12,7 +12,7 @@ metadata:
   name: proxmox-csi-token
   namespace: proxmox-csi-system
 spec:
-  itemPath: vaults/k8s/items/kubernetes-csi@pve/credential
+  itemPath: vaults/k8s/items/kubernetes-csi@pve
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
@@ -46,4 +46,5 @@ spec:
   valuesFrom:
     - kind: Secret
       name: proxmox-csi-token
+      valuesKey: credential
       targetPath: config.clusters[0].token_secret
