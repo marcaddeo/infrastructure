@@ -45,7 +45,7 @@ parameters:
   csi.storage.k8s.io/fstype: xfs
   storage: vmpool
   cache: writethrough
-  ssd: true
+  ssd: "true"
 mountOptions:
   - noatime
 provisioner: csi.proxmox.sinextra.dev
