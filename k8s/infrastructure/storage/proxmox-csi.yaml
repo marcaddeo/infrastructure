@@ -46,4 +46,4 @@ spec:
   valuesFrom:
     - kind: Secret
       name: proxmox-csi-values
-      valueKey: proxmox-csi-values.yaml
+      valuesKey: proxmox-csi-values.yaml
