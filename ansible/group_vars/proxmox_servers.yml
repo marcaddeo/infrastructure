@@ -25,6 +25,14 @@ pve_datacenter_cfg:
 pve_reboot_on_kernel_update: false
 pve_remove_old_kernels: false
 pve_zfs_enabled: false
+pve_roles:
+  - name: CSI
+    privileges:
+      - VM.Audit
+      - VM.Config.Disk
+      - Datastore.Allocate
+      - Datastore.AllocateSpace
+      - Datastore.Audit
 pve_groups:
   - name: Administrators
 pve_users:
@@ -53,6 +61,7 @@ pve_users:
   - name: tofu@pve
     groups:
       - Administrators
+  - name: kubernetes-csi@pve
 pve_acls:
   - path: /
     roles:
@@ -60,6 +69,12 @@ pve_acls:
       - PVEAdmin
     groups:
       - Administrators
+  - path: /
+    roles:
+      - CSI
+    users:
+      - kubernetes-csi@pve
+
 pve_storages:
   # @TODO didn't i have local in here?
   - name: vmpool
