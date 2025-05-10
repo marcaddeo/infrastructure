@@ -36,3 +36,18 @@ spec:
           token_id: kubernetes-csi!provider
           token_secret: "${PROXMOX_CSI_TOKEN}"
           region: armada
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: vmpool
+parameters:
+  csi.storage.k8s.io/fstype: xfs
+  storage: vmpool
+  cache: writethrough
+  ssd: true
+mountOptions:
+  - noatime
+provisioner: csi.proxmox.sinextra.dev
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
