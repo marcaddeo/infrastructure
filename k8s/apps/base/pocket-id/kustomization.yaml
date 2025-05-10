@@ -10,3 +10,5 @@ resources:
 secretGenerator:
   - name: pocket-id-maxmind-license-key
     namespace: pocket-id-system
+    literals:
+      - credential=''
