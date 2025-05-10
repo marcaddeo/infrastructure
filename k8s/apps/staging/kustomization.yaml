@@ -10,3 +10,13 @@ patches:
   - path: pocket-id.yaml
     target:
       kind: HelmRelease
+replacements:
+  - source:
+      kind: Secret
+      name: pocket-id-maxmind-license-key
+    targets:
+      - select:
+          name: pocket-id
+          kind: HelmRelease
+        fieldPaths:
+          - spec.values.maxmindLicenseKey
