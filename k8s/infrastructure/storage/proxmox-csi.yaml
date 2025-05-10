@@ -6,14 +6,6 @@ metadata:
   labels:
     pod-security.kubernetes.io/enforce: privileged
 ---
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
-metadata:
-  name: proxmox-csi-token
-  namespace: flux-system
-spec:
-  itemPath: vaults/k8s/items/kubernetes-csi@pve
----
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
