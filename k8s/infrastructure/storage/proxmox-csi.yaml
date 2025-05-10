@@ -34,5 +34,5 @@ spec:
         - url: https://cantilever.addeo.net:8006/api2/json
           insecure: true
           token_id: kubernetes-csi!provider
-          token_secret: "${proxmox-csi-token}"
+          token_secret: "${PROXMOX_CSI_TOKEN}"
           region: armada
