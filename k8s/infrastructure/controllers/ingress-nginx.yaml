@@ -32,9 +32,3 @@ spec:
         name: ingress-nginx
         namespace: ingress-nginx
       interval: 12h
-  values:
-    enableSnippets: true
-    controller:
-      config:
-        allow-snippet-annotations: "true"
-        annotations-risk-level: Critical
