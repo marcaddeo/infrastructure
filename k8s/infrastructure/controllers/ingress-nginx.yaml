@@ -44,4 +44,4 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 data:
-  allow-snippet-annotations: true
+  allow-snippet-annotations: "true"
