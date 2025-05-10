@@ -39,6 +39,10 @@ spec:
     name: flux-system
   path: ./k8s/infrastructure/storage
   prune: true
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: proxmox-csi-token
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
