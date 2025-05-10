@@ -9,10 +9,10 @@ metadata:
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
-  name: proxmox-csi-values
+  name: proxmox-csi-token_secret
   namespace: proxmox-csi-system
 spec:
-  itemPath: vaults/k8s/items/proxmox-csi-values
+  itemPath: vaults/k8s/items/kubernetes-csi@pve/credential
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
@@ -45,6 +45,5 @@ spec:
           region: armada
   valuesFrom:
     - kind: Secret
-      name: proxmox-csi-values
-      valuesKey: proxmox-csi-values.yaml
+      name: proxmox-csi-token_secret
       targetPath: config.clusters[0].token_secret
