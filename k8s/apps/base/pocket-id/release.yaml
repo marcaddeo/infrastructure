@@ -20,7 +20,7 @@ spec:
   # https://github.com/anza-labs/charts/blob/main/charts/pocket-id/values.yaml
   values:
     timeZone: "America/New_York"
-    maxmindLicenseKey: "REDACTED"
+    maxmindLicenseKey: "${POCKET_ID_MAXMIND_LICENSE_KEY:=}"
     persistence:
       data:
         enabled: true
