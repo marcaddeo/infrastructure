@@ -6,3 +6,15 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
+replacements:
+  - source:
+      kind: Secret
+      name: pocket-id-maxmind-license-key
+      namespace: pocket-id-system
+      fieldPath: data.credential
+    targets:
+      - select:
+          name: pocket-id
+          kind: HelmRelease
+        fieldPaths:
+          - spec.values.maxmindLicenseKey
