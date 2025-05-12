@@ -33,7 +33,11 @@ spec:
       clusters:
         - url: https://cantilever.addeo.net:8006/api2/json
           insecure: true
+          # @TODO !provider should be !csi, need to make new tokens (and for tofu)
           token_id: kubernetes-csi@pve!provider
+          # @TODO see if we can successfully use valuesFrom here like we did
+          # with pocket-id. I think because this is an array though, it is more
+          # challenging/not possible.
           token_secret: "${PROXMOX_CSI_TOKEN}"
           region: armada
 ---

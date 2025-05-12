@@ -26,6 +26,7 @@ spec:
       enabled: true
       className: nginx
       annotations:
+        # @TODO not sure if these all need to be quoted, or any.. docs say it shouldn't matter
         nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "512k"
         nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
         nginx.ingress.kubernetes.io/proxy-buffer-size: "256k"
