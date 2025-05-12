@@ -20,7 +20,6 @@ spec:
   # https://github.com/anza-labs/charts/blob/main/charts/pocket-id/values.yaml
   values:
     timeZone: "America/New_York"
-    maxmindLicenseKey: "REDACTED"
     persistence:
       data:
         enabled: true
@@ -32,3 +31,8 @@ spec:
         nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "512k"
         nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
         nginx.ingress.kubernetes.io/proxy-buffer-size: "256k"
+    valuesFrom:
+      - kind: Secret
+        name: pocket-id-maxmind-license-key
+        valuesKey: credential
+        targetPath: maxmindLicenseKey
