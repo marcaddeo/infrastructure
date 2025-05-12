@@ -6,6 +6,14 @@ metadata:
   labels:
     pod-security.kubernetes.io/enforce: privileged
 ---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: proxmox-csi-token
+  namespace: proxmox-csi-system
+spec:
+  itemPath: vaults/k8s/items/kubernetes-csi@pve
+---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
@@ -35,11 +43,12 @@ spec:
           insecure: true
           # @TODO !provider should be !csi, need to make new tokens (and for tofu)
           token_id: kubernetes-csi@pve!provider
-          # @TODO see if we can successfully use valuesFrom here like we did
-          # with pocket-id. I think because this is an array though, it is more
-          # challenging/not possible.
-          token_secret: "${PROXMOX_CSI_TOKEN}"
           region: armada
+  valuesFrom:
+    - kind: Secret
+      name: proxmox-csi-token
+      valuesKey: credential
+      targetPath: config.clusters[0].token_secret
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
