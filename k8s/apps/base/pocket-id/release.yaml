@@ -30,6 +30,7 @@ spec:
         nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "512k"
         nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
         nginx.ingress.kubernetes.io/proxy-buffer-size: "256k"
+        nginx.ingress.kubernetes.io/proxy-body-size: 10m
   valuesFrom:
     - kind: Secret
       name: pocket-id-maxmind-license-key
