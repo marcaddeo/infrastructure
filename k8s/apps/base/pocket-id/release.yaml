@@ -4,8 +4,6 @@ kind: HelmRelease
 metadata:
   name: pocket-id
   namespace: pocket-id-system
-  annotations:
-    reloader.stakater.com/auto: "true"
 spec:
   releaseName: pocket-id
   chart:
