@@ -7,6 +7,8 @@ patches:
   - path: rancher.yaml
     target:
       kind: HelmRelease
+      name: rancher
   - path: pocket-id.yaml
     target:
       kind: HelmRelease
+      name: pocket-id
