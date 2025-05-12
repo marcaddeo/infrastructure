@@ -6,3 +6,4 @@ patches:
   - path: rancher.yaml
     target:
       kind: HelmRelease
+      name: rancher
