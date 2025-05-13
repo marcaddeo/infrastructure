@@ -26,6 +26,7 @@ metadata:
 spec:
   dependsOn:
     - name: 1password
+      namespace: op-system
   interval: 30m
   chartRef:
     kind: OCIRepository
