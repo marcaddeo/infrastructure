@@ -78,8 +78,12 @@ _generate-switch-config file:
 @upload-running-config: (_generate-switch-config "running.config")
     expect scripts/switch-ssh-exec.expect "copy tftp running-config 10.1.51.154 running.config"
 
+@op-base64-inject file:
+    perl -ne 's/{{{{ base64-(op.*) }}/`echo "$1" | op inject | base64 | tr "\/+" "_-" | tr -d "=" | tr -d "\n"`/e;print' {{ file }}
+
 k8s-bootstrap:
-    op inject -i k8s/infrastructure/secrets.yaml \
+    just op-base64-inject k8s/infrastructure/secrets.yaml \
+        | op inject \
         | kubectl apply -f -
     helm install --namespace kube-system \
         --set "existingConfigSecret=proxmox-cluster" \
