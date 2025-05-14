@@ -6,14 +6,6 @@ metadata:
   labels:
     pod-security.kubernetes.io/enforce: privileged
 ---
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
-metadata:
-  name: proxmox-csi-token
-  namespace: proxmox-csi-system
-spec:
-  itemPath: vaults/k8s/items/kubernetes-csi@pve
----
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
@@ -37,18 +29,7 @@ spec:
     name: proxmox-csi
     namespace: proxmox-csi-system
   values:
-    config:
-      clusters:
-        - url: https://cantilever.addeo.net:8006/api2/json
-          insecure: true
-          # @TODO !provider should be !csi, need to make new tokens (and for tofu)
-          token_id: kubernetes-csi@pve!provider
-          region: armada
-  valuesFrom:
-    - kind: Secret
-      name: proxmox-csi-token
-      valuesKey: credential
-      targetPath: config.clusters[0].token_secret
+    existingConfigSecret: proxmox-cluster
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass

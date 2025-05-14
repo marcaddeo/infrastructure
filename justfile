@@ -83,12 +83,16 @@ k8s-up:
     tofu -chdir=tofu output -raw kubeconfig > tmp-kubeconfig.yaml
     KUBECONFIG=./tmp-kubeconfig.yaml:~/.kube/config kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
     rm tmp-kubeconfig.yaml
-    kubectl create namespace op-system
-    op read "op://Infrastructure/Production Credentials File/1password-credentials.json" | base64 | tr '/+' '_-' | tr -d '=' | tr -d '\n' > 1password-credentials.json
-    kubectl create secret generic op-credentials --from-file=1password-credentials.json --namespace op-system
-    rm 1password-credentials.json
-    kubectl create secret generic onepassword-token --from-literal="token=$(op read "op://Infrastructure/x35elwai2jgploujunynk6bt3y/credential")" --namespace op-system
-    helm install flux-operator oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator --namespace flux-system --create-namespace
+    op inject -i k8s/infrastructure/secrets.yaml \
+        | kubectl apply -f -
+    helm install --namespace kube-system \
+        --set "existingConfigSecret=proxmox-cluster" \
+        proxmox-cloud-controller-manager \
+        oci://ghcr.io/sergelogvinov/charts/proxmox-cloud-controller-manager
+    helm install --namespace flux-system \
+        --create-namespace \
+        flux-operator \
+        oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
     kubectl apply -f k8s/clusters/staging/flux.yaml
 
 k8s-down:
