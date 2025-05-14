@@ -1,5 +1,24 @@
 ---
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-4444c22c-345f-4319-92bf-67ee24187107
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  csi:
+    driver: csi.proxmox.sinextra.dev
+    fsType: xfs
+    volumeAttributes:
+      storage: vmpool
+      cache: writethrough
+      ssd: "true"
+    volumeHandle: armada/crimson/vmpool/vm-9999-pvc-4444c22c-345f-4319-92bf-67ee24187107
+  storageClassName: vmpool
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: pocket-id-data-pocket-id-0
