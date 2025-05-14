@@ -1,12 +1,4 @@
 ---
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
-metadata:
-  name: proxmox-ccm-token
-  namespace: kube-system
-spec:
-  itemPath: vaults/k8s/items/kubernetes-csi@pve
----
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
@@ -33,14 +25,4 @@ spec:
     name: proxmox-cloud-controller-manager
     namespace: kube-system
   values:
-    config:
-      clusters:
-        - url: https://cantilever.addeo.net:8006/api2/json
-          insecure: true
-          token_id: kubernetes-csi@pve!provider
-          region: armada
-  valuesFrom:
-    - kind: Secret
-      name: proxmox-ccm-token
-      valuesKey: credential
-      targetPath: config.clusters[0].token_secret
+    existingConfigSecret: proxmox-cluster
