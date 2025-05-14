@@ -3,9 +3,13 @@ kind: Kustomization
 resources:
   - ../base/rancher
   - ../base/pocket-id
-  - pocket-id
+  - pocket-id/secrets.yaml
 patches:
   - path: rancher.yaml
     target:
       kind: HelmRelease
       name: rancher
+  - path: pocket-id/release.yaml
+    target:
+      kind: HelmRelease
+      name: pocket-id
