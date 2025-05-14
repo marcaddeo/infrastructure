@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pocket-id-data-pocket-id-0
+  namespace: pocket-id-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: vmpool
+  volumeName: pvc-4444c22c-345f-4319-92bf-67ee24187107

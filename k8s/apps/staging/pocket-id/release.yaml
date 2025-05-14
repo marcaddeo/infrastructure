@@ -9,6 +9,8 @@ spec:
     spec:
       version: "*"
   values:
+    persistence:
+      existingClaim: pocket-id-data-pocket-id-0
     ingress:
       host: id.staging.addeo.net
       tls:
