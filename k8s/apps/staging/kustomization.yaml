@@ -5,7 +5,7 @@ resources:
   - ../base/pocket-id
   - pocket-id/secrets.yaml
 patches:
-  - path: rancher.yaml
+  - path: rancher/release.yaml
     target:
       kind: HelmRelease
       name: rancher
