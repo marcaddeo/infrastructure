@@ -29,7 +29,7 @@ spec:
     name: proxmox-csi
     namespace: proxmox-csi-system
   values:
-    existingConfigSecret: proxmox-cluster
+    existingConfigSecret: kube-system/proxmox-cluster
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
