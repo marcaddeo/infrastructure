@@ -20,6 +20,9 @@ resource "talos_machine_configuration_apply" "cp_config_apply" {
   machine_configuration_input = data.talos_machine_configuration.machineconfig_cp.machine_configuration
   count                       = 1
   node                        = var.talos_cp_01_ip_addr
+  config_patches = [
+    file("${path.module}/files/external-cloud-provider.yaml"),
+  ]
 }
 
 data "talos_machine_configuration" "machineconfig_worker" {
@@ -36,6 +39,9 @@ resource "talos_machine_configuration_apply" "worker_config_apply" {
   machine_configuration_input = data.talos_machine_configuration.machineconfig_worker.machine_configuration
   count                       = 1
   node                        = var.talos_worker_01_ip_addr
+  config_patches = [
+    file("${path.module}/files/external-cloud-provider.yaml"),
+  ]
 }
 
 resource "talos_machine_bootstrap" "bootstrap" {
