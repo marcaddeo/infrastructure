@@ -8,7 +8,7 @@ spec:
   interval: 10m0s
   dependsOn:
     - name: infra-controllers
-    - name: infra-config
+    - name: infra-configs
     - name: infra-storage
   sourceRef:
     kind: GitRepository
