@@ -10,3 +10,7 @@ spec:
   values:
     ingress:
       host: id.staging.addeo.net
+      tls:
+        - secretName: pocket-id-tls
+          hosts:
+            - id.staging.addeo.net
