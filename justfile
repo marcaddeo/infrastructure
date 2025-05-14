@@ -78,11 +78,7 @@ _generate-switch-config file:
 @upload-running-config: (_generate-switch-config "running.config")
     expect scripts/switch-ssh-exec.expect "copy tftp running-config 10.1.51.154 running.config"
 
-k8s-up:
-    tofu -chdir=tofu apply
-    tofu -chdir=tofu output -raw kubeconfig > tmp-kubeconfig.yaml
-    KUBECONFIG=./tmp-kubeconfig.yaml:~/.kube/config kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
-    rm tmp-kubeconfig.yaml
+k8s-bootstrap:
     op inject -i k8s/infrastructure/secrets.yaml \
         | kubectl apply -f -
     helm install --namespace kube-system \
@@ -94,6 +90,12 @@ k8s-up:
         flux-operator \
         oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
     kubectl apply -f k8s/clusters/staging/flux.yaml
+
+k8s-up: && k8s-bootstrap
+    tofu -chdir=tofu apply
+    tofu -chdir=tofu output -raw kubeconfig > tmp-kubeconfig.yaml
+    KUBECONFIG=./tmp-kubeconfig.yaml:~/.kube/config kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
+    rm tmp-kubeconfig.yaml
 
 k8s-down:
     tofu -chdir=tofu destroy
