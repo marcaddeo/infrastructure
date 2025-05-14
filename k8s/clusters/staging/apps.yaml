@@ -7,7 +7,9 @@ metadata:
 spec:
   interval: 10m0s
   dependsOn:
-    - name: secrets
+    - name: infra-controllers
+    - name: infra-config
+    - name: infra-storage
   sourceRef:
     kind: GitRepository
     name: flux-system
