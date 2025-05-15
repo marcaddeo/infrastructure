@@ -1,0 +1,54 @@
+locals {
+  version      = var.image.version
+  schematic    = var.image.schematic
+  schematic_id = jsondecode(data.http.schematic_id.response_body)["id"]
+
+  update_version      = coalesce(var.image.update_version, var.image.version)
+  update_schematic    = coalesce(var.image.update_schematic, var.image.schematic)
+  update_schematic_id = jsondecode(data.http.updated_schematic_id.response_body)["id"]
+
+  image_id        = "${local.schematic_id}_${local.version}"
+  update_image_id = "${local.update_schematic_id}_${local.update_version}"
+}
+
+data "http" "schematic_id" {
+  url          = "${var.image.factory_url}/schematics"
+  method       = "POST"
+  request_body = local.schematic
+}
+
+data "http" "updated_schematic_id" {
+  url          = "${var.image.factory_url}/schematics"
+  method       = "POST"
+  request_body = local.update_schematic
+}
+
+resource "talos_image_factory_schematic" "this" {
+  schematic = local.schematic
+}
+
+resource "talos_image_factory_schematic" "updated" {
+  schematic = local.update_schematic
+}
+
+resource "proxmox_virtual_environment_download_file" "this" {
+  for_each = { for k, v in
+    {
+      for k, v in var.nodes :
+      "${v.host_node}_${v.update == true ? local.update_image_id : local.image_id}" => {
+        host_node = v.host_node
+        version   = v.update == true ? local.update_version : local.version
+        schematic = v.update == true ? talos_image_factory_schematic.updated.id : talos_image_factory_schematic.this.id
+      }...
+    } : k => v[0]
+  }
+
+  node_name    = each.value.host_node
+  content_type = "iso"
+  datastore_id = var.image.proxmox_datastore
+
+  file_name               = "talos-${each.value.schematic}-${each.value.version}-${var.image.platform}-${var.image.arch}.img"
+  url                     = "${var.image.factory_url}/image/${each.value.schematic}/${each.value.version}/${var.image.platform}-${var.image.arch}.raw.gz"
+  decompression_algorithm = "gz"
+  overwrite               = false
+}
