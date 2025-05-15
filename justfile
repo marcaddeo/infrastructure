@@ -81,7 +81,18 @@ _generate-switch-config file:
 @op-base64-inject file:
     perl -ne 's/{{{{ base64-(op.*) }}/`echo "$1" | op inject | base64 | tr "\/+" "_-" | tr -d "=" | tr -d "\n"`/e;print' {{ file }}
 
-k8s-bootstrap:
+talos-up env="staging":
+    tofu -chdir=tofu/{{ env }} apply -target=module.talos
+    tofu -chdir=tofu/{{ env }} output -raw kube_config > tmp-kube-config.yaml
+    KUBECONFIG="./tmp-kube-config.yaml:~/.kube/config" \
+        kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
+    rm tmp-kube-config.yaml
+
+talos-down env="staging":
+    tofu -chdir=tofu/{{ env }} destroy -target=module.talos
+
+k8s-bootstrap env="staging":
+    kubectl config set-context admin@{{ env }}.talos.addeo.net
     just op-base64-inject k8s/infrastructure/secrets.yaml \
         | op inject \
         | kubectl apply -f -
@@ -93,15 +104,6 @@ k8s-bootstrap:
         --create-namespace \
         flux-operator \
         oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
-    kubectl apply -f k8s/clusters/staging/flux.yaml
+    kubectl apply -f k8s/clusters/{{ env }}/flux.yaml
 
-k8s-up: && k8s-bootstrap
-    tofu -chdir=tofu apply
-    tofu -chdir=tofu output -raw kubeconfig > tmp-kubeconfig.yaml
-    KUBECONFIG=./tmp-kubeconfig.yaml:~/.kube/config kubectl config view --flatten > ~/.kube/config-new && mv ~/.kube/config{-new,}
-    rm tmp-kubeconfig.yaml
-
-k8s-down:
-    tofu -chdir=tofu destroy
-
-k8s-rebuild: k8s-down k8s-up
+k8s-rebuild env="staging": (talos-down env) (talos-up env) (k8s-bootstrap env)
