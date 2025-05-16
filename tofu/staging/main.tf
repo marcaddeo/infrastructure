@@ -43,20 +43,24 @@ module "talos" {
   }
 }
 
-# module "proxmox_pvc_volumes" {
-#   source = "../modules/proxmox-volumes"
-#
-#   providers = {
-#     proxmox = proxmox
-#   }
-#
-#   volumes = {
-#     // @TODO i want to pull these values from the k8s configuration by doing something like:
-#     // k kustomize k8s/apps/staging | yq ea '[.] | .[] | select(.kind == "PersistentVolume" and .spec.storageClassName == "vmpool-persistent") | .spec.csi.volumeHandle'
-#     // which would return "armada/crimson/vmpool/vm-9999-pvc-pocket-id-data-staging"
-#     pvc-pocket-id-data-staging = {
-#       node = "crimson"
-#       size = "10G"
-#     }
-#   }
-# }
+module "proxmox_pvc_volumes" {
+  source = "../modules/proxmox-volumes"
+
+  providers = {
+    restapi = restapi
+  }
+
+  proxmox = {
+    cluster_name = nonsensitive(var.proxmox.cluster_name)
+  }
+
+  volumes = {
+    // @TODO i want to pull these values from the k8s configuration by doing something like:
+    // k kustomize k8s/apps/staging | yq ea '[.] | .[] | select(.kind == "PersistentVolume" and .spec.storageClassName == "vmpool-persistent") | .spec.csi.volumeHandle'
+    // which would return "armada/crimson/vmpool/vm-9999-pvc-pocket-id-data-staging"
+    pvc-pocket-id-data-staging = {
+      node = "crimson"
+      size = "10G"
+    }
+  }
+}

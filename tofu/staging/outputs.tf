@@ -26,3 +26,7 @@ output "talos_config" {
   value     = module.talos.client_configuration.talos_config
   sensitive = true
 }
+
+output "proxmox_volumes" {
+  value = module.proxmox_pvc_volumes.proxmox_volumes
+}
