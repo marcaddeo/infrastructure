@@ -92,6 +92,7 @@ talos-down env="staging":
     tofu -chdir=tofu/{{ env }} destroy -target=module.talos
 
 k8s-bootstrap env="staging":
+    tofu -chdir=tofu/{{ env }} apply -target=module.proxmox_pvc_volumes
     kubectl config set-context admin@{{ env }}.talos.addeo.net
     just op-base64-inject k8s/infrastructure/secrets.yaml \
         | op inject \
