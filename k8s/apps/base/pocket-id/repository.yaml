@@ -6,4 +6,4 @@ metadata:
   namespace: pocket-id-system
 spec:
   interval: 5m
-  url: https://marcaddeo.github.io/charts
+  url: https://marcaddeo.github.io/anza-labs-charts
