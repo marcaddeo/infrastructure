@@ -20,6 +20,7 @@ spec:
     timeZone: "America/New_York"
     config:
       publicUI:
+        useDefaults: false
         settings:
           app:
             appName: AddeoID
