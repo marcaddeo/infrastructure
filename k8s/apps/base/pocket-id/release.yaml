@@ -25,6 +25,7 @@ spec:
             appName: AddeoID
             disableAnimations: true
     persistence:
+      enabled: true
       existingClaim: pocket-id-data
     ingress:
       enabled: true
