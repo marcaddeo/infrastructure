@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - ../base/rancher
   - ../base/pocket-id
-  - pocket-id/pvc.yaml
+  - pocket-id/volumes.yaml
   - pocket-id/secrets.yaml
 patches:
   - path: rancher/release.yaml
