@@ -1,26 +1,4 @@
-variable "proxmox" {
-  type = object({
-    name         = string
-    cluster_name = string
-    endpoint     = string
-    insecure     = bool
-    api_token    = string
-    username     = string
-    private_key  = string
-  })
-  sensitive = true
-}
-
-variable "rancher" {
-  type = object({
-    endpoint  = string
-    insecure  = bool
-    api_token = string
-  })
-  sensitive = true
-}
-
-variable "rancher_oidc_provider" {
+variable "oidc_provider" {
   type = object({
     clientId            = string
     clientSecret        = string

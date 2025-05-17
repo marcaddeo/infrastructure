@@ -34,6 +34,7 @@ provider "proxmox" {
 }
 
 provider "restapi" {
+  alias                = "proxmox"
   uri                  = var.proxmox.endpoint
   insecure             = var.proxmox.insecure
   write_returns_object = true
@@ -41,5 +42,17 @@ provider "restapi" {
   headers = {
     "Content-Type"  = "application/json"
     "Authorization" = "PVEAPIToken=${var.proxmox.api_token}"
+  }
+}
+
+provider "restapi" {
+  alias                = "rancher"
+  uri                  = var.rancher.endpoint
+  insecure             = var.rancher.insecure
+  write_returns_object = true
+
+  headers = {
+    "Content-Type"  = "application/json"
+    "Authorization" = "Bearer ${var.rancher.api_token}"
   }
 }
