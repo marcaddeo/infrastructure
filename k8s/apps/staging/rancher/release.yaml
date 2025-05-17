@@ -10,3 +10,4 @@ spec:
       version: "*"
   values:
     hostname: rancher.staging.addeo.net
+    additionalTrustedCAs: true
