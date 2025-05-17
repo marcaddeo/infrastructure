@@ -5,6 +5,7 @@ resources:
   - ../base/pocket-id
   - pocket-id/volumes.yaml
   - pocket-id/secrets.yaml
+  - rancher/secrets.yaml
 patches:
   - path: rancher/release.yaml
     target:
