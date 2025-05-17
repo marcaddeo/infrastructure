@@ -1,38 +1,24 @@
-variable "proxmox" {
-  type = object({
-    name         = string
-    cluster_name = string
-    endpoint     = string
-    insecure     = bool
-    api_token    = string
-    username     = string
-    private_key  = string
-  })
+variable "proxmox_api_token" {
+  type      = string
   sensitive = true
 }
 
-variable "rancher" {
-  type = object({
-    endpoint  = string
-    insecure  = bool
-    api_token = string
-  })
+variable "rancher_api_token" {
+  type      = string
   sensitive = true
 }
 
-variable "rancher_oidc_provider" {
-  type = object({
-    clientId            = string
-    clientSecret        = string
-    issuer              = string
-    authEndpoint        = string
-    tokenEndpoint       = string
-    userInfoEndpoint    = string
-    jwksUrl             = string
-    rancherUrl          = string
-    scope               = optional(string, "openid profile email")
-    groupSearchEnabled  = optional(bool, false)
-    allowedPrincipalIds = list(string)
-    accessMode          = string
-  })
+variable "rancher_oidc_provider_client_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "rancher_oidc_provider_client_secret" {
+  type      = string
+  sensitive = true
+}
+
+variable "rancher_oidc_provider_allowed_principal_ids" {
+  type      = list(string)
+  sensitive = true
 }

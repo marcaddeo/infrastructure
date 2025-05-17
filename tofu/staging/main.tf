@@ -51,7 +51,7 @@ module "proxmox_pvc_volumes" {
   }
 
   proxmox = {
-    cluster_name = nonsensitive(var.proxmox.cluster_name)
+    cluster_name = local.proxmox.cluster_name
   }
 
   volumes = local.pvc_volumes
@@ -64,5 +64,5 @@ module "rancher_oidc" {
     restapi = restapi.rancher
   }
 
-  oidc_provider = var.rancher_oidc_provider
+  oidc_provider = local.rancher_oidc_provider
 }
