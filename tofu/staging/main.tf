@@ -47,7 +47,7 @@ module "proxmox_pvc_volumes" {
   source = "../modules/proxmox-volumes"
 
   providers = {
-    restapi = restapi
+    restapi = restapi.proxmox
   }
 
   proxmox = {
@@ -63,4 +63,14 @@ module "proxmox_pvc_volumes" {
       size = "10G"
     }
   }
+}
+
+module "rancher_oidc" {
+  source = "../modules/rancher-genericoidc"
+
+  providers = {
+    restapi = restapi.rancher
+  }
+
+  oidc_provider = var.rancher_oidc_provider
 }
