@@ -108,3 +108,13 @@ k8s-bootstrap env="staging":
     kubectl apply -f k8s/clusters/{{ env }}/flux.yaml
 
 k8s-rebuild env="staging": (talos-down env) (talos-up env) (k8s-bootstrap env)
+
+@rancher-token env="staging":
+    curl 'https://rancher.{{ env }}.addeo.net/v3-public/localProviders/local?action=login' \
+        --silent \
+        --insecure \
+        -H 'accept: application/json' \
+        -H 'content-type: application/json' \
+        --data-raw '{"description":"Tofu Token","responseType":"token","username":"admin","password":"'$(op read "op://Private/2pxh6dasbem4xfv42orccrwaiu/password")'"}' \
+    | jq -rM '.token'
+
