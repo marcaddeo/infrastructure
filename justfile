@@ -118,3 +118,14 @@ k8s-rebuild env="staging": (talos-down env) (talos-up env) (k8s-bootstrap env)
         --data-raw '{"description":"Tofu Token","responseType":"token","username":"admin","password":"'$(op read "op://Private/2pxh6dasbem4xfv42orccrwaiu/password")'"}' \
     | jq -rM '.token'
 
+pvc-volumes env="staging" encode="true":
+    #!/usr/bin/env bash
+    kubectl kustomize k8s/apps/{{ env }} \
+        | yq -o json ea '[.] | .[] | select(.kind == "PersistentVolume" and .spec.storageClassName == "vmpool-persistent")' \
+        | jq -rMs 'reduce .[] as $item ({}; . + {
+            ($item.spec.csi.volumeHandle | split("/") | .[3] | sub("vm-\\d+-"; "")): {
+                node: ($item.spec.csi.volumeHandle | split("/") | .[1]),
+                size: ($item.spec.capacity.storage | sub("(?<unit>G|M)i"; "\(.unit)"))
+            }
+            })' \
+    {{ if encode == "true" { "| base64 | tr -d '\n' | jq -R '{base64: .}'" } else { "" } }}
