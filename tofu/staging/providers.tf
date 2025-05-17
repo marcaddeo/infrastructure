@@ -26,37 +26,37 @@ terraform {
 }
 
 provider "proxmox" {
-  endpoint  = var.proxmox.endpoint
-  insecure  = var.proxmox.insecure
-  api_token = var.proxmox.api_token
+  endpoint  = local.proxmox.endpoint
+  insecure  = local.proxmox.insecure
+  api_token = local.proxmox.api_token
 
   ssh {
     agent       = false
-    username    = var.proxmox.username
-    private_key = var.proxmox.private_key
+    username    = local.proxmox.username
+    private_key = local.proxmox.private_key
   }
 }
 
 provider "restapi" {
   alias                = "proxmox"
-  uri                  = var.proxmox.endpoint
-  insecure             = var.proxmox.insecure
+  uri                  = local.proxmox.endpoint
+  insecure             = local.proxmox.insecure
   write_returns_object = true
 
   headers = {
     "Content-Type"  = "application/json"
-    "Authorization" = "PVEAPIToken=${var.proxmox.api_token}"
+    "Authorization" = "PVEAPIToken=${local.proxmox.api_token}"
   }
 }
 
 provider "restapi" {
   alias                = "rancher"
-  uri                  = var.rancher.endpoint
-  insecure             = var.rancher.insecure
+  uri                  = local.rancher.endpoint
+  insecure             = local.rancher.insecure
   write_returns_object = true
 
   headers = {
     "Content-Type"  = "application/json"
-    "Authorization" = "Bearer ${var.rancher.api_token}"
+    "Authorization" = "Bearer ${local.rancher.api_token}"
   }
 }
