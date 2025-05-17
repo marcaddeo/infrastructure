@@ -30,3 +30,7 @@ output "talos_config" {
 output "proxmox_volumes" {
   value = module.proxmox_pvc_volumes.proxmox_volumes
 }
+
+output "pvc_volumes" {
+  value = local.pvc_volumes
+}
