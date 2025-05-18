@@ -26,7 +26,7 @@ locals {
     userInfoEndpoint    = "https://id.staging.addeo.net/api/oidc/userinfo"
     jwksUrl             = "https://id.staging.addeo.net/.well-known/jwks.json"
     rancherUrl          = "https://rancher.staging.addeo.net/verify-auth"
-    scope               = "openid profile email"
+    scope               = "openid profile email groups"
     groupSearchEnabled  = true
     allowedPrincipalIds = var.rancher_oidc_provider_allowed_principal_ids
     accessMode          = "unrestricted"
