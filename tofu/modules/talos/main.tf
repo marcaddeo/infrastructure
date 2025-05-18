@@ -39,8 +39,13 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   network_device {
+    bridge      = "vmbr0"
     mac_address = each.value.mac_address
     vlan_id     = 115
+  }
+
+  network_device {
+    bridge = "vmbr1"
   }
 
   initialization {

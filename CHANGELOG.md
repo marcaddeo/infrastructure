@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add additional nodes to k8s staging environment
 - Add nfs share to kilo for use on staging k8s cluster
 
+### Changed
+
+- Update Talos node provisioning to include SAN vmbr1
+
 ## [0.1.0] - 2025-05-18
 
 ### Added
