@@ -212,6 +212,10 @@ zfs_datasets:
     state: present
   spool/data/timemachines/aviato:
     state: present
+  spool/data/k8s/staging:
+    properties:
+      sharenfs: "rw=10.1.12.92:10.1.12.84:10.1.12.85:10.1.12.93:10.1.12.83:10.1.12.86,anonuid=1001,anongid=1001,no_root_squash,no_subtree_check"
+    state: present
 
 # Shavee Configuration.
 install_shavee: true
