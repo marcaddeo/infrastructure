@@ -6,7 +6,7 @@ locals {
     insecure     = true
     api_token    = var.proxmox_api_token
     username     = "ansible"
-    private_key  = "${path.module}/../../ansible/host_keys/id_rsa.ansible@addeo.net"
+    private_key  = file("${path.module}/../../ansible/host_keys/id_rsa.ansible@addeo.net")
   }
 
   pvc_volumes = try(jsondecode(base64decode(data.external.pvc_volumes.result.base64)), {})
