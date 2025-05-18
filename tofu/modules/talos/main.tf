@@ -87,7 +87,7 @@ data "talos_machine_configuration" "this" {
   machine_type       = each.value.machine_type
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   kubernetes_version = var.cluster.kubernetes_version
-  config_patches = [
+  config_patches = flatten([
     templatefile("${path.module}/machine-config/common.yaml.tftpl", {
       node_name    = each.value.host_node
       cluster_name = var.cluster.proxmox_cluster
@@ -97,8 +97,20 @@ data "talos_machine_configuration" "this" {
       gateway      = var.cluster.gateway
       subnet_mask  = var.cluster.subnet_mask
       vip          = var.cluster.vip
-    })
-  ]
+    }),
+    each.value.machine_type == "controlplane" ? [
+      templatefile("${path.module}/machine-config/controlplane.yaml.tftpl", {
+        node_name    = each.value.host_node
+        cluster_name = var.cluster.proxmox_cluster
+        hostname     = each.key
+        ip           = each.value.ip
+        mac_address  = lower(each.value.mac_address)
+        gateway      = var.cluster.gateway
+        subnet_mask  = var.cluster.subnet_mask
+        vip          = var.cluster.vip
+      })
+    ] : []
+  ])
 }
 
 resource "talos_machine_configuration_apply" "this" {

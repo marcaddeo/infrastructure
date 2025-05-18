@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add additional nodes to k8s staging environment
 - Add nfs share to kilo for use on staging k8s cluster
+- Add ability to apply custom Talos machine config to control plane nodes only
 
 ### Changed
 
