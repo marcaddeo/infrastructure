@@ -31,6 +31,24 @@ module "talos" {
       cpu           = 4
       ram_dedicated = 8192
     }
+    ctrl-02 = {
+      host_node     = "crimson"
+      machine_type  = "controlplane"
+      ip            = "10.1.15.84"
+      mac_address   = "0A:DD:E0:11:02:03"
+      vm_id         = 203
+      cpu           = 4
+      ram_dedicated = 8192
+    }
+    ctrl-03 = {
+      host_node     = "crimson"
+      machine_type  = "controlplane"
+      ip            = "10.1.15.85"
+      mac_address   = "0A:DD:E0:11:02:04"
+      vm_id         = 204
+      cpu           = 4
+      ram_dedicated = 8192
+    }
     work-01 = {
       host_node     = "crimson"
       machine_type  = "worker"
@@ -46,6 +64,15 @@ module "talos" {
       ip            = "10.1.15.83"
       mac_address   = "0A:DD:E0:11:02:02"
       vm_id         = 202
+      cpu           = 4
+      ram_dedicated = 8192
+    }
+    work-03 = {
+      host_node     = "crimson"
+      machine_type  = "worker"
+      ip            = "10.1.15.86"
+      mac_address   = "0A:DD:E0:11:02:05"
+      vm_id         = 205
       cpu           = 4
       ram_dedicated = 8192
     }

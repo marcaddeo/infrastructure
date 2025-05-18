@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add additional nodes to k8s staging environment
+
 ## [0.1.0] - 2025-05-18
 
 ### Added
