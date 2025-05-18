@@ -2,3 +2,18 @@ machine:
   kubelet:
     extraArgs:
       cloud-provider: external
+    nodeIP:
+      validSubnets:
+        - ${gateway}/${subnet_mask}
+  network:
+    hostname: ${hostname}
+    interfaces:
+      - interface: eth0
+        addresses:
+          - ${ip}/${subnet_mask}
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+      - interface: eth1
+        addresses:
+          - 10.1.12.${split(".", ip)[3]}/${subnet_mask}

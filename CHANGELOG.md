@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update Talos node provisioning to include SAN vmbr1
+- Update the Talos machine configurations to ensure nodes can access the SAN
+  and nodes/etcd are using the correct subnet
 
 ## [0.1.0] - 2025-05-18
 
