@@ -40,6 +40,15 @@ module "talos" {
       cpu           = 4
       ram_dedicated = 8192
     }
+    work-02 = {
+      host_node     = "crimson"
+      machine_type  = "worker"
+      ip            = "10.1.15.83"
+      mac_address   = "0A:DD:E0:11:02:02"
+      vm_id         = 202
+      cpu           = 4
+      ram_dedicated = 8192
+    }
   }
 }
 
