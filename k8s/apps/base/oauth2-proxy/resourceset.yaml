@@ -11,7 +11,12 @@ metadata:
 spec:
   # @TODO after the next release of flux-operator, we can move this to it's own
   # file instead of in this resourceset template
-  inputs: []
+  inputs:
+    - host: capacitor.staging.addeo.net
+      upstream: http://capacitor:9000
+      cookie_domain: .capacitor.staging.addeo.net
+      oidc_issuer_url: https://id.staging.addeo.net
+      namespace: flux-system
   resources:
     - apiVersion: v1
       kind: ConfigMap

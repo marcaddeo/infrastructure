@@ -4,9 +4,11 @@ resources:
   - ../base/rancher
   - ../base/pocket-id
   - ../base/oauth2-proxy
+  - ../base/capacitor
   - pocket-id/volumes.yaml
   - pocket-id/secrets.yaml
   - rancher/secrets.yaml
+  - capacitor/secrets.yaml
 patches:
   - path: rancher/release.yaml
     target:

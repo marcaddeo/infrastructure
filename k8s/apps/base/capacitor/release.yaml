@@ -1,0 +1,18 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: capacitor
+  namespace: flux-system
+spec:
+  releaseName: capacitor
+  chart:
+    spec:
+      chart: capacitor
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: sebastiangaiser
+  interval: 12h
+  # https://github.com/sebastiangaiser/helm-charts/blob/main/charts/capacitor/values.yaml
+  # values:
