@@ -1,0 +1,71 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: oauth2-proxy
+  namespace: oauth2-proxy-system
+  annotations:
+    fluxcd.controlplane.io/reconcile: enabled
+    fluxcd.controlplane.io/reconcileEvery: 30m
+    fluxcd.controlplane.io/reconcileTimeout: 5m
+spec:
+  # @TODO after the next release of flux-operator, we can move this to it's own
+  # file instead of in this resourceset template
+  inputs: []
+  resources:
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: oauth2-proxy-config
+        namespace: << inputs.namespace >>
+      data:
+        oauth2_proxy.cfg: |-
+          provider = "oidc"
+          scope = "openid email profile groups"
+          upstreams = [ "<< inputs.upstream >>" ]
+          reverse_proxy = true
+          email_domains = ["*"]
+          oidc_issuer_url = "<< inputs.oidc_issuer_url >>"
+          ssl_insecure_skip_verify = true
+          insecure_oidc_allow_unverified_email = true
+          skip_provider_button = true
+          cookie_domains = ["<< inputs.cookie_domain >>"]
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      metadata:
+        name: oauth2-proxy
+        namespace: << inputs.namespace >>
+      spec:
+        interval: 30m
+        chart:
+          spec:
+            chart: oauth2-proxy
+            version: "*"
+            sourceRef:
+              kind: HelmRepository
+              name: oauth2-proxy
+              namespace: oauth2-proxy-system
+            interval: 12h
+        # https://github.com/oauth2-proxy/manifests/blob/main/helm/oauth2-proxy/values.yaml
+        values:
+          config:
+            existingSecret: oauth2-proxy-credentials
+            existingConfig: oauth2-proxy-config
+          sessionStorage:
+            type: redis
+          ingress:
+            enabled: true
+            className: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+            hosts:
+              - << inputs.host >>
+            tls:
+              - secretName: oauth2-proxy-tls
+                hosts:
+                  - << inputs.host >>
+          redis:
+            enabled: true
+            architecture: standalone
+            global:
+              defaultStorageClass: vmpool-ephemeral

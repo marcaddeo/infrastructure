@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add nfs share to kilo for use on staging k8s cluster
 - Add ability to apply custom Talos machine config to control plane nodes only
 - Add nfs-subdir-external-provisioner to k8s cluster to allow NFS PVCs
+- Add an oauth2-proxy ResourceSet to allow templating oauth2-proxy into
+  namespaces that require it
 
 ### Changed
 
