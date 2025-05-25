@@ -32,7 +32,6 @@ spec:
           email_domains = ["*"]
           oidc_issuer_url = "<< inputs.oidc_issuer_url >>"
           ssl_insecure_skip_verify = true
-          insecure_oidc_allow_unverified_email = true
           skip_provider_button = true
           cookie_domains = ["<< inputs.cookie_domain >>"]
     - apiVersion: helm.toolkit.fluxcd.io/v2

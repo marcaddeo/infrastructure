@@ -25,6 +25,7 @@ spec:
           app:
             appName: AddeoID
             disableAnimations: true
+            emailsVerified: true
           smtp:
             host: smtp.mailgun.org
             port: "465"
