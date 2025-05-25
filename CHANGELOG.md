@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add external-dns to synchronize ingress hosts to Cloudflare DNS
 - Add a proxmox EndpointSlice to Kubernetes that forwards to all Proxmox nodes
   in the cluster
+- Add OIDC login to Proxmox
 
 ### Changed
 

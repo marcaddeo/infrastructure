@@ -25,6 +25,43 @@ pve_datacenter_cfg:
 pve_reboot_on_kernel_update: false
 pve_remove_old_kernels: false
 pve_zfs_enabled: false
+pve_domains_cfg:
+  - name: pam
+    type: pam
+    attributes:
+      comment: Linux PAM standard authentication
+  - name: pve
+    type: pve
+    attributes:
+      comment: Proxmox VE authentication server
+  - name: AddeoID-staging
+    type: openid
+    attributes:
+      comment: AddeoID (Staging)
+      client-id: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        34313961303033303761313965363539353736393339623033343766623263373561656432323638
+        3032643064303262326231613134623735393030636236640a396136363632623530396164383637
+        64343733393738396532346361666262393733393038316434303832623237393232396239363665
+        3134386539633261650a653862626438396233616464383365323363643763353162663064633865
+        39663165666237616536333234313462313332316663663735633761383664653666653337633034
+        6138613235336637313734323063363935323032653063313933
+      issuer-url: https://id.staging.addeo.net
+      autocreate: true
+      client-key: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        63626163346663633164343234633238653431353537383532343237616136353630396430363638
+        3166373061643039326363366535653962616634366261340a386564356661653136396465626333
+        34356639366131306330306565383765363533363537633665323533323864363732663765313363
+        3630303939386161620a366666336432363230643465316532633939623362353630336563663335
+        62306233663438366233313038383030646338313530663531333038343261383234633235646438
+        6537336264653734336466653133346662336530663137383533
+      default: true
+      groups-claims: groups
+      groups-overwrite: true
+      query-userinfo: true
+      scopes: email profile groups
+      username-claim: username
 pve_roles:
   - name: CSI
     privileges:
@@ -35,6 +72,8 @@ pve_roles:
       - Datastore.Audit
 pve_groups:
   - name: Administrators
+  - name: proxmox-admins-AddeoID
+  - name: proxmox-admins-AddeoID-staging
 pve_users:
   - name: marc@pve
     password: !vault |
@@ -69,6 +108,8 @@ pve_acls:
       - PVEAdmin
     groups:
       - Administrators
+      - proxmox-admins-AddeoID
+      - proxmox-admins-AddeoID-staging
   - path: /
     roles:
       - CSI
