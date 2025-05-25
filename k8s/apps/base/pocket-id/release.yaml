@@ -25,6 +25,14 @@ spec:
           app:
             appName: AddeoID
             disableAnimations: true
+          smtp:
+            host: smtp.mailgun.org
+            port: "465"
+            from: no-reply@addeo.net
+            tls: tls
+          email:
+            loginNotificationEnabled: true
+            oneTimeAccessEnabled: true
     persistence:
       data:
         enabled: true
@@ -44,3 +52,11 @@ spec:
       name: pocket-id-maxmind-license-key
       valuesKey: credential
       targetPath: maxmindLicenseKey
+    - kind: Secret
+      name: pocket-id-smtp-credentials
+      valuesKey: username
+      targetPath: config.publicUI.settings.smtp.user
+    - kind: Secret
+      name: pocket-id-smtp-credentials
+      valuesKey: password
+      targetPath: config.publicUI.settings.smtp.password
