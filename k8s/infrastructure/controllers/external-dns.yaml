@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-dns-system
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: cloudflare-api-token
+  namespace: external-dns-system
+spec:
+  itemPath: vaults/k8s/items/ixoxvdpcqg2fktrpjeb2sr756a
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: external-dns
+  namespace: external-dns-system
+spec:
+  interval: 24h
+  url: https://kubernetes-sigs.github.io/external-dns/
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: external-dns
+  namespace: external-dns-system
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: external-dns
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+        namespace: external-dns-system
+      interval: 12h
+  # https://github.com/kubernetes-sigs/external-dns/blob/master/charts/external-dns/values.yaml
+  values:
+    sources:
+      - ingress
+    domainFilters:
+      - addeo.net
+    provider:
+      name: cloudflare
+    env:
+      - name: CF_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cloudflare-api-token
+            key: credential

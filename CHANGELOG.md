@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add an oauth2-proxy ResourceSet to allow templating oauth2-proxy into
   namespaces that require it
 - Add capacitor, a UI for FluxCD
+- Add external-dns to synchronize ingress hosts to Cloudflare DNS
 
 ### Changed
 
