@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   namespaces that require it
 - Add capacitor, a UI for FluxCD
 - Add external-dns to synchronize ingress hosts to Cloudflare DNS
+- Add a proxmox EndpointSlice to Kubernetes that forwards to all Proxmox nodes
+  in the cluster
 
 ### Changed
 

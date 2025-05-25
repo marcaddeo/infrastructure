@@ -1,0 +1,7 @@
+---
+- op: replace
+  path: /spec/rules/0/host
+  value: proxmox.staging.addeo.net
+- op: replace
+  path: /spec/tls/0/hosts/0
+  value: proxmox.staging.addeo.net

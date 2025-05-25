@@ -1,0 +1,26 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: proxmox
+  namespace: proxmox
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: proxmox-tls
+      hosts:
+        - proxmox.addeo.net
+  rules:
+    - host: proxmox.addeo.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: proxmox
+                port:
+                  number: 443
+            path: /
+            pathType: ImplementationSpecific

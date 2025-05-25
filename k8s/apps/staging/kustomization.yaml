@@ -5,6 +5,7 @@ resources:
   - ../base/pocket-id
   - ../base/oauth2-proxy
   - ../base/capacitor
+  - ../base/proxmox
   - pocket-id/volumes.yaml
   - pocket-id/secrets.yaml
   - rancher/secrets.yaml
@@ -18,3 +19,11 @@ patches:
     target:
       kind: HelmRelease
       name: pocket-id
+  - path: proxmox/endpoint-slice.yaml
+    target:
+      kind: EndpointSlice
+      name: proxmox
+  - path: proxmox/ingress.yaml
+    target:
+      kind: Ingress
+      name: proxmox
