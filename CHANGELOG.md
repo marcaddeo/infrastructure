@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and nodes/etcd are using the correct subnet
 - Configure SMTP and Email settings in pocket-id
 
+### Fixed
+
+- Fix annotations on the vmpool-ephemeral StorageClass so it can be properly
+  selected as the default
+
 ## [0.1.0] - 2025-05-18
 
 ### Added

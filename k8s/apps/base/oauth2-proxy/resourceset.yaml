@@ -71,5 +71,3 @@ spec:
           redis:
             enabled: true
             architecture: standalone
-            global:
-              defaultStorageClass: vmpool-ephemeral
