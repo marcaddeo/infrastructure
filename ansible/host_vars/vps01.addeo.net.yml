@@ -1,0 +1,22 @@
+---
+# Device Information.
+device_hostname: vps01.addeo.net
+device_description: VPS for James
+device_type: VM
+device_model: VM
+device_interfaces:
+  - name: en0
+    description: SRVMGMT Network
+    ip: 10.1.15.99
+    mac: 0A:DD:E0:92:71:D8
+    default: true
+
+# Device Configuration.
+manage_dhcp_static_mappings: true
+
+# DNS Record Configuration.
+dns_default_record: true
+dns_records:
+  - host: vps01
+    domain: "{{ dns_domain }}"
+    ip: "{{ device_ips }}"

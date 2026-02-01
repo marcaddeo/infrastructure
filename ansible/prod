@@ -45,6 +45,9 @@ aviato.addeo.net
 oit.addeo.net
 klipper.addeo.net
 
+[vps]
+vps01.addeo.net
+
 [pfsense_servers]
 rtr01.addeo.net ansible_host=10.1.10.1
 
