@@ -57,6 +57,15 @@ spec:
             existingConfig: oauth2-proxy-config
           sessionStorage:
             type: redis
+            redis:
+              standalone:
+                connectionUrl: redis://placeholder
+          extraEnv:
+            - name: OAUTH2_PROXY_REDIS_CONNECTION_URL
+              valueFrom:
+                secretKeyRef:
+                  name: oauth2-proxy-redis-credentials
+                  key: redis-url
           ingress:
             enabled: true
             className: nginx
@@ -71,3 +80,6 @@ spec:
           redis:
             enabled: true
             architecture: standalone
+            auth:
+              existingSecret: oauth2-proxy-redis-credentials
+              existingSecretPasswordKey: redis-password
