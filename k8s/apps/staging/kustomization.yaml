@@ -5,7 +5,6 @@ resources:
   - ../base/oauth2-proxy
   - ../base/capacitor
   - ../base/proxmox
-  - ../base/lgtm-stack
   - rancher/secrets.yaml
   - capacitor/secrets.yaml
 patches:
@@ -21,7 +20,3 @@ patches:
     target:
       kind: Ingress
       name: proxmox
-  - path: lgtm-stack/release.yaml
-    target:
-      kind: HelmRelease
-      name: lgtm-stack
