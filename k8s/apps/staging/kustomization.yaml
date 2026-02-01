@@ -6,6 +6,7 @@ resources:
   - ../base/capacitor
   - ../base/proxmox
   - rancher/secrets.yaml
+  - capacitor/auth.yaml
   - capacitor/secrets.yaml
 patches:
   - path: rancher/release.yaml
