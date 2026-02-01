@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add a proxmox EndpointSlice to Kubernetes that forwards to all Proxmox nodes
   in the cluster
 - Add OIDC login to Proxmox
+- Add garage-operator to enable S3-style object storage for the k8s cluster
 
 ### Changed
 

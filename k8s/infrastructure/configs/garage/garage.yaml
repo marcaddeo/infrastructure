@@ -1,0 +1,34 @@
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageCluster
+metadata:
+  name: garage
+  namespace: garage-system
+spec:
+  layoutPolicy: Manual
+  replicas: 1
+  replication:
+    factor: 1
+  zone: us-east-1
+  s3Api:
+    rootDomain: .s3.staging.addeo.net
+  admin:
+    adminTokenSecretRef:
+      key: credential
+      name: garage-admin-token
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageNode
+metadata:
+  name: garage-node-vmpool
+  namespace: garage-system
+spec:
+  clusterRef:
+    name: garage
+  zone: us-east-1
+  capacity: 32Gi
+  storage:
+    data:
+      existingClaim: garage-data-staging
+    metadata:
+      existingClaim: garage-metadata-staging
