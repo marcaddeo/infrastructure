@@ -31,6 +31,7 @@ metadata:
 spec:
   dependsOn:
     - name: infra-controllers
+    - name: infra-storage
   interval: 10m
   retryInterval: 1m
   timeout: 5m
@@ -46,8 +47,6 @@ metadata:
   name: infra-storage
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: infra-configs
   interval: 10m
   retryInterval: 1m
   timeout: 5m
