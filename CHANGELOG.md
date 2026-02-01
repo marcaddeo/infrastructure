@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and nodes/etcd are using the correct subnet
 - Configure SMTP and Email settings in pocket-id
 - Configure additional network interfaces on alfred
+- Update the onepassword-operator to poll more frequently for updates
 
 ### Fixed
 
