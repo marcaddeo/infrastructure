@@ -132,3 +132,13 @@ pvc-volumes env="staging" encode="true":
             }
             })' \
     {{ if encode == "true" { "| base64 | tr -d '\n' | jq -R '{base64: .}'" } else { "" } }}
+
+pg-manual-backup:
+    #!/usr/bin/env bash
+    echo "apiVersion: postgresql.cnpg.io/v1
+    kind: Backup
+    metadata:
+      name: manual-backup-$(date +%s)
+    spec:
+      cluster:
+        name: postgres" | kubectl apply -f -
