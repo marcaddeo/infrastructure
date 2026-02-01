@@ -10,6 +10,14 @@ device_interfaces:
     ip: 10.1.15.69
     mac: 54:48:10:CD:64:1C
     default: true
+  - name: enxc8a362e9801e
+    description: CLUSTER Network
+    ip: 10.1.16.69
+    mac: C8:A3:62:E9:80:1E
+  - name: enxc8a362e97fa5
+    description: SAN Network
+    ip: 10.1.12.69
+    mac: C8:A3:62:E9:7F:A5
 
 # Device Configuration.
 manage_dhcp_static_mappings: false
@@ -24,11 +32,23 @@ server_fqdn: alfred.addeo.net
 # Bootstrap Configuration.
 bootstrap_boot_type: uefi
 bootstrap_zpool_disk_identifiers:
-  - /dev/disk/by-id/wwn-0x5001b44cd6af012c
+  - /dev/disk/by-id/ata-Micron_5300_MTFDDAV240TDS_21032C927137
 
 # Network Interfaces Configuration.
 network_interfaces:
   enp1s0:
+    comment: SRVMGMT interface.
+    inet: manual
+    state: present
+  enxc8a362e9801e:
+    comment: CLUSTER interface.
+    auto: true
+    inet: static
+    address: 10.1.16.69/24
+    state: present
+  enxc8a362e97fa5:
+    comment: SAN interface.
+    auto: true
     inet: manual
     state: present
   vmbr0:
@@ -41,12 +61,6 @@ network_interfaces:
       bridge-vlan-aware yes
       bridge-vids 2-4094
     state: present
-  vmbr0.112:
-    comment: SAN Network.
-    auto: true
-    inet: static
-    address: 10.1.12.69/24
-    state: present
   vmbr0.115:
     comment: SRVMGMT Network.
     auto: true
@@ -55,11 +69,17 @@ network_interfaces:
     gateway: 10.1.15.1
     dns_nameservers: 10.1.15.1
     state: present
-  vmbr0.116:
-    comment: CLUSTER Network.
+  vmbr1:
+    comment: SAN bridge.
     auto: true
     inet: static
-    address: 10.1.16.69/24
+    address: 10.1.12.69/24
+    extra: |
+      bridge-ports enxc8a362e97fa5
+      bridge-stp off
+      bridge-fd 0
+      up ip route add 10.1.15.79 dev vmbr1
+      down ip route del 10.1.15.79 dev vmbr1
     state: present
 
 # ZFS Configuration.
@@ -70,23 +90,22 @@ zfs_pools:
   rpool:
     scrub: weekly
     state: scrub
-  # @TODO add vmpool drives
-  # vmpool:
-  #   vdevs:
-  #     - type: mirror
-  #       devices:
-  #         - /dev/disk/by-id/wwn-0x
-  #         - /dev/disk/by-id/wwn-0x
-  #   scrub: weekly
-  #   force: true
-  #   properties:
-  #     ashift: 12
-  #   filesystem_properties:
-  #     compression: lz4
-  #     relatime: "on"
-  #     xattr: sa
-  #     utf8only: "on"
-  #   state: present
+  vmpool:
+    vdevs:
+      - type: mirror
+        devices:
+          - /dev/disk/by-id/ata-Micron_5100_MTFDDAK960TBY_1727195A5311
+          - /dev/disk/by-id/ata-Micron_5100_MTFDDAK960TBY_1727195A5AED
+    scrub: weekly
+    force: true
+    properties:
+      ashift: 12
+    filesystem_properties:
+      compression: lz4
+      relatime: "on"
+      xattr: sa
+      utf8only: "on"
+    state: present
 
 # Proxmox Configuration.
 pve_cluster_addr0: 10.1.16.69
