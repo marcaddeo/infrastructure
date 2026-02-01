@@ -54,11 +54,11 @@ host-info host inventory="prod":
 
 [doc("Download the startup-config from the switch")]
 @download-startup-config:
-    expect scripts/switch-ssh-exec.expect "copy startup-config tftp 10.1.51.154 startup.config"
+    expect scripts/switch-ssh-exec.expect "copy startup-config tftp 10.1.51.31 startup.config"
 
 [doc("Download the running-config from the switch")]
 @download-running-config:
-    expect scripts/switch-ssh-exec.expect "copy running-config tftp 10.1.51.154 running.config"
+    expect scripts/switch-ssh-exec.expect "copy running-config tftp 10.1.51.31 running.config"
 
 [working-directory("ansible")]
 [doc("Generate a configuration file for the switch")]
@@ -72,11 +72,11 @@ _generate-switch-config file:
 
 [doc("Upload the switch configuration to the switches startup-config")]
 @upload-startup-config: (_generate-switch-config "startup.config")
-    expect scripts/switch-ssh-exec.expect "copy tftp startup-config 10.1.51.154 startup.config"
+    expect scripts/switch-ssh-exec.expect "copy tftp startup-config 10.1.51.31 startup.config"
 
 [doc("Upload the switch configuration to the switches running-config")]
 @upload-running-config: (_generate-switch-config "running.config")
-    expect scripts/switch-ssh-exec.expect "copy tftp running-config 10.1.51.154 running.config"
+    expect scripts/switch-ssh-exec.expect "copy tftp running-config 10.1.51.31 running.config"
 
 @op-base64-inject file:
     perl -ne 's/{{{{ base64-(op.*) }}/`echo "$1" | op inject | base64 | tr "\/+" "_-" | tr -d "=" | tr -d "\n"`/e;print' {{ file }}
