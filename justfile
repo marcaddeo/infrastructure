@@ -120,7 +120,10 @@ k8s-rebuild env="staging": (talos-down env) (talos-up env) (k8s-bootstrap env)
 
 pvc-volumes env="staging" encode="true":
     #!/usr/bin/env bash
-    kubectl kustomize k8s/apps/{{ env }} \
+    {
+        kubectl kustomize k8s/apps/{{ env }};
+        flux build kustomization infra-configs --path k8s/clusters/{{ env }} --recursive --local-sources=GitRepository/flux-system/flux-system={{ justfile_directory() }};
+    } \
         | yq -o json ea '[.] | .[] | select(.kind == "PersistentVolume" and .spec.storageClassName == "vmpool-persistent")' \
         | jq -rMs 'reduce .[] as $item ({}; . + {
             ($item.spec.csi.volumeHandle | split("/") | .[3] | sub("vm-\\d+-"; "")): {
