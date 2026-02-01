@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add OIDC login to Proxmox
 - Add garage-operator to enable S3-style object storage for the k8s cluster
 - Add cloudnativepg-operator for easy deployments of postgres clusters in k8s
+- Add and configure LGTM stack (as separate charts) for monitoring
 
 ### Changed
 

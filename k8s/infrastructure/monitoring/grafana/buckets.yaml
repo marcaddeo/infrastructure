@@ -1,0 +1,26 @@
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageKey
+metadata:
+  name: grafana-garage-key
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  bucketPermissions:
+    - bucketRef: grafana-database
+      read: true
+      write: true
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageBucket
+metadata:
+  name: grafana-database
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  quotas:
+    maxSize: 8Gi

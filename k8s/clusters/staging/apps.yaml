@@ -10,6 +10,7 @@ spec:
     - name: infra-controllers
     - name: infra-configs
     - name: infra-storage
+    - name: infra-monitoring
   sourceRef:
     kind: GitRepository
     name: flux-system

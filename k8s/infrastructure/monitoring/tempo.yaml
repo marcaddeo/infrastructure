@@ -1,0 +1,109 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: tempo
+  namespace: monitoring
+spec:
+  chart:
+    spec:
+      chart: tempo-distributed
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+  interval: 12h
+  # https://github.com/grafana/helm-charts/blob/main/charts/tempo-distributed/values.yaml
+  values:
+    global:
+      # @note can't use extraArgs here
+      # @see https://github.com/grafana/helm-charts/issues/4014
+      extraEnv:
+        - name: ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: tempo-garage-key
+              key: host
+        - name: REGION
+          valueFrom:
+            secretKeyRef:
+              name: tempo-garage-key
+              key: region
+        - name: SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tempo-garage-key
+              key: secret-access-key
+        - name: ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: tempo-garage-key
+              key: access-key-id
+    storage:
+      trace:
+        backend: s3
+        s3:
+          bucket: tempo-traces
+          endpoint: "${ENDPOINT}"
+          access_key: "${ACCESS_KEY_ID}"
+          secret_key: "${SECRET_ACCESS_KEY}"
+          region: "${REGION}"
+          insecure: true # @TODO
+    compactor:
+      extraArgs:
+        - -config.expand-env=true
+    distributor:
+      extraArgs:
+        - -config.expand-env=true
+    gateway:
+      enabled: true
+      extraArgs:
+        - -config.expand-env=true
+    ingester:
+      extraArgs:
+        - -config.expand-env=true
+    metricsGenerator:
+      enabled: true
+      extraArgs:
+        - -config.expand-env=true
+    querier:
+      extraArgs:
+        - -config.expand-env=true
+    queryFrontend:
+      extraArgs:
+        - -config.expand-env=true
+      query:
+        extraArgs:
+          - -config.expand-env=true
+    traces:
+      otlp:
+        http:
+          enabled: true
+        grpc:
+          enabled: true
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageKey
+metadata:
+  name: tempo-garage-key
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  bucketPermissions:
+    - bucketRef: tempo-traces
+      read: true
+      write: true
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageBucket
+metadata:
+  name: tempo-traces
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  quotas:
+    maxSize: 8Gi

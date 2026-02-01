@@ -1,0 +1,178 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: monitoring
+spec:
+  chart:
+    spec:
+      chart: loki
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+  interval: 12h
+  # https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
+  values:
+    global:
+      extraArgs:
+        - -config.expand-env=true
+      extraEnv:
+        - name: ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: loki-garage-key
+              key: host
+        - name: REGION
+          valueFrom:
+            secretKeyRef:
+              name: loki-garage-key
+              key: region
+        - name: SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: loki-garage-key
+              key: secret-access-key
+        - name: ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: loki-garage-key
+              key: access-key-id
+    chunksCache:
+      enabled: false
+    loki:
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 3 #@TODO
+      # @TODO is this a proper schemaconfig?
+      schemaConfig:
+        configs:
+          - from: "2024-04-01"
+            store: tsdb
+            object_store: s3
+            schema: v13
+            index:
+              prefix: loki_index_
+              period: 24h
+      storage_config:
+        aws:
+          region: "${REGION}"
+          bucketnames: loki-chunks
+          s3forcepathstyle: true # @TODO
+      ingester:
+        chunk_encoding: snappy
+      pattern_ingester:
+        enabled: true
+      limits_config:
+        allow_structured_metadata: true
+        volume_enabled: true
+        retention_period: 672h # 28 days retention @TODO
+      querier:
+        max_concurrent: 4
+      storage:
+        type: s3
+        bucketNames:
+          chunks: loki-chunks
+          ruler: loki-ruler
+          admin: loki-admin
+        s3:
+          endpoint: "${ENDPOINT}"
+          region: "${REGION}"
+          secretAccessKey: "${SECRET_ACCESS_KEY}"
+          accessKeyId: "${ACCESS_KEY_ID}"
+          s3ForcePathStyle: true # @TODO can we setup dns style buckets?
+          insecure: true # @TODO
+    deploymentMode: Distributed
+    minio:
+      enabled: false
+    ingester:
+      replicas: 3
+      zoneAwareReplication:
+        enabled: false
+    querier:
+      replicas: 3
+      maxUnavailable: 2
+    queryFrontend:
+      replicas: 2
+      maxUnavailable: 1
+    queryScheduler:
+      replicas: 2
+    distributor:
+      replicas: 3
+      maxUnavailable: 2
+    compactor:
+      replicas: 1
+    indexGateway:
+      replicas: 2
+      maxUnavailable: 1
+    bloomPlanner:
+      replicas: 0
+    bloomBuilder:
+      replicas: 0
+    bloomGateway:
+      replicas: 0
+    backend:
+      replicas: 0
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+    singleBinary:
+      replicas: 0
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageKey
+metadata:
+  name: loki-garage-key
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  bucketPermissions:
+    - bucketRef: loki-chunks
+      read: true
+      write: true
+    - bucketRef: loki-ruler
+      read: true
+      write: true
+    - bucketRef: loki-admin
+      read: true
+      write: true
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageBucket
+metadata:
+  name: loki-chunks
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  quotas:
+    maxSize: 10Gi
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageBucket
+metadata:
+  name: loki-ruler
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  quotas:
+    maxSize: 1Gi
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageBucket
+metadata:
+  name: loki-admin
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  quotas:
+    maxSize: 1Gi

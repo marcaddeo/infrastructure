@@ -1,0 +1,42 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  callbackUrls:
+    - https://grafana.staging.addeo.net/login/generic_oauth
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: monitoring-super-admin
+  namespace: monitoring
+spec:
+  friendlyName: Monitoring Super Admin
+  users:
+    usernames:
+      - marc
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: monitoring-admin
+  namespace: monitoring
+spec:
+  friendlyName: Monitoring Admin
+  users:
+    usernames:
+      - marc
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: monitoring
+  namespace: monitoring
+spec:
+  friendlyName: Monitoring
+  users:
+    usernames:
+      - marc

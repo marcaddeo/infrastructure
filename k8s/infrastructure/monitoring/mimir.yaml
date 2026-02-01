@@ -1,0 +1,122 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mimir
+  namespace: monitoring
+spec:
+  chart:
+    spec:
+      chart: mimir-distributed
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+  interval: 12h
+  # https://github.com/grafana/mimir/blob/main/operations/helm/charts/mimir-distributed/values.yaml
+  values:
+    global:
+      extraArgs:
+        - -config.expand-env=true
+      extraEnv:
+        - name: ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: mimir-garage-key
+              key: host
+        - name: REGION
+          valueFrom:
+            secretKeyRef:
+              name: mimir-garage-key
+              key: region
+        - name: SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mimir-garage-key
+              key: secret-access-key
+        - name: ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: mimir-garage-key
+              key: access-key-id
+    minio:
+      enabled: false
+    nginx:
+      enabled: true
+    mimir:
+      structuredConfig:
+        common:
+          storage:
+            backend: s3
+            s3:
+              bucket_name: mimir-blocks
+              endpoint: "${ENDPOINT}"
+              access_key_id: "${ACCESS_KEY_ID}"
+              secret_access_key: "${SECRET_ACCESS_KEY}"
+              region: "${REGION}"
+              insecure: true # @TODO
+        alertmanager_storage:
+          s3:
+            bucket_name: mimir-alertmanager
+        blocks_storage:
+          s3:
+            bucket_name: mimir-blocks
+        ruler_storage:
+          s3:
+            bucket_name: mimir-ruler
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageKey
+metadata:
+  name: mimir-garage-key
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  bucketPermissions:
+    - bucketRef: mimir-alertmanager
+      read: true
+      write: true
+    - bucketRef: mimir-blocks
+      read: true
+      write: true
+    - bucketRef: mimir-ruler
+      read: true
+      write: true
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageBucket
+metadata:
+  name: mimir-alertmanager
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  quotas:
+    maxSize: 1Gi
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageBucket
+metadata:
+  name: mimir-blocks
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  quotas:
+    maxSize: 10Gi
+---
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageBucket
+metadata:
+  name: mimir-ruler
+  namespace: monitoring
+spec:
+  clusterRef:
+    name: garage
+    namespace: garage-system
+  quotas:
+    maxSize: 1Gi

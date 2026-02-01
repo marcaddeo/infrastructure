@@ -1,0 +1,89 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: monitoring
+  # @note this is necessary to reuse the same bucket when recovering
+  # annotations:
+  #   cnpg.io/skipEmptyWalArchiveCheck: enabled
+spec:
+  instances: 3
+  storage:
+    size: 2Gi
+  walStorage:
+    size: 1Gi
+  bootstrap:
+    initdb:
+      database: grafana
+      owner: grafana
+    # @note comment out initdb, and uncomment this to restore from a backup
+    # recovery:
+    #   database: grafana
+    #   owner: grafana
+    #   source: grafana-backup
+  backup:
+    barmanObjectStore:
+      destinationPath: s3://grafana-database/
+      endpointURL: http://garage.garage-system.svc.cluster.local:3900
+      s3Credentials:
+        region:
+          name: grafana-garage-key
+          key: region
+        accessKeyId:
+          name: grafana-garage-key
+          key: access-key-id
+        secretAccessKey:
+          name: grafana-garage-key
+          key: secret-access-key
+      wal:
+        compression: gzip
+        maxParallel: 8
+        encryption: AES256
+    retentionPolicy: "30d"
+  externalClusters:
+    - name: grafana-backup
+      barmanObjectStore:
+        destinationPath: s3://grafana-database/
+        endpointURL: http://garage.garage-system.svc.cluster.local:3900
+        s3Credentials:
+          region:
+            name: grafana-garage-key
+            key: region
+          accessKeyId:
+            name: grafana-garage-key
+            key: access-key-id
+          secretAccessKey:
+            name: grafana-garage-key
+            key: secret-access-key
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+      pg_stat_statements.track: "all"
+      work_mem: "16MB"
+      maintenance_work_mem: "256MB"
+      effective_cache_size: "1GB"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "2"
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: kubernetes.io/hostname
+  monitoring:
+    enablePodMonitor: true
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: postgres-daily-backup
+  namespace: monitoring
+spec:
+  cluster:
+    name: postgres
+  schedule: "0 0 0 * * *"
+  backupOwnerReference: self
+  immediate: true

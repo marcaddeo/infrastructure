@@ -1,0 +1,62 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: k8s-monitoring
+  namespace: monitoring
+spec:
+  chart:
+    spec:
+      chart: k8s-monitoring
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+  interval: 12h
+  # https://github.com/grafana/k8s-monitoring-helm/blob/main/charts/k8s-monitoring/values.yaml
+  values:
+    cluster:
+      name: staging.talos.addeo.net
+    destinations:
+      - name: mimir
+        type: prometheus
+        url: http://mimir-gateway.monitoring.svc.cluster.local/api/v1/push
+      # auth:
+      #   type: basic
+      #   username: my-username
+      #   password: my-password
+      - name: loki
+        type: loki
+        url: http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push
+        # auth:
+        #   type: basic
+        #   username: my-username
+        #   password: my-password
+        #   tenantIdFrom: env("LOKI_TENANT_ID")
+      - name: tempo
+        type: otlp
+        url: http://tempo-gateway.monitoring.svc.cluster.local/v1/traces
+        # auth:
+        #   type: basic
+        #   username: my-username
+        #   password: my-password
+        metrics:
+          enabled: true
+        logs:
+          enabled: true
+        traces:
+          enabled: true
+    clusterMetrics:
+      enabled: true
+    clusterEvents:
+      enabled: true
+    nodeLogs:
+      enabled: true
+    podLogs:
+      enabled: true
+    alloy-metrics:
+      enabled: true
+    alloy-singleton:
+      enabled: true
+    alloy-logs:
+      enabled: true
