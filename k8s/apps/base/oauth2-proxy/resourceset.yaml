@@ -53,7 +53,7 @@ spec:
         # https://github.com/oauth2-proxy/manifests/blob/main/helm/oauth2-proxy/values.yaml
         values:
           config:
-            existingSecret: oauth2-proxy-credentials
+            existingSecret: oauth2-proxy-creds
             existingConfig: oauth2-proxy-config
           sessionStorage:
             type: redis
