@@ -27,7 +27,7 @@ module "talos" {
       machine_type  = "controlplane"
       ip            = "10.1.15.92"
       mac_address   = "0A:DD:E0:11:02:00"
-      vm_id         = 200
+      vm_id         = 300
       cpu           = 4
       ram_dedicated = 8192
     }
@@ -36,7 +36,7 @@ module "talos" {
       machine_type  = "controlplane"
       ip            = "10.1.15.84"
       mac_address   = "0A:DD:E0:11:02:03"
-      vm_id         = 203
+      vm_id         = 303
       cpu           = 4
       ram_dedicated = 8192
     }
@@ -45,7 +45,7 @@ module "talos" {
       machine_type  = "controlplane"
       ip            = "10.1.15.85"
       mac_address   = "0A:DD:E0:11:02:04"
-      vm_id         = 204
+      vm_id         = 304
       cpu           = 4
       ram_dedicated = 8192
     }
@@ -54,7 +54,7 @@ module "talos" {
       machine_type  = "worker"
       ip            = "10.1.15.93"
       mac_address   = "0A:DD:E0:11:02:01"
-      vm_id         = 201
+      vm_id         = 301
       cpu           = 4
       ram_dedicated = 8192
     }
@@ -63,7 +63,7 @@ module "talos" {
       machine_type  = "worker"
       ip            = "10.1.15.83"
       mac_address   = "0A:DD:E0:11:02:02"
-      vm_id         = 202
+      vm_id         = 302
       cpu           = 4
       ram_dedicated = 8192
     }
@@ -72,7 +72,7 @@ module "talos" {
       machine_type  = "worker"
       ip            = "10.1.15.86"
       mac_address   = "0A:DD:E0:11:02:05"
-      vm_id         = 205
+      vm_id         = 305
       cpu           = 4
       ram_dedicated = 8192
     }
