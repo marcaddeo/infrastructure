@@ -2,13 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../base/rancher
-  - ../base/pocket-id
   - ../base/oauth2-proxy
   - ../base/capacitor
   - ../base/proxmox
   - ../base/lgtm-stack
-  - pocket-id/volumes.yaml
-  - pocket-id/secrets.yaml
   - rancher/secrets.yaml
   - capacitor/secrets.yaml
 patches:
@@ -16,10 +13,6 @@ patches:
     target:
       kind: HelmRelease
       name: rancher
-  - path: pocket-id/release.yaml
-    target:
-      kind: HelmRelease
-      name: pocket-id
   - path: proxmox/endpoint-slice.yaml
     target:
       kind: EndpointSlice

@@ -1,0 +1,11 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUser
+metadata:
+  name: admin
+  namespace: pocket-id-system
+spec:
+  userInfoSecretRef:
+    name: pocket-id-admin-user
+  admin: true
+  locale: en
