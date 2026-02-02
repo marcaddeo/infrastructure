@@ -1,0 +1,116 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: oauth2-proxy
+  namespace: utilities
+  annotations:
+    fluxcd.controlplane.io/reconcile: enabled
+    fluxcd.controlplane.io/reconcileEvery: 30m
+    fluxcd.controlplane.io/reconcileTimeout: 5m
+spec:
+  inputsFrom:
+    - kind: ResourceSetInputProvider
+      selector:
+        matchLabels:
+          oauth2-proxy.controller/install: "true"
+  # inputs:
+  #   - host: capacitor.staging.addeo.net
+  #     upstream: http://capacitor:9000
+  #     cookie_domain: .capacitor.staging.addeo.net
+  #     oidc_issuer_url: https://id.staging.addeo.net
+  #     namespace: flux-system
+  resources:
+    - apiVersion: pocketid.internal/v1alpha1
+      kind: PocketIDOIDCClient
+      metadata:
+        name: << inputs.oidc_client_name >>
+        namespace: << inputs.namespace >>
+      spec:
+        callbackUrls:
+          - https://<< inputs.host >>/oauth2/callback
+    - apiVersion: fluxcd.controlplane.io/v1
+      kind: ResourceSetInputProvider
+      metadata:
+        name: oauth2-proxy-secret-composer
+        namespace: utilities
+        labels:
+          secret-composer.controller/install: "true"
+      spec:
+        type: Static
+        defaultValues:
+          namespace: << inputs.namespace >>
+          cronSchedule: "*/5 * * * *"
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: oauth2-proxy-credentials-secret-composer
+        namespace: << inputs.namespace >>
+        labels:
+          secret-composer.controller/enabled: "true"
+      data:
+        sourceSecret: << inputs.oidc_client_name >>-oidc-credentials
+        targetSecret: oauth2-proxy-credentials
+        map.client-id: client_id
+        map.client-secret: client_secret
+        gen.cookie-secret: "true"
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: oauth2-proxy-config
+        namespace: << inputs.namespace >>
+      data:
+        oauth2_proxy.cfg: |-
+          provider = "oidc"
+          scope = "openid email profile groups"
+          upstreams = [ "<< inputs.upstream >>" ]
+          reverse_proxy = true
+          email_domains = ["*"]
+          oidc_issuer_url = "<< inputs.oidc_issuer_url >>"
+          ssl_insecure_skip_verify = true
+          skip_provider_button = true
+          cookie_domains = ["<< inputs.cookie_domain >>"]
+    - apiVersion: source.toolkit.fluxcd.io/v1
+      kind: HelmRepository
+      metadata:
+        name: oauth2-proxy
+        namespace: << inputs.namespace >>
+      spec:
+        interval: 24h
+        url: https://oauth2-proxy.github.io/manifests
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      metadata:
+        name: oauth2-proxy
+        namespace: << inputs.namespace >>
+      spec:
+        interval: 30m
+        chart:
+          spec:
+            chart: oauth2-proxy
+            version: "*"
+            sourceRef:
+              kind: HelmRepository
+              name: oauth2-proxy
+              namespace: << inputs.namespace >>
+            interval: 12h
+        # https://github.com/oauth2-proxy/manifests/blob/main/helm/oauth2-proxy/values.yaml
+        values:
+          config:
+            existingSecret: oauth2-proxy-credentials
+            existingConfig: oauth2-proxy-config
+          sessionStorage:
+            type: redis
+          ingress:
+            enabled: true
+            className: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+            hosts:
+              - << inputs.host >>
+            tls:
+              - secretName: oauth2-proxy-tls
+                hosts:
+                  - << inputs.host >>
+          redis-ha:
+            enabled: true
