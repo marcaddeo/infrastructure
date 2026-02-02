@@ -9,6 +9,7 @@ resources:
   - rancher/secrets.yaml
   - capacitor/auth.yaml
   - capacitor/secrets.yaml
+  - capacitor/secret-composer.yaml
 patches:
   - path: rancher/release.yaml
     target:
