@@ -114,3 +114,9 @@ spec:
                   - << inputs.host >>
           redis-ha:
             enabled: true
+            replicas: 1
+            redis:
+              config:
+                min-replicas-to-write: 0
+            persistentVolume:
+              enabled: false
