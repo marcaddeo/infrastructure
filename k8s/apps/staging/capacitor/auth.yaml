@@ -1,9 +1,0 @@
----
-apiVersion: pocketid.internal/v1alpha1
-kind: PocketIDOIDCClient
-metadata:
-  name: capacitor
-  namespace: flux-system
-spec:
-  callbackUrls:
-    - https://capacitor.staging.addeo.net/oauth2/callback

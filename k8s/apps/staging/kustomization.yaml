@@ -3,13 +3,9 @@ kind: Kustomization
 resources:
   - ../base/utilities
   - ../base/rancher
-  - ../base/oauth2-proxy
   - ../base/capacitor
   - ../base/proxmox
   - rancher/secrets.yaml
-  - capacitor/auth.yaml
-  - capacitor/secrets.yaml
-  - capacitor/secret-composer.yaml
 patches:
   - path: rancher/release.yaml
     target:
