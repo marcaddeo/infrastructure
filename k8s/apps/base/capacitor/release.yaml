@@ -16,3 +16,20 @@ spec:
   interval: 12h
   # https://github.com/sebastiangaiser/helm-charts/blob/main/charts/capacitor/values.yaml
   # values:
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSetInputProvider
+metadata:
+  name: capacitor-oauth2-proxy
+  namespace: utilities
+  labels:
+    oauth2-proxy.controller/install: "true"
+spec:
+  type: Static
+  defaultValues:
+    host: capacitor.staging.addeo.net
+    upstream: http://capacitor:9000
+    cookie_domain: capacitor.staging.addeo.net
+    oidc_client_name: capacitor
+    oidc_issuer_url: https://id.staging.addeo.net
+    namespace: flux-system
