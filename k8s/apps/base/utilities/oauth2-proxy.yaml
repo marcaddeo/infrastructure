@@ -14,12 +14,6 @@ spec:
       selector:
         matchLabels:
           oauth2-proxy.controller/install: "true"
-  # inputs:
-  #   - host: capacitor.staging.addeo.net
-  #     upstream: http://capacitor:9000
-  #     cookie_domain: .capacitor.staging.addeo.net
-  #     oidc_issuer_url: https://id.staging.addeo.net
-  #     namespace: flux-system
   resources:
     - apiVersion: pocketid.internal/v1alpha1
       kind: PocketIDOIDCClient
